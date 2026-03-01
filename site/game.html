@@ -426,8 +426,8 @@ const PAD_W   = 173, PAD_H   = 32;
 const PHOTO_W = 264, PHOTO_H = 293;
 
 /* Physics */
-const CARD_SPD   = 90;   /* px/s  base speed for cards (slow, drifting) */
-const CARD_DRIFT = 28;   /* px/s² gentle downward drift (not full gravity) */
+const CARD_SPD   = 160;  /* px/s  horizontal base speed */
+const CARD_DRIFT = 10;   /* px/s² very gentle downward drift */
 const PHOTO_SPD  = 110;  /* px/s  constant speed for bouncing photo */
 
 /* ── DOM ────────────────────────────────────────────────────────── */
@@ -512,16 +512,18 @@ const CARD_FRAC = [
 ];
 
 function initCards() {
-  cards = CARD_FRAC.map(([fx, fy], i) => {
-    /* Spread directions evenly but bias slightly downward (vy > 0 on average) */
-    const baseAngle = (Math.PI * 2 * i / CARD_FRAC.length);
-    const angle = baseAngle + (Math.random() - 0.5) * 0.9;
-    const spd = CARD_SPD * (0.7 + Math.random() * 0.6); /* vary speed per card */
+  const count = CARD_FRAC.length;
+  cards = CARD_FRAC.map(([fx], i) => {
+    /* Each card: random horizontal direction, small random downward component */
+    /* Start in top 30% of screen so they have room to fly around */
+    const sign  = (i % 2 === 0) ? 1 : -1;          /* alternate left/right */
+    const vx    = sign * (CARD_SPD * 0.8 + Math.random() * CARD_SPD * 0.7);
+    const vy    = 20 + Math.random() * 40;          /* slight downward start */
     return {
       x:  fx * (W - CARD_W),
-      y:  fy * (H - CARD_H),
-      vx: spd * Math.cos(angle),
-      vy: spd * Math.sin(angle),
+      y:  (0.04 + Math.random() * 0.26) * H,        /* top 4%–30% of screen */
+      vx,
+      vy,
       w:  CARD_W,
       h:  CARD_H,
       flash: 0
@@ -585,16 +587,14 @@ function update(dt) {
     for (let i = 0; i < cards.length; i++) {
       const c = cards[i];
 
-      /* Gentle downward drift (not full gravity — just a slow pull) */
+      /* Gentle downward drift — cap vertical speed so cards stay chaotic */
       c.vy += CARD_DRIFT * dt;
 
-      /* Cap max speed so they never get too fast */
-      const curSpd = Math.hypot(c.vx, c.vy);
-      const maxSpd = CARD_SPD * 1.8;
-      if (curSpd > maxSpd) {
-        c.vx = c.vx / curSpd * maxSpd;
-        c.vy = c.vy / curSpd * maxSpd;
-      }
+      /* Hard cap on vy so they never just fall straight down */
+      if (c.vy > CARD_SPD * 0.7) c.vy = CARD_SPD * 0.7;
+
+      /* Also keep horizontal speed alive — if vx decays too low, nudge it */
+      if (Math.abs(c.vx) < 40) c.vx += (c.vx >= 0 ? 1 : -1) * 35;
 
       c.x += c.vx * dt;
       c.y += c.vy * dt;
@@ -605,10 +605,14 @@ function update(dt) {
       if (c.x + c.w > W) { c.x = W - c.w; c.vx = -Math.abs(c.vx); }
       if (c.y < 0)       { c.y = 0;       c.vy =  Math.abs(c.vy); }
 
-      /* Paddle hit — bounce up, slight horizontal deflect */
+      /* Paddle hit — strong bounce up + big horizontal kick */
       if (hitTest(c, paddle)) {
-        c.vy = -Math.abs(c.vy) - 20; /* extra push up */
-        c.vx += (c.x + c.w/2 - (paddle.x + PAD_W/2)) * 1.8;
+        c.y = paddle.y - c.h - 1;             /* push out of paddle */
+        c.vy = -(80 + Math.random() * 60);    /* bounce up */
+        /* Horizontal kick based on where card hit paddle */
+        const rel = (c.x + c.w/2 - (paddle.x + PAD_W/2)) / (PAD_W/2);
+        c.vx = rel * CARD_SPD * 1.4 + (Math.random() - 0.5) * 60;
+        if (Math.abs(c.vx) < 50) c.vx = (c.vx >= 0 ? 1 : -1) * 80;
         c.flash = 0.22;
         burst(c.x + c.w/2, c.y + c.h/2,
               ['#3dd187','#e4e40e','#a21287','#e6e9e7','#cdeeff']);
