@@ -1,630 +1,730 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Li Chu — Game</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Spicy+Rice&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/96469d30-27e0-4ecb-8348-319791411553" />
-  <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/05aa89fb-ab1d-4227-b6b1-3563f72350b2" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Li Chu — Portfolio Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; cursor: none; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; }
 
-    /* ─── NAV ─────────────────────────────────────────────── */
-    #nav {
-      position: fixed; left: 0; top: 0;
-      width: 260px; height: 100vh;
+    /* ═══ MAIN LAYOUT ═══════════════════════════════════════════════ */
+    #root { display: flex; width: 100%; height: 100%; }
+
+    /* ═══ SIDEBAR ════════════════════════════════════════════════════
+       Figma: bg #292e2a, w:260px, h:865px, overflow:clip            */
+    #sidebar {
+      width: 260px;
+      min-width: 260px;
+      height: 100vh;
       background: #292e2a;
+      overflow: hidden;
+      position: relative;
       z-index: 20;
-      display: flex; flex-direction: column;
-      padding: 44px 30px 20px;
+    }
+
+    /* Profile container — Figma: left:calc(50%+0.5px), top:44px,
+       translate(-50%,0), w:195px                                     */
+    .sb-profile {
+      position: absolute;
+      left: calc(50% + 0.5px);
+      top: 44px;
+      transform: translateX(-50%);
+      width: 195px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    /* Name — Figma: Inter SemiBold 64px #cdeeff */
+    .sb-name {
+      font-weight: 600;
+      font-size: 64px;
+      color: #cdeeff;
+      line-height: 1;
+      width: 100%;
+    }
+
+    /* Job title — Figma: Inter Regular 20px #98999c */
+    .sb-job {
+      font-weight: 400;
+      font-size: 20px;
+      color: #98999c;
+      white-space: nowrap;
+    }
+
+    /* Navigation — Figma: left:76px, top:258px, gap:24px, w:89px,
+       20px Regular #98999c — hidden during game, shown on game over  */
+    #nav {
+      position: absolute;
+      left: 76px;
+      top: 258px;
+      width: 89px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-18px);
+      transition: opacity 0.38s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.38s cubic-bezier(0.22,1,0.36,1);
+    }
+    #nav.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+    #nav a {
+      font-weight: 400;
+      font-size: 20px;
+      line-height: normal;
+      color: #98999c;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
+    /* ═══ GAME AREA ══════════════════════════════════════════════════ */
+    #game-area {
+      flex: 1;
+      position: relative;
+      /* Figma base background */
+      background: #ff7af8;
       overflow: hidden;
     }
-    #nav .role {
-      font-family: 'Inter', sans-serif; font-weight: 400;
-      font-size: 28px; color: #98999c; white-space: nowrap; margin-bottom: 8px;
+
+    /* ─── BG Layer 1: Mandala ────────────────────────────────────────
+       Figma: container absolute left:0 top:-142px w:1776px h:1186px
+       inner img: scaleY(-1), object-cover, size-full               */
+    #bg-mandala-wrap {
+      position: absolute;
+      left: 0;
+      top: -14.2%;   /* ~ -142/1000 */
+      width: 100%;
+      height: 128%;  /* compensate for offset */
+      pointer-events: none;
+      z-index: 0;
     }
-    #nav .name {
-      font-family: 'Spicy Rice', serif; font-size: 80px; line-height: 1;
-      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43.375%, #a21287 108.75%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 0;
+    #bg-mandala {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleY(-1);
+      display: block;
     }
 
-    /* Project list in nav — hidden during game, animated in on game over */
-    #nav-projects {
-      display: flex; flex-direction: column; gap: 24px;
-      margin-top: 32px; flex: 1; overflow: hidden;
+    /* ─── BG Layer 2: Light streaks ──────────────────────────────────
+       Figma: absolute left:-270px top:-233px w:2146px h:1431px
+       inner img: absolute left:170.11% top:-29.79% w:100.01% h:100% */
+    #bg-light-wrap {
+      position: absolute;
+      /* In design: left:-270px / 1516px gameW = -17.8%,
+         top:-233px / 865px = -26.9%,
+         width:2146/1516 = 141.6%, height:1431/865 = 165.4% */
+      left: -17.8%;
+      top: -26.9%;
+      width: 141.6%;
+      height: 165.4%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
     }
-    #nav-projects a {
-      font-family: 'Inter', sans-serif; font-weight: 500;
-      font-size: 20px; color: #98999c;
-      text-decoration: none;
-      opacity: 0; transform: translateX(-14px);
-      transition: color 0.2s;
-      cursor: none; pointer-events: none;
+    #bg-light {
+      position: absolute;
+      left: 170.11%;
+      top: -29.79%;
+      width: 100.01%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+      pointer-events: none;
     }
-    #nav-projects a.show {
-      animation: slideInLeft 0.38s cubic-bezier(0.22,1,0.36,1) forwards;
-      pointer-events: auto;
-    }
-    #nav-projects a:hover { color: #e6e9e7; }
-    @keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
 
-    /* Lives */
-    #lives-container { position: absolute; left: 0; bottom: 0; width: 260px; height: 96px; }
-    .life-plate {
-      position: absolute; height: 32px; border-radius: 4px;
-      transition: opacity 0.4s ease, transform 0.5s ease,
-                  bottom 0.45s cubic-bezier(0.22,1,0.36,1),
-                  left   0.45s cubic-bezier(0.22,1,0.36,1);
+    /* ─── Photo element (HTML, not canvas — avoids CORS) ─────────────
+       Figma: bg rgba(220,220,220,0.2), 264×293, radius:4, overflow:clip
+       Inner img: w:359px, centered (-50%/-50%), grayscale
+       Overlay: rgba(0,0,0,0.2) absolute inset                       */
+    #photo-el {
+      position: absolute;
+      width: 264px;
+      height: 293px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: rgba(220, 220, 220, 0.2);
+      z-index: 9;
+      pointer-events: none;
+      will-change: left, top;
     }
-    #plate-0 { left: 0;    bottom: 64px; width: 173px;
-               background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%); }
-    #plate-1 { left: 0;    bottom: 32px; width: 173px; background: #3d3d3d; }
-    #plate-2 { left: 76px; bottom: 0;    width: 173px; background: #d9d9d9; }
-    .life-plate.dead { opacity: 0.15; transform: scaleX(0.55); }
-
-    /* ─── CANVAS ─────────────────────────────────────────── */
-    #game-canvas { position: fixed; left: 260px; top: 0; display: block; }
-
-    /* ─── HUD ─────────────────────────────────────────────── */
-    #hud {
-      position: fixed; right: 24px; top: 16px;
-      font-family: 'Inter', sans-serif; font-size: 1rem;
-      color: #98999c; z-index: 25; pointer-events: none;
+    #photo-el img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 359px;
+      height: auto;
+      min-height: 100%;
+      object-fit: cover;
+      filter: grayscale(1);
+      display: block;
     }
-    #hud b { color: #e4e40e; }
+    #photo-el .ph-ov {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.2);
+    }
 
-    /* ─── GAME OVER OVERLAY ─────────────────────────────── */
-    #overlay {
+    /* ─── Canvas (game: cards, paddle, particles) ───────────────────
+       Transparent background!                                         */
+    #game-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 10;
+    }
+
+    /* ═══ GAME OVER MODAL ════════════════════════════════════════════
+       Figma: bg rgba(205,238,255,0.7), w:475 h:305, radius:8, clip
+       centered in game area
+       Inner content w:353px, gap:40px
+       Title: Inter SemiBold 64px #3d3d3d
+       Button: bg #292e2a, p:16px, r:8px, 100%w
+       Button text: Inter Medium 32px #e6e9e7 + NOISE effect         */
+    #modal-go {
+      position: absolute;
+      inset: 0;
       display: none;
-      position: fixed; left: 260px; top: 0; right: 0; bottom: 0;
-      z-index: 30;
-      background: rgba(26,26,26,0.88);
-      flex-direction: column; align-items: flex-start; justify-content: center;
-      gap: 28px; padding: 0 72px;
-      font-family: 'Inter', sans-serif; color: #e6e9e7;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    #modal-go.show { display: flex; }
+
+    .go-box {
+      width: 475px;
+      height: 305px;
+      background: rgba(205, 238, 255, 0.7);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: popIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .go-inner {
+      width: 353px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .go-title {
+      font-weight: 600;
+      font-size: 64px;
+      color: #3d3d3d;
+      line-height: 1;
+      width: 100%;
+    }
+    /* Button — Figma: bg #292e2a, radius:8px, p:16px
+       text: Inter Medium 32px #e6e9e7, NOISE effect                  */
+    #play-again-btn {
+      width: 100%;
+      background: #292e2a;
+      border-radius: 8px;
+      border: none;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      filter: url(#noiseF);
+      transition: background 0.18s;
+    }
+    #play-again-btn:hover { background: #363d37; }
+    #play-again-btn span {
+      font-weight: 500;
+      font-size: 32px;
+      color: #e6e9e7;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
     }
 
-    /* Caught count */
-    #ol-caught { display: flex; flex-direction: column; gap: 8px; }
-    #ol-caught .caught-label { font-size: 20px; font-weight: 500; color: #98999c; }
-    #ol-caught .caught-number {
-      font-size: 72px; font-weight: 700; line-height: 1;
-      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    #ol-caught .caught-sub { font-size: 20px; font-weight: 500; color: #98999c; }
-
-    #ol-btn {
-      padding: 12px 36px; border-radius: 4px; border: none;
-      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
-      color: #1a1a1a; font-family: 'Inter', sans-serif;
-      font-size: 1rem; font-weight: 700; cursor: none;
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.35s 0.6s, transform 0.35s 0.6s;
-    }
-    #ol-btn.show { opacity: 1; transform: translateY(0); }
-
-    /* ─── CONTACT FORM MODAL ──────────────────────────────── */
-    #contact-modal {
+    /* ═══ CONTACT MODAL ══════════════════════════════════════════════ */
+    #modal-ct {
+      position: absolute;
+      inset: 0;
       display: none;
-      position: fixed; inset: 0; z-index: 50;
-      background: rgba(26,26,26,0.82);
-      align-items: center; justify-content: center;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 110;
     }
-    #contact-modal.open { display: flex; }
-
-    #contact-box {
-      background: #292e2a; border-radius: 8px;
-      padding: 48px 48px 40px; width: 480px;
-      max-width: calc(100vw - 40px);
-      display: flex; flex-direction: column; gap: 20px;
-      animation: boxIn 0.3s cubic-bezier(0.22,1,0.36,1);
+    #modal-ct.show { display: flex; }
+    .ct-box {
+      width: 420px;
+      background: #292e2a;
+      border-radius: 8px;
+      padding: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: popIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    @keyframes boxIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:none; } }
-
-    #contact-box h3 {
-      font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700;
-      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      line-height: 1.1;
+    .ct-title {
+      font-weight: 600;
+      font-size: 28px;
+      color: #cdeeff;
+      margin-bottom: 4px;
     }
-    #contact-box label {
-      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
-      color: #98999c; display: flex; flex-direction: column; gap: 6px;
+    .ct-box input,
+    .ct-box textarea {
+      background: #3a3f3a;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 10px 14px;
+      color: #e6e9e7;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
     }
-    #contact-box input,
-    #contact-box textarea {
-      background: #1e2320; border: 1px solid #3d3d3d; border-radius: 4px;
-      color: #e6e9e7; font-family: 'Inter', sans-serif; font-size: 15px;
-      padding: 10px 14px; outline: none; transition: border-color 0.2s;
+    .ct-box input:focus,
+    .ct-box textarea:focus { border-color: #3dd187; }
+    .ct-box textarea { height: 80px; resize: none; }
+    .ct-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    .ct-cancel {
+      padding: 10px 22px;
+      border-radius: 4px;
+      border: 1px solid #555;
+      background: transparent;
+      color: #98999c;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
     }
-    #contact-box input:focus,
-    #contact-box textarea:focus { border-color: #3dd187; }
-    #contact-box textarea { resize: vertical; min-height: 90px; }
-
-    #contact-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; }
-    #contact-cancel {
-      padding: 10px 24px; border-radius: 4px; border: 1px solid #3d3d3d;
-      background: transparent; color: #98999c;
-      font-family: 'Inter', sans-serif; font-size: 14px; cursor: none;
-    }
-    #contact-submit {
-      padding: 10px 28px; border-radius: 4px; border: none;
-      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
-      color: #1a1a1a; font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 700; cursor: none;
-    }
-    #contact-sent {
-      display: none; font-family: 'Inter', sans-serif;
-      font-size: 18px; font-weight: 500;
-      color: #3dd187; text-align: center; padding: 12px 0;
+    .ct-send {
+      padding: 10px 28px;
+      border-radius: 4px;
+      border: none;
+      background: #3dd187;
+      color: #1a1a1a;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<!-- ─── LEFT NAV ──────────────────────────────────────────── -->
-<div id="nav">
-  <p class="role">UX UI Designer</p>
-  <p class="name">Li Chu</p>
+  <!-- SVG filter for NOISE effect on Play again button -->
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="noiseF" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3"
+                      stitchTiles="stitch" result="noise"/>
+        <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+        <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
+        <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
 
-  <div id="nav-projects">
-    <a href="project-01.html">Проект 1</a>
-    <a href="project-02.html">Проект 2</a>
-    <a href="project-03.html">Проект 3</a>
-    <a href="project-04.html">Проект 4</a>
-    <a href="project-05.html">Проект 5</a>
-  </div>
+  <div id="root">
 
-  <div id="lives-container">
-    <div class="life-plate" id="plate-0"></div>
-    <div class="life-plate" id="plate-1"></div>
-    <div class="life-plate" id="plate-2"></div>
-  </div>
-</div>
-
-<!-- ─── HUD ──────────────────────────────────────────────── -->
-<div id="hud">Поймано: <b id="score-val">0</b></div>
-
-<!-- ─── CANVAS ───────────────────────────────────────────── -->
-<canvas id="game-canvas"></canvas>
-
-<!-- ─── GAME OVER OVERLAY ─────────────────────────────────── -->
-<div id="overlay">
-  <div id="ol-caught">
-    <span class="caught-label">пойманных проектов:</span>
-    <span class="caught-number" id="ol-caught-num">0</span>
-    <span class="caught-sub">из 5 возможных</span>
-  </div>
-  <button id="ol-btn">Играть снова</button>
-</div>
-
-<!-- ─── CONTACT FORM MODAL ────────────────────────────────── -->
-<div id="contact-modal">
-  <div id="contact-box">
-    <h3>Связаться со мной</h3>
-    <label>Имя
-      <input type="text" id="cf-name" placeholder="Ваше имя" />
-    </label>
-    <label>Email
-      <input type="email" id="cf-email" placeholder="your@email.com" />
-    </label>
-    <label>Сообщение
-      <textarea id="cf-msg" placeholder="Расскажите о проекте..."></textarea>
-    </label>
-    <div id="contact-row">
-      <button id="contact-cancel">Отмена</button>
-      <button id="contact-submit">Отправить</button>
+    <!-- ═══ SIDEBAR (always visible) ═══════════════════════════════ -->
+    <div id="sidebar">
+      <div class="sb-profile">
+        <p class="sb-name">Li Chu</p>
+        <p class="sb-job">UX UI Designer</p>
+      </div>
+      <!-- Hidden during game, animated in on game over -->
+      <nav id="nav">
+        <a href="#">About</a>
+        <a href="#">Project 1</a>
+        <a href="#">Project 2</a>
+        <a href="#">Project 3</a>
+        <a href="#">Project 4</a>
+        <a href="#">Project 5</a>
+      </nav>
     </div>
-    <div id="contact-sent">Сообщение отправлено ✓</div>
-  </div>
-</div>
+
+    <!-- ═══ GAME AREA ═══════════════════════════════════════════════ -->
+    <div id="game-area">
+
+      <!-- Layer 0: Mandala background (scaleY -1 per Figma) -->
+      <div id="bg-mandala-wrap">
+        <img id="bg-mandala"
+          src="https://www.figma.com/api/mcp/asset/ab32583a-0164-4e8b-bbaf-1443fcb70d6f"
+          alt="">
+      </div>
+
+      <!-- Layer 1: Light streak overlay -->
+      <div id="bg-light-wrap">
+        <img id="bg-light"
+          src="https://www.figma.com/api/mcp/asset/b8921c07-ef36-463f-8a7f-9d41b2f280ba"
+          alt="">
+      </div>
+
+      <!-- Layer 9: Photo (HTML element — no CORS, positioned by JS) -->
+      <div id="photo-el">
+        <img src="https://www.figma.com/api/mcp/asset/ac385ce0-3ac4-43e6-beb2-f5e8eacad277" alt="Li Chu">
+        <div class="ph-ov"></div>
+      </div>
+
+      <!-- Layer 10: Canvas (cards, paddle, particles — transparent) -->
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Game Over Modal -->
+      <div id="modal-go">
+        <div class="go-box">
+          <div class="go-inner">
+            <p class="go-title">Game over!</p>
+            <button id="play-again-btn"><span>Play again</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Modal (shown when photo hits paddle) -->
+      <div id="modal-ct">
+        <div class="ct-box">
+          <p class="ct-title">Contact Li Chu</p>
+          <input type="text" placeholder="Your name">
+          <input type="email" placeholder="your@email.com">
+          <textarea placeholder="Tell me about your project…"></textarea>
+          <div class="ct-row">
+            <button class="ct-cancel" id="ct-cancel">Cancel</button>
+            <button class="ct-send" id="ct-send">Send</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- #game-area -->
+  </div><!-- #root -->
 
 <script>
-const BG_URL    = 'https://www.figma.com/api/mcp/asset/96469d30-27e0-4ecb-8348-319791411553';
-const PHOTO_URL = 'https://www.figma.com/api/mcp/asset/05aa89fb-ab1d-4227-b6b1-3563f72350b2';
-const bgImg    = new Image(); bgImg.src    = BG_URL;
-const photoImg = new Image(); photoImg.src = PHOTO_URL;
+/* ══════════════════════════════════════════════════════════════════
+   PIXEL-PERFECT GAME — from Figma specs
+   ══════════════════════════════════════════════════════════════════ */
 
-const NAV_W = 260;
-const canvas = document.getElementById('game-canvas');
-const ctx    = canvas.getContext('2d');
-let W, H;
-function resize() {
-  W = canvas.width  = window.innerWidth  - NAV_W;
-  H = canvas.height = window.innerHeight;
+/* ── CONSTANTS (from Figma) ─────────────────────────────────────── */
+const SIDEBAR_W = 260;
+
+/* Card: px:16 py:10 + 20px font → ~114×44 */
+const CARD_W  = 114, CARD_H  = 44;
+
+/* Paddle: Figma 173×32 #3d3d3d radius:4 */
+const PAD_W   = 173, PAD_H   = 32;
+
+/* Photo: Figma 264×293 */
+const PHOTO_W = 264, PHOTO_H = 293;
+
+/* Physics */
+const GRAVITY   = 820;   /* px/s² for cards */
+const PHOTO_SPD = 300;   /* px/s  constant speed for bouncing photo */
+
+/* ── DOM ────────────────────────────────────────────────────────── */
+const canvas   = document.getElementById('game-canvas');
+const ctx      = canvas.getContext('2d');
+const photoEl  = document.getElementById('photo-el');
+const modalGO  = document.getElementById('modal-go');
+const modalCT  = document.getElementById('modal-ct');
+const navEl    = document.getElementById('nav');
+
+/* ── STATE ──────────────────────────────────────────────────────── */
+let W = 0, H = 0;
+let mouseX    = -9999;
+let gameOver  = false;
+let cardsOn   = false;   /* false for first 500ms */
+let photoHit  = false;   /* debounce for photo-paddle collision */
+let lastTs    = 0;
+
+const paddle = { x: 0, y: 0, w: PAD_W, h: PAD_H };
+
+let cards  = [];
+let photo  = null;
+let parts  = [];
+
+/* ── HELPERS ────────────────────────────────────────────────────── */
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const lerp  = (a, b, t)   => a + (b - a) * t;
+
+function hitTest(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x &&
+         a.y < b.y + b.h && a.y + a.h > b.y;
 }
-window.addEventListener('resize', resize);
-resize();
 
-/* ── constants ──────────────────────────────────────────────── */
-const PROJECTS    = ['Проект 1','Проект 2','Проект 3','Проект 4','Проект 5'];
-const FW = 114, FH = 44;          // project frame size
-const PHW = 80,  PHH = 80;        // photo frame size (square)
-const PW = 173,  PH = 32;         // paddle
-const PAD_Y_OFFSET = 48;
-const TOTAL_LIVES  = 3;
-
-const PADDLE_STYLES = [
-  { type: 'gradient' },
-  { type: 'solid', color: '#3d3d3d' },
-  { type: 'solid', color: '#d9d9d9' },
-];
-const PLATE_POSITIONS = [
-  { bottom: 64, left: 0  },
-  { bottom: 32, left: 0  },
-  { bottom: 0,  left: 76 },
-];
-
-/* ── state ──────────────────────────────────────────────────── */
-let lives, score, gameOver, frames, photo, particles, lastTime;
-let mouseX = 300;
-let paddle = { x: 0, y: -PH - 20, dropIn: true, exploding: false, alpha: 1 };
-
-window.addEventListener('mousemove', e => { mouseX = e.clientX - NAV_W; });
-
-/* ── helpers ────────────────────────────────────────────────── */
-function rr(x, y, w, h, r) {
+function roundRect(x, y, w, h, r) {
   ctx.beginPath();
-  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
-  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
-  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x+w, y,   x+w, y+r,   r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y+h,   x, y+h-r,   r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y,     x+r, y,      r);
   ctx.closePath();
 }
-function overlap(ax,ay,aw,ah, bx,by,bw,bh) {
-  return ax<bx+bw && ax+aw>bx && ay<by+bh && ay+ah>by;
-}
-function lerp(a,b,t){ return a+(b-a)*t; }
 
-function getPaddleGrad(x) {
-  const g = ctx.createLinearGradient(x, 0, x+PW, 0);
-  g.addColorStop(0.22,     '#3dd187');
-  g.addColorStop(0.43375,  '#e4e40e');
-  g.addColorStop(1.0,      '#a21287');
-  return g;
-}
-
-/* ── draw paddle ────────────────────────────────────────────── */
-function drawPaddle() {
-  if (lives <= 0) return;
-  const style = PADDLE_STYLES[TOTAL_LIVES - lives];
-  ctx.save();
-  ctx.globalAlpha = paddle.alpha;
-  ctx.fillStyle = style.type === 'gradient' ? getPaddleGrad(paddle.x) : style.color;
-  rr(paddle.x, paddle.y, PW, PH, 4);
-  ctx.fill();
-  const dotColor = (style.type === 'solid' && style.color === '#d9d9d9') ? '#292626' : '#fff';
-  ctx.fillStyle = dotColor;
-  ctx.fillRect(mouseX - 3, paddle.y + PH/2 - 3, 6, 6);
-  ctx.restore();
+function beep(freq, dur) {
+  try {
+    const ac  = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ac.createOscillator();
+    const g   = ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.frequency.value = freq || 820;
+    osc.type = 'sine';
+    g.gain.setValueAtTime(0.08, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + (dur||0.09));
+    osc.start(); osc.stop(ac.currentTime + (dur||0.09));
+  } catch(e) {}
 }
 
-/* ── explosions ─────────────────────────────────────────────── */
-function spawnExplosion(cx, cy, styleIndex, count) {
-  count = count || 30;
-  const colors = styleIndex === 0
-    ? ['#3dd187','#e4e40e','#a21287','#fff']
-    : styleIndex === 1
-      ? ['#3d3d3d','#666','#999','#fff']
-      : ['#d9d9d9','#fff','#aaa','#eee'];
-  for (let i = 0; i < count; i++) {
-    const ang = Math.random() * Math.PI * 2;
-    const spd = 120 + Math.random() * 260;
-    const size = 6 + Math.random() * 14;
-    particles.push({
-      x: cx, y: cy,
-      vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd - 80,
-      w: size, h: size*(0.4+Math.random()*0.6),
-      color: colors[Math.floor(Math.random()*colors.length)],
-      alpha: 1, decay: 1.4+Math.random()*1.2,
-    });
-  }
-}
-function spawnPhotoExplosion(cx, cy) {
-  const colors = ['#3dd187','#e4e40e','#a21287','#e6e9e7','#fff'];
-  for (let i = 0; i < 45; i++) {
-    const ang = Math.random() * Math.PI * 2;
-    const spd = 140 + Math.random() * 320;
-    const size = 7 + Math.random() * 16;
-    particles.push({
-      x: cx, y: cy,
-      vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd - 120,
-      w: size, h: size,
-      color: colors[Math.floor(Math.random()*colors.length)],
-      alpha: 1, decay: 1.2+Math.random()*0.9,
-    });
+/* ── PARTICLES ──────────────────────────────────────────────────── */
+function burst(cx, cy, colors, n) {
+  n = n || 14;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const s = 180 + Math.random() * 280;
+    const life = 0.55 + Math.random() * 0.3;
+    parts.push({ x:cx, y:cy,
+      vx: Math.cos(a)*s, vy: Math.sin(a)*s,
+      sz: 3 + Math.random()*5,
+      col: colors[Math.floor(Math.random()*colors.length)],
+      life, max: life });
   }
 }
 
-/* ── plates ─────────────────────────────────────────────────── */
-function updatePlates() {
-  let slot = 0;
-  for (let i = 0; i < 3; i++) {
-    const el = document.getElementById('plate-' + i);
-    if (i < lives) {
-      el.classList.remove('dead');
-      const pos = PLATE_POSITIONS[slot++];
-      el.style.bottom = pos.bottom + 'px';
-      el.style.left   = pos.left   + 'px';
-    } else {
-      el.classList.add('dead');
-    }
-  }
+/* ── INIT CARDS ─────────────────────────────────────────────────── */
+/* Relative positions from Figma game screen (fraction of game area) */
+const CARD_FRAC = [
+  [0.338, 0.350], [0.263, 0.568], [0.676, 0.335],
+  [0.474, 0.340], [0.468, 0.530], [0.155, 0.160], [0.810, 0.245]
+];
+
+function initCards() {
+  cards = CARD_FRAC.map(([fx, fy]) => ({
+    x:  fx * (W - CARD_W),
+    y:  fy * (H - CARD_H),
+    vx: (Math.random() - 0.5) * 55,
+    vy: 0,
+    w:  CARD_W,
+    h:  CARD_H,
+    flash: 0
+  }));
 }
 
-/* ── paddle helpers ─────────────────────────────────────────── */
-function paddleY() { return H - PAD_Y_OFFSET - PH; }
-function slidePaddleIn() {
-  paddle.x        = Math.min(Math.max(mouseX - PW/2, 0), W - PW);
-  paddle.y        = -PH - 20;
-  paddle.dropIn   = true;
-  paddle.exploding= false;
-  paddle.alpha    = 1;
-}
-
-/* ── spawn helpers ──────────────────────────────────────────── */
-function makeFrame(label) {
-  const m = 30;
-  return {
-    label,
-    x: m + Math.random() * (W - FW - m*2),
-    y: 40 + Math.random() * (H * 0.35),
-    vx: (110 + Math.random()*90) * (Math.random()<0.5?1:-1),
-    vy: 80 + Math.random()*80,
-    alpha: 1, dying: false, _flash: false, isPhoto: false,
+/* ── INIT PHOTO ─────────────────────────────────────────────────── */
+/* From Figma: photo at ~12.7%, 11.4% → moving diagonally */
+function initPhoto() {
+  const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
+  photo = {
+    x:  0.127 * (W - PHOTO_W),
+    y:  0.114 * (H - PHOTO_H),
+    vx: PHOTO_SPD * Math.cos(angle),
+    vy: PHOTO_SPD * Math.sin(angle),
+    w:  PHOTO_W,
+    h:  PHOTO_H
   };
-}
-function makePhoto() {
-  const m = 30;
-  return {
-    x: m + Math.random() * (W - PHW - m*2),
-    y: 40 + Math.random() * (H * 0.3),
-    vx: (80 + Math.random()*70) * (Math.random()<0.5?1:-1),
-    vy: 70 + Math.random()*70,
-    alpha: 1, dying: false, _flash: false, isPhoto: true,
-  };
+  photoEl.style.left    = photo.x + 'px';
+  photoEl.style.top     = photo.y + 'px';
+  photoEl.style.display = 'block';
 }
 
-/* ── init ───────────────────────────────────────────────────── */
-function init() {
-  lives     = TOTAL_LIVES;
-  score     = 0;
-  gameOver  = false;
-  lastTime  = null;
-  particles = [];
-  frames    = PROJECTS.map(lbl => makeFrame(lbl));
-  photo     = makePhoto();
-  document.getElementById('score-val').textContent = '0';
-  document.getElementById('overlay').style.display = 'none';
-  document.getElementById('ol-btn').classList.remove('show');
-  document.querySelectorAll('#nav-projects a').forEach(el => {
-    el.classList.remove('show');
-    el.style.animation = 'none';
-    // force reflow so next add('show') re-triggers animation
-    void el.offsetWidth;
-  });
-  updatePlates();
-  slidePaddleIn();
-}
-
-/* ── game over ──────────────────────────────────────────────── */
-function showGameOver() {
+/* ── GAME OVER ──────────────────────────────────────────────────── */
+function endGame() {
+  if (gameOver) return;
   gameOver = true;
-  document.getElementById('ol-caught-num').textContent = score;
-  document.getElementById('overlay').style.display = 'flex';
-  setTimeout(() => document.getElementById('ol-btn').classList.add('show'), 500);
-  // Slide project links into left nav
-  document.querySelectorAll('#nav-projects a').forEach((el, i) => {
-    setTimeout(() => {
-      el.style.animation = '';
-      el.classList.add('show');
-    }, 200 + i * 90);
-  });
+  photoEl.style.display = 'none';
+  modalGO.classList.add('show');
+  /* Animate nav in slightly after modal */
+  setTimeout(() => navEl.classList.add('show'), 120);
 }
 
-document.getElementById('ol-btn').addEventListener('click', () => {
-  init();
-});
-
-/* ── miss ───────────────────────────────────────────────────── */
-let transitioning = false;
-function onMiss(obj) {
-  if (transitioning) return;
-  transitioning = true;
-  lives = Math.max(0, lives - 1);
-  updatePlates();
-  const styleIndex = TOTAL_LIVES - lives - 1;
-  spawnExplosion(paddle.x + PW/2, paddle.y + PH/2, styleIndex);
-  paddle.exploding = true;
-  paddle.alpha     = 0;
-
-  setTimeout(() => {
-    if (gameOver) return;
-    transitioning = false;
-    if (obj.isPhoto) {
-      photo = makePhoto();
-    } else {
-      frames.push(makeFrame(obj.label));
-    }
-    if (lives <= 0) {
-      showGameOver();
-    } else {
-      slidePaddleIn();
-    }
-  }, 950);
+/* ── RESET ──────────────────────────────────────────────────────── */
+function resetGame() {
+  gameOver = false;
+  cardsOn  = false;
+  photoHit = false;
+  parts    = [];
+  modalGO.classList.remove('show');
+  navEl.classList.remove('show');
+  paddle.x = W / 2 - PAD_W / 2;
+  paddle.y = H - PAD_H - 28;
+  initCards();
+  initPhoto();
+  setTimeout(() => { cardsOn = true; }, 500);
 }
 
-/* ── contact modal ──────────────────────────────────────────── */
-function openContact() {
-  document.getElementById('contact-modal').classList.add('open');
-  document.getElementById('contact-sent').style.display = 'none';
-  document.getElementById('cf-name').value  = '';
-  document.getElementById('cf-email').value = '';
-  document.getElementById('cf-msg').value   = '';
-}
-document.getElementById('contact-cancel').addEventListener('click', () => {
-  document.getElementById('contact-modal').classList.remove('open');
-});
-document.getElementById('contact-submit').addEventListener('click', () => {
-  document.getElementById('contact-sent').style.display = 'block';
-  setTimeout(() => {
-    document.getElementById('contact-modal').classList.remove('open');
-  }, 1800);
-});
-document.getElementById('contact-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('contact-modal'))
-    document.getElementById('contact-modal').classList.remove('open');
-});
-
-/* ── update ─────────────────────────────────────────────────── */
+/* ── UPDATE ─────────────────────────────────────────────────────── */
 function update(dt) {
   if (gameOver) return;
-  const py = paddleY();
 
-  // paddle
-  if (paddle.dropIn) {
-    paddle.x = Math.min(Math.max(mouseX - PW/2, 0), W - PW);
-    paddle.y = lerp(paddle.y, py, dt * 10);
-    if (paddle.y >= py - 1) { paddle.y = py; paddle.dropIn = false; }
-  } else if (!paddle.exploding) {
-    paddle.x = lerp(paddle.x, Math.min(Math.max(mouseX - PW/2, 0), W - PW), dt * 18);
-    paddle.y = py;
-  }
+  /* Paddle smooth-follows mouse */
+  const tx = clamp(mouseX - PAD_W / 2, 0, W - PAD_W);
+  paddle.x = lerp(paddle.x, tx, Math.min(1, dt * 16));
 
-  // ── project frames ──
-  for (const f of frames) {
-    if (f.dying) { f.alpha -= dt*3.5; continue; }
-    f.x += f.vx*dt; f.y += f.vy*dt;
-    if (f.x < 0)    { f.x = 0;    f.vx =  Math.abs(f.vx); }
-    if (f.x+FW > W) { f.x = W-FW; f.vx = -Math.abs(f.vx); }
-    if (f.y < 0)    { f.y = 0;    f.vy =  Math.abs(f.vy); }
+  /* ── Cards ── */
+  if (cardsOn) {
+    for (let i = cards.length - 1; i >= 0; i--) {
+      const c = cards[i];
+      c.vy += GRAVITY * dt;
+      c.x  += c.vx * dt;
+      c.y  += c.vy * dt;
+      if (c.flash > 0) c.flash -= dt;
 
-    if (!paddle.exploding && !paddle.dropIn &&
-        overlap(f.x, f.y, FW, FH, paddle.x, paddle.y, PW, PH)) {
-      f.vy = -Math.abs(f.vy) * (0.95 + Math.random()*0.15);
-      f.vx += (f.x + FW/2 - (paddle.x + PW/2)) * 1.5;
-      f.vx = Math.max(-350, Math.min(350, f.vx));
-      score++;
-      document.getElementById('score-val').textContent = score;
-      f._flash = true;
-      const ref = f; setTimeout(() => { ref._flash = false; }, 130);
-      spawnExplosion(f.x+FW/2, f.y+FH/2, 1, 12);
-      continue;
-    }
-    if (f.y + FH >= H) { f.dying = true; onMiss(f); }
-  }
-  frames = frames.filter(f => f.alpha > 0);
+      /* Wall bounce */
+      if (c.x < 0)          { c.x = 0;          c.vx =  Math.abs(c.vx) * 0.75; }
+      if (c.x + c.w > W)    { c.x = W - c.w;    c.vx = -Math.abs(c.vx) * 0.75; }
 
-  // ── photo ──
-  if (photo) {
-    if (photo.dying) {
-      photo.alpha -= dt * 4;
-      if (photo.alpha <= 0) photo = null;
-    } else {
-      photo.x += photo.vx*dt; photo.y += photo.vy*dt;
-      if (photo.x < 0)       { photo.x = 0;        photo.vx =  Math.abs(photo.vx); }
-      if (photo.x+PHW > W)   { photo.x = W-PHW;    photo.vx = -Math.abs(photo.vx); }
-      if (photo.y < 0)       { photo.y = 0;         photo.vy =  Math.abs(photo.vy); }
-
-      if (!paddle.exploding && !paddle.dropIn &&
-          overlap(photo.x, photo.y, PHW, PHH, paddle.x, paddle.y, PW, PH)) {
-        photo.dying = true;
-        spawnPhotoExplosion(photo.x + PHW/2, photo.y + PHH/2);
-        setTimeout(() => {
-          photo = makePhoto();
-          openContact();
-        }, 500);
+      /* Paddle hit */
+      if (hitTest(c, paddle)) {
+        /* Push card back up */
+        c.vy = -(550 + Math.random() * 200);
+        c.vx += (c.x + c.w/2 - (paddle.x + PAD_W/2)) * 3.2;
+        c.vx = clamp(c.vx, -360, 360);
+        c.flash = 0.22;
+        burst(c.x + c.w/2, c.y + c.h/2,
+              ['#3dd187','#e4e40e','#a21287','#e6e9e7','#cdeeff']);
+        beep(820 + Math.random()*140, 0.07);
       }
-      if (photo.y + PHH >= H) { photo.dying = true; onMiss(photo); }
+
+      /* Missed — game over */
+      if (c.y > H + 12) { endGame(); return; }
     }
   }
 
-  // ── particles ──
-  for (const p of particles) {
-    p.x += p.vx*dt; p.y += p.vy*dt;
-    p.vy += 380*dt;
-    p.alpha -= p.decay*dt;
+  /* ── Photo (constant-speed bouncing ball) ── */
+  if (photo) {
+    photo.x += photo.vx * dt;
+    photo.y += photo.vy * dt;
+
+    /* Bounce off walls */
+    if (photo.x < 0)           { photo.x = 0;           photo.vx =  Math.abs(photo.vx); }
+    if (photo.x + photo.w > W) { photo.x = W - photo.w; photo.vx = -Math.abs(photo.vx); }
+    if (photo.y < 0)           { photo.y = 0;           photo.vy =  Math.abs(photo.vy); }
+    if (photo.y + photo.h > H) { photo.y = H - photo.h; photo.vy = -Math.abs(photo.vy); }
+
+    /* Paddle collision (debounced) */
+    if (hitTest(photo, paddle)) {
+      if (!photoHit) {
+        photoHit = true;
+        photo.vy = -Math.abs(photo.vy);
+        burst(photo.x + photo.w/2, photo.y + photo.h/2,
+              ['#cdeeff','#e6e9e7','#98999c','#3dd187'], 22);
+        beep(545, 0.16);
+        modalCT.classList.add('show');
+      }
+    } else {
+      photoHit = false;
+    }
+
+    photoEl.style.left = photo.x + 'px';
+    photoEl.style.top  = photo.y + 'px';
   }
-  particles = particles.filter(p => p.alpha > 0);
+
+  /* ── Particles ── */
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.x    += p.vx * dt;
+    p.y    += p.vy * dt;
+    p.vy   += 380 * dt;
+    p.life -= dt * 1.4;
+    if (p.life <= 0) parts.splice(i, 1);
+  }
 }
 
-/* ── draw ───────────────────────────────────────────────────── */
+/* ── DRAW ───────────────────────────────────────────────────────── */
 function draw() {
   ctx.clearRect(0, 0, W, H);
 
-  // background
-  if (bgImg.complete && bgImg.naturalWidth) {
-    ctx.drawImage(bgImg, 0, 0, W, H);
-  } else {
-    ctx.fillStyle = '#2a1a3e'; ctx.fillRect(0, 0, W, H);
+  /* Cards — Figma: bg #3d3d3d, radius:4, text #e6e9e7 20px Regular */
+  for (const c of cards) {
+    /* Background */
+    ctx.fillStyle = c.flash > 0 ? '#e4e40e' : '#3d3d3d';
+    roundRect(c.x, c.y, CARD_W, CARD_H, 4);
+    ctx.fill();
+    /* Text */
+    ctx.fillStyle    = c.flash > 0 ? '#1a1a1a' : '#e6e9e7';
+    ctx.font         = '400 20px Inter, sans-serif';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Project 1', c.x + CARD_W/2, c.y + CARD_H/2);
   }
 
-  // project frames
-  for (const f of frames) {
+  /* Particles */
+  for (const p of parts) {
     ctx.save();
-    ctx.globalAlpha = f.alpha;
-    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10;
-    ctx.fillStyle   = f._flash ? 'rgba(228,228,14,0.95)' : 'rgba(61,61,61,0.93)';
-    rr(f.x, f.y, FW, FH, 4); ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle  = f._flash ? '#1a1a1a' : '#e6e9e7';
-    ctx.font = '400 18px Inter, sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(f.label, f.x + FW/2, f.y + FH/2 - 1);
+    ctx.globalAlpha = Math.max(0, p.life / p.max);
+    ctx.fillStyle = p.col;
+    ctx.fillRect(p.x - p.sz/2, p.y - p.sz/2, p.sz, p.sz);
     ctx.restore();
   }
 
-  // photo frame (bouncing)
-  if (photo && photo.alpha > 0) {
-    ctx.save();
-    ctx.globalAlpha = photo.alpha;
-    // glow ring
-    ctx.shadowColor = 'rgba(61,209,135,0.7)'; ctx.shadowBlur = 20;
-    rr(photo.x, photo.y, PHW, PHH, 6);
-    if (photoImg.complete && photoImg.naturalWidth) {
-      ctx.clip();
-      const scale = Math.max(PHW / photoImg.naturalWidth, PHH / photoImg.naturalHeight);
-      const sw = photoImg.naturalWidth * scale;
-      const sh = photoImg.naturalHeight * scale;
-      ctx.drawImage(photoImg, photo.x + (PHW-sw)/2, photo.y + (PHH-sh)/2, sw, sh);
-      ctx.fillStyle = 'rgba(0,0,0,0.15)';
-      ctx.fillRect(photo.x, photo.y, PHW, PHH);
-    } else {
-      ctx.fillStyle = '#3d3d3d'; ctx.fill();
-    }
-    ctx.restore();
+  /* Paddle — Figma: bg #3d3d3d, w:173 h:32, radius:4 */
+  if (!gameOver) {
+    ctx.fillStyle = '#3d3d3d';
+    roundRect(paddle.x, paddle.y, PAD_W, PAD_H, 4);
+    ctx.fill();
   }
-
-  // particles
-  for (const p of particles) {
-    ctx.save();
-    ctx.globalAlpha = Math.max(0, p.alpha);
-    ctx.fillStyle   = p.color;
-    ctx.fillRect(p.x - p.w/2, p.y - p.h/2, p.w, p.h);
-    ctx.restore();
-  }
-
-  drawPaddle();
 }
 
-/* ── loop ───────────────────────────────────────────────────── */
-function loop(now) {
-  if (!lastTime) lastTime = now;
-  const dt = Math.min((now - lastTime) / 1000, 0.05);
-  lastTime = now;
-  if (!gameOver) update(dt);
+/* ── GAME LOOP ──────────────────────────────────────────────────── */
+function loop(ts) {
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min((ts - lastTs) / 1000, 0.033);
+  lastTs = ts;
+  update(dt);
   draw();
   requestAnimationFrame(loop);
 }
 
-init();
+/* ── RESIZE ─────────────────────────────────────────────────────── */
+function resize() {
+  W = window.innerWidth - SIDEBAR_W;
+  H = window.innerHeight;
+  canvas.width  = W;
+  canvas.height = H;
+  paddle.y = H - PAD_H - 28;
+  paddle.x = clamp(paddle.x || (W/2 - PAD_W/2), 0, W - PAD_W);
+}
+
+/* ── EVENTS ─────────────────────────────────────────────────────── */
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX - SIDEBAR_W;
+});
+
+window.addEventListener('resize', () => {
+  resize();
+  paddle.y = H - PAD_H - 28;
+});
+
+document.getElementById('play-again-btn').addEventListener('click', resetGame);
+
+document.getElementById('ct-cancel').addEventListener('click', () => {
+  modalCT.classList.remove('show');
+});
+document.getElementById('ct-send').addEventListener('click', () => {
+  modalCT.classList.remove('show');
+});
+modalCT.addEventListener('click', e => {
+  if (e.target === modalCT) modalCT.classList.remove('show');
+});
+
+/* ── START ──────────────────────────────────────────────────────── */
+resize();
+paddle.x = W / 2 - PAD_W / 2;
+initCards();
+initPhoto();
+setTimeout(() => { cardsOn = true; }, 500);
 requestAnimationFrame(loop);
 </script>
 </body>
