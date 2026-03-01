@@ -426,8 +426,9 @@ const PAD_W   = 173, PAD_H   = 32;
 const PHOTO_W = 264, PHOTO_H = 293;
 
 /* Physics */
-const CARD_SPD  = 260;   /* px/s  constant speed for cards (billiard-style) */
-const PHOTO_SPD = 300;   /* px/s  constant speed for bouncing photo */
+const CARD_SPD   = 90;   /* px/s  base speed for cards (slow, drifting) */
+const CARD_DRIFT = 28;   /* px/s² gentle downward drift (not full gravity) */
+const PHOTO_SPD  = 110;  /* px/s  constant speed for bouncing photo */
 
 /* ── DOM ────────────────────────────────────────────────────────── */
 const canvas   = document.getElementById('game-canvas');
@@ -512,14 +513,15 @@ const CARD_FRAC = [
 
 function initCards() {
   cards = CARD_FRAC.map(([fx, fy], i) => {
-    /* Each card gets a unique random direction, spread evenly */
+    /* Spread directions evenly but bias slightly downward (vy > 0 on average) */
     const baseAngle = (Math.PI * 2 * i / CARD_FRAC.length);
-    const angle = baseAngle + (Math.random() - 0.5) * 1.2;
+    const angle = baseAngle + (Math.random() - 0.5) * 0.9;
+    const spd = CARD_SPD * (0.7 + Math.random() * 0.6); /* vary speed per card */
     return {
       x:  fx * (W - CARD_W),
       y:  fy * (H - CARD_H),
-      vx: CARD_SPD * Math.cos(angle),
-      vy: CARD_SPD * Math.sin(angle),
+      vx: spd * Math.cos(angle),
+      vy: spd * Math.sin(angle),
       w:  CARD_W,
       h:  CARD_H,
       flash: 0
@@ -535,7 +537,7 @@ function initPhoto() {
     x:  0.127 * (W - PHOTO_W),
     y:  0.114 * (H - PHOTO_H),
     vx: PHOTO_SPD * Math.cos(angle),
-    vy: PHOTO_SPD * Math.sin(angle),
+    vy: Math.abs(PHOTO_SPD * Math.sin(angle)), /* start going down */
     w:  PHOTO_W,
     h:  PHOTO_H
   };
@@ -582,23 +584,31 @@ function update(dt) {
     /* Move all cards */
     for (let i = 0; i < cards.length; i++) {
       const c = cards[i];
+
+      /* Gentle downward drift (not full gravity — just a slow pull) */
+      c.vy += CARD_DRIFT * dt;
+
+      /* Cap max speed so they never get too fast */
+      const curSpd = Math.hypot(c.vx, c.vy);
+      const maxSpd = CARD_SPD * 1.8;
+      if (curSpd > maxSpd) {
+        c.vx = c.vx / curSpd * maxSpd;
+        c.vy = c.vy / curSpd * maxSpd;
+      }
+
       c.x += c.vx * dt;
       c.y += c.vy * dt;
       if (c.flash > 0) c.flash -= dt;
 
-      /* Bounce off all 4 walls */
-      if (c.x < 0)        { c.x = 0;        c.vx =  Math.abs(c.vx); }
-      if (c.x + c.w > W)  { c.x = W - c.w;  c.vx = -Math.abs(c.vx); }
-      if (c.y < 0)        { c.y = 0;        c.vy =  Math.abs(c.vy); }
+      /* Bounce off left / right / top walls */
+      if (c.x < 0)       { c.x = 0;       c.vx =  Math.abs(c.vx); }
+      if (c.x + c.w > W) { c.x = W - c.w; c.vx = -Math.abs(c.vx); }
+      if (c.y < 0)       { c.y = 0;       c.vy =  Math.abs(c.vy); }
 
-      /* Paddle hit — reflect vertically, deflect horizontally */
+      /* Paddle hit — bounce up, slight horizontal deflect */
       if (hitTest(c, paddle)) {
-        c.vy = -Math.abs(c.vy);
-        c.vx += (c.x + c.w/2 - (paddle.x + PAD_W/2)) * 2.8;
-        /* Keep constant speed */
-        const spd = Math.hypot(c.vx, c.vy);
-        c.vx = c.vx / spd * CARD_SPD;
-        c.vy = c.vy / spd * CARD_SPD;
+        c.vy = -Math.abs(c.vy) - 20; /* extra push up */
+        c.vx += (c.x + c.w/2 - (paddle.x + PAD_W/2)) * 1.8;
         c.flash = 0.22;
         burst(c.x + c.w/2, c.y + c.h/2,
               ['#3dd187','#e4e40e','#a21287','#e6e9e7','#cdeeff']);
@@ -609,29 +619,26 @@ function update(dt) {
       if (c.y > H + 12) { endGame(); return; }
     }
 
-    /* Card vs Card collision (AABB) */
+    /* Card vs Card collision (AABB elastic) */
     for (let i = 0; i < cards.length; i++) {
       for (let j = i + 1; j < cards.length; j++) {
         const a = cards[i], b = cards[j];
         if (!hitTest(a, b)) continue;
 
-        /* Find overlap on each axis */
         const overlapX = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
         const overlapY = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
 
         if (overlapX < overlapY) {
-          /* Horizontal collision — swap vx, separate */
           const tmp = a.vx; a.vx = b.vx; b.vx = tmp;
-          if (a.x < b.x) { a.x -= overlapX / 2; b.x += overlapX / 2; }
-          else            { a.x += overlapX / 2; b.x -= overlapX / 2; }
+          if (a.x < b.x) { a.x -= overlapX / 2 + 1; b.x += overlapX / 2 + 1; }
+          else            { a.x += overlapX / 2 + 1; b.x -= overlapX / 2 + 1; }
         } else {
-          /* Vertical collision — swap vy, separate */
           const tmp = a.vy; a.vy = b.vy; b.vy = tmp;
-          if (a.y < b.y) { a.y -= overlapY / 2; b.y += overlapY / 2; }
-          else            { a.y += overlapY / 2; b.y -= overlapY / 2; }
+          if (a.y < b.y) { a.y -= overlapY / 2 + 1; b.y += overlapY / 2 + 1; }
+          else            { a.y += overlapY / 2 + 1; b.y -= overlapY / 2 + 1; }
         }
 
-        a.flash = 0.15; b.flash = 0.15;
+        a.flash = 0.12; b.flash = 0.12;
       }
     }
   }
@@ -714,7 +721,7 @@ function draw() {
 /* ── GAME LOOP ──────────────────────────────────────────────────── */
 function loop(ts) {
   if (!lastTs) lastTs = ts;
-  const dt = Math.min((ts - lastTs) / 1000, 0.033);
+  const dt = Math.min((ts - lastTs) / 1000, 0.025); /* tighter cap = smoother */
   lastTs = ts;
   update(dt);
   draw();
