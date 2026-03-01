@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Li Chu — Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Spicy+Rice&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/96469d30-27e0-4ecb-8348-319791411553" />
+  <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/f4fc3552-9385-40c5-ad67-e8c67086ab8d" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; cursor: none; }
+
+    #nav {
+      position: fixed; left: 0; top: 0;
+      width: 260px; height: 100vh;
+      background: #292e2a;
+      z-index: 20;
+      display: flex; flex-direction: column;
+      padding: 44px 30px 20px;
+      overflow: hidden;
+    }
+    #nav .role {
+      font-family: 'Inter', sans-serif; font-weight: 400;
+      font-size: 28px; color: #98999c; white-space: nowrap; margin-bottom: 8px;
+    }
+    #nav .name {
+      font-family: 'Spicy Rice', serif; font-size: 80px; line-height: 1;
+      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43.375%, #a21287 108.75%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: auto;
+    }
+
+    #lives-container { position: absolute; left: 0; bottom: 0; width: 260px; height: 96px; }
+    .life-plate {
+      position: absolute; height: 32px; border-radius: 4px;
+      transition: opacity 0.4s ease, transform 0.5s ease,
+                  bottom 0.45s cubic-bezier(0.22,1,0.36,1),
+                  left   0.45s cubic-bezier(0.22,1,0.36,1);
+    }
+    #plate-0 { left: 0;    bottom: 64px; width: 173px;
+               background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%); }
+    #plate-1 { left: 0;    bottom: 32px; width: 173px; background: #3d3d3d; }
+    #plate-2 { left: 76px; bottom: 0;    width: 173px; background: #d9d9d9; }
+    .life-plate.dead { opacity: 0.15; transform: scaleX(0.55); }
+
+    #game-canvas { position: fixed; left: 260px; top: 0; display: block; }
+
+    #hud {
+      position: fixed; right: 24px; top: 16px;
+      font-family: 'Inter', sans-serif; font-size: 1rem;
+      color: #98999c; z-index: 25; pointer-events: none;
+    }
+    #hud b { color: #e4e40e; }
+
+    #overlay {
+      display: none;
+      position: fixed; left: 260px; top: 0; right: 0; bottom: 0;
+      z-index: 30;
+      background: rgba(26,26,26,0.93);
+      flex-direction: column; align-items: flex-start; justify-content: center;
+      gap: 32px; padding: 0 72px;
+      font-family: 'Inter', sans-serif; color: #e6e9e7;
+    }
+    #overlay h2 { font-size: 2.2rem; font-weight: 700; }
+    #overlay .ol-sub { font-size: 1rem; color: #98999c; margin-top: -16px; }
+
+    #ol-projects {
+      display: flex; flex-direction: row; gap: 16px; flex-wrap: wrap;
+    }
+    .ol-proj {
+      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 4px;
+      background: #3d3d3d;
+      color: #e6e9e7;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: none;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: background 0.2s, color 0.2s;
+    }
+    .ol-proj.show { animation: projIn 0.35s forwards; }
+    .ol-proj:hover { background: #e4e40e; color: #1a1a1a; }
+    @keyframes projIn { to { opacity: 1; transform: translateY(0); } }
+
+    #ol-btn {
+      padding: 12px 36px; border-radius: 4px; border: none;
+      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
+      color: #1a1a1a; font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 700; cursor: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="nav">
+  <p class="role">UX UI Designer</p>
+  <p class="name">Li Chu</p>
+  <div id="lives-container">
+    <div class="life-plate" id="plate-0"></div>
+    <div class="life-plate" id="plate-1"></div>
+    <div class="life-plate" id="plate-2"></div>
+  </div>
+</div>
+
+<div id="hud">Поймано: <b id="score-val">0</b></div>
+<canvas id="game-canvas"></canvas>
+
+<div id="overlay">
+  <h2 id="ol-title"></h2>
+  <p class="ol-sub" id="ol-sub"></p>
+  <div id="ol-projects">
+    <a href="project-01.html" class="ol-proj">Проект 1</a>
+    <a href="project-02.html" class="ol-proj">Проект 2</a>
+    <a href="project-03.html" class="ol-proj">Проект 3</a>
+    <a href="project-04.html" class="ol-proj">Проект 4</a>
+    <a href="project-05.html" class="ol-proj">Проект 5</a>
+  </div>
+  <button id="ol-btn">Играть снова</button>
+</div>
+
+<script>
+const BG_URL    = 'https://www.figma.com/api/mcp/asset/96469d30-27e0-4ecb-8348-319791411553';
+const PHOTO_URL = 'https://www.figma.com/api/mcp/asset/f4fc3552-9385-40c5-ad67-e8c67086ab8d';
+const bgImg    = new Image(); bgImg.src    = BG_URL;
+const photoImg = new Image(); photoImg.src = PHOTO_URL;
+
+const NAV_W = 260;
+const canvas = document.getElementById('game-canvas');
+const ctx    = canvas.getContext('2d');
+let W, H;
+function resize() {
+  W = canvas.width  = window.innerWidth - NAV_W;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+const PROJECTS    = ['Проект 1','Проект 2','Проект 3','Проект 4','Проект 5'];
+const FW = 114, FH = 44;
+const PW = 173, PH = 32;
+const PAD_Y_OFFSET = 48;
+const TOTAL_LIVES  = 3;
+
+const PADDLE_STYLES = [
+  { type: 'gradient' },
+  { type: 'solid', color: '#3d3d3d' },
+  { type: 'solid', color: '#d9d9d9' },
+];
+
+let lives, score, gameOver, frames, particles, lastTime;
+let mouseX = 300;
+
+let paddle = { x: 0, y: -PH - 20, dropIn: true, exploding: false, alpha: 1 };
+
+window.addEventListener('mousemove', e => { mouseX = e.clientX - NAV_W; });
+
+function rr(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+function overlap(ax,ay,aw,ah, bx,by,bw,bh) {
+  return ax < bx+bw && ax+aw > bx && ay < by+bh && ay+ah > by;
+}
+function lerp(a, b, t) { return a + (b-a)*t; }
+
+function getPaddleGrad(x) {
+  const g = ctx.createLinearGradient(x, 0, x+PW, 0);
+  g.addColorStop(0.22, '#3dd187');
+  g.addColorStop(0.43375, '#e4e40e');
+  g.addColorStop(1.0, '#a21287');
+  return g;
+}
+
+function drawPaddle() {
+  if (lives <= 0) return;
+  const style = PADDLE_STYLES[TOTAL_LIVES - lives];
+  ctx.save();
+  ctx.globalAlpha = paddle.alpha;
+  ctx.fillStyle = style.type === 'gradient' ? getPaddleGrad(paddle.x) : style.color;
+  rr(paddle.x, paddle.y, PW, PH, 4);
+  ctx.fill();
+  const dotColor = (style.type === 'solid' && style.color === '#d9d9d9') ? '#292626' : '#fff';
+  ctx.fillStyle = dotColor;
+  ctx.fillRect(mouseX - 3, paddle.y + PH/2 - 3, 6, 6);
+  ctx.restore();
+}
+
+function spawnExplosion(cx, cy, styleIndex) {
+  const colors = styleIndex === 0
+    ? ['#3dd187','#e4e40e','#a21287','#fff']
+    : styleIndex === 1
+      ? ['#3d3d3d','#666','#999','#fff']
+      : ['#d9d9d9','#fff','#aaa','#eee'];
+  for (let i = 0; i < 30; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const spd = 120 + Math.random() * 260;
+    const size = 6 + Math.random() * 14;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd - 80,
+      w: size, h: size * (0.4 + Math.random()*0.6),
+      color: colors[Math.floor(Math.random()*colors.length)],
+      alpha: 1, decay: 1.4 + Math.random()*1.2,
+    });
+  }
+}
+
+// plates animate down when top one leaves
+const PLATE_POSITIONS = [
+  { bottom: 64, left: 0   },
+  { bottom: 32, left: 0   },
+  { bottom: 0,  left: 76  },
+];
+function updatePlates() {
+  let slot = 0;
+  for (let i = 0; i < 3; i++) {
+    const el = document.getElementById('plate-' + i);
+    if (i < lives) {
+      el.classList.remove('dead');
+      const pos = PLATE_POSITIONS[slot++];
+      el.style.bottom = pos.bottom + 'px';
+      el.style.left   = pos.left   + 'px';
+    } else {
+      el.classList.add('dead');
+    }
+  }
+}
+
+function paddleY() { return H - PAD_Y_OFFSET - PH; }
+
+function slidePaddleIn() {
+  paddle.x        = Math.min(Math.max(mouseX - PW/2, 0), W - PW);
+  paddle.y        = -PH - 20;
+  paddle.dropIn   = true;
+  paddle.exploding= false;
+  paddle.alpha    = 1;
+}
+
+function init() {
+  lives     = TOTAL_LIVES;
+  score     = 0;
+  gameOver  = false;
+  lastTime  = null;
+  particles = [];
+  frames    = PROJECTS.map(lbl => makeFrame(lbl));
+  document.getElementById('score-val').textContent = '0';
+  document.getElementById('overlay').style.display = 'none';
+  document.querySelectorAll('.ol-proj').forEach(el => el.classList.remove('show'));
+  updatePlates();
+  slidePaddleIn();
+}
+
+function makeFrame(label) {
+  const m = 30;
+  return {
+    label,
+    x: m + Math.random() * (W - FW - m*2),
+    y: 40 + Math.random() * (H * 0.35),
+    vx: (110 + Math.random()*90) * (Math.random()<0.5?1:-1),
+    vy: 80 + Math.random()*80,
+    alpha: 1, dying: false, _flash: false,
+  };
+}
+
+let transitioning = false;
+function onMiss(frameLabel) {
+  if (transitioning) return;
+  transitioning = true;
+  lives = Math.max(0, lives - 1);
+  updatePlates();
+
+  const styleIndex = TOTAL_LIVES - lives - 1;
+  spawnExplosion(paddle.x + PW/2, paddle.y + PH/2, styleIndex);
+  paddle.exploding = true;
+  paddle.alpha     = 0;
+
+  setTimeout(() => {
+    if (gameOver) return;
+    transitioning = false;
+    frames.push(makeFrame(frameLabel));
+    if (lives <= 0) {
+      gameOver = true;
+      document.getElementById('ol-title').textContent = 'Game Over';
+      document.getElementById('ol-sub').textContent   = 'Поймано: ' + score;
+      document.getElementById('overlay').style.display = 'flex';
+      document.querySelectorAll('.ol-proj').forEach((el, i) => {
+        setTimeout(() => el.classList.add('show'), 200 + i * 90);
+      });
+    } else {
+      slidePaddleIn();
+    }
+  }, 950);
+}
+
+document.getElementById('ol-btn').addEventListener('click', () => {
+  document.querySelectorAll('.ol-proj').forEach(el => el.classList.remove('show'));
+  init();
+});
+
+function update(dt) {
+  if (gameOver) return;
+  const py = paddleY();
+
+  if (paddle.dropIn) {
+    paddle.x = Math.min(Math.max(mouseX - PW/2, 0), W - PW);
+    paddle.y = lerp(paddle.y, py, dt * 10);
+    if (paddle.y >= py - 1) { paddle.y = py; paddle.dropIn = false; }
+  } else if (!paddle.exploding) {
+    paddle.x = lerp(paddle.x, Math.min(Math.max(mouseX - PW/2, 0), W - PW), dt * 18);
+    paddle.y = py;
+  }
+
+  for (const f of frames) {
+    if (f.dying) { f.alpha -= dt*3.5; continue; }
+
+    f.x += f.vx*dt;
+    f.y += f.vy*dt;
+
+    if (f.x < 0)    { f.x = 0;    f.vx =  Math.abs(f.vx); }
+    if (f.x+FW > W) { f.x = W-FW; f.vx = -Math.abs(f.vx); }
+    if (f.y < 0)    { f.y = 0;    f.vy =  Math.abs(f.vy); }
+
+    if (!paddle.exploding && !paddle.dropIn &&
+        overlap(f.x, f.y, FW, FH, paddle.x, paddle.y, PW, PH)) {
+      f.vy = -Math.abs(f.vy) * (0.95 + Math.random()*0.15);
+      f.vx += (f.x + FW/2 - (paddle.x + PW/2)) * 1.5;
+      f.vx = Math.max(-350, Math.min(350, f.vx));
+      score++;
+      document.getElementById('score-val').textContent = score;
+      f._flash = true;
+      const ref = f;
+      setTimeout(() => { ref._flash = false; }, 130);
+      // small burst on catch
+      spawnExplosion(f.x + FW/2, f.y + FH/2, 1);
+      continue;
+    }
+
+    if (f.y + FH >= H) {
+      f.dying = true;
+      onMiss(f.label);
+    }
+  }
+
+  frames = frames.filter(f => f.alpha > 0);
+
+  for (const p of particles) {
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vy += 380 * dt;
+    p.alpha -= p.decay * dt;
+  }
+  particles = particles.filter(p => p.alpha > 0);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  if (bgImg.complete && bgImg.naturalWidth) {
+    ctx.drawImage(bgImg, 0, 0, W, H);
+  } else {
+    ctx.fillStyle = '#2a1a3e'; ctx.fillRect(0, 0, W, H);
+  }
+
+  if (photoImg.complete && photoImg.naturalWidth) {
+    ctx.save();
+    rr(193, 40, 264, 293, 4);
+    ctx.clip();
+    ctx.drawImage(photoImg, 193-48, 40, 359, 293);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fill();
+    ctx.restore();
+  }
+
+  for (const f of frames) {
+    ctx.save();
+    ctx.globalAlpha = f.alpha;
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10;
+    ctx.fillStyle   = f._flash ? 'rgba(228,228,14,0.95)' : 'rgba(61,61,61,0.93)';
+    rr(f.x, f.y, FW, FH, 4);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle  = f._flash ? '#1a1a1a' : '#e6e9e7';
+    ctx.font = '400 18px Inter, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(f.label, f.x + FW/2, f.y + FH/2 - 1);
+    ctx.restore();
+  }
+
+  for (const p of particles) {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.alpha);
+    ctx.fillStyle   = p.color;
+    ctx.fillRect(p.x - p.w/2, p.y - p.h/2, p.w, p.h);
+    ctx.restore();
+  }
+
+  drawPaddle();
+}
+
+function loop(now) {
+  if (!lastTime) lastTime = now;
+  const dt = Math.min((now - lastTime) / 1000, 0.05);
+  lastTime = now;
+  if (!gameOver) update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+init();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
