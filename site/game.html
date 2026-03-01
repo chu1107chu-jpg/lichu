@@ -517,16 +517,15 @@ const CARD_FRAC = [
 ];
 
 function initCards() {
-  const count = CARD_FRAC.length;
   cards = CARD_FRAC.map(([fx], i) => {
-    /* Each card: random horizontal direction, small random downward component */
-    /* Start in top 30% of screen so they have room to fly around */
-    const sign  = (i % 2 === 0) ? 1 : -1;          /* alternate left/right */
-    const vx    = sign * (CARD_SPD * 0.8 + Math.random() * CARD_SPD * 0.7);
-    const vy    = 20 + Math.random() * 40;          /* slight downward start */
+    const sign = (i % 2 === 0) ? 1 : -1;
+    const vx   = sign * (CARD_SPD * 0.8 + Math.random() * CARD_SPD * 0.7);
+    const vy   = (Math.random() - 0.5) * 60; /* some go up, some down */
+    /* Spread across FULL screen height so cards are everywhere from start */
+    const yFrac = 0.05 + (i / CARD_FRAC.length) * 0.80;
     return {
       x:  fx * (W - CARD_W),
-      y:  (0.04 + Math.random() * 0.26) * H,        /* top 4%–30% of screen */
+      y:  yFrac * (H - CARD_H),
       vx,
       vy,
       w:  CARD_W,
@@ -551,6 +550,32 @@ function initPhoto() {
   photoEl.style.left    = photo.x + 'px';
   photoEl.style.top     = photo.y + 'px';
   photoEl.style.display = 'block';
+}
+
+/* ── BIG MISS EXPLOSION ─────────────────────────────────────────── */
+function missExplosion(cx, cy) {
+  /* Large burst of dark/red particles from bottom of screen */
+  const colors = ['#ff2222','#ff6600','#ffaa00','#3d3d3d','#e6e9e7','#fff'];
+  for (let i = 0; i < 60; i++) {
+    const a = -Math.PI + Math.random() * Math.PI; /* upward hemisphere */
+    const s = 300 + Math.random() * 500;
+    const life = 0.6 + Math.random() * 0.5;
+    parts.push({
+      x: cx, y: cy,
+      vx: Math.cos(a) * s,
+      vy: Math.sin(a) * s - 100,
+      sz: 5 + Math.random() * 14,
+      col: colors[Math.floor(Math.random() * colors.length)],
+      life, max: life
+    });
+  }
+  /* Screen shake via CSS */
+  const ga = document.getElementById('game-area');
+  ga.style.transition = 'none';
+  ga.style.transform = 'translate(6px, 4px)';
+  setTimeout(() => { ga.style.transform = 'translate(-5px, -3px)'; }, 50);
+  setTimeout(() => { ga.style.transform = 'translate(4px, -4px)'; }, 100);
+  setTimeout(() => { ga.style.transform = 'translate(0,0)'; ga.style.transition = ''; }, 150);
 }
 
 /* ── GAME OVER ──────────────────────────────────────────────────── */
@@ -624,8 +649,14 @@ function update(dt) {
         beep(820 + Math.random()*140, 0.07);
       }
 
-      /* Missed past bottom — game over */
-      if (c.y > H + 12) { endGame(); return; }
+      /* Missed past bottom — explosion then game over */
+      if (c.y > H + 12) {
+        missExplosion(c.x + c.w / 2, H - 20);
+        beep(180, 0.35);
+        setTimeout(endGame, 350);
+        cards.splice(i, 1);
+        return;
+      }
     }
 
     /* Card vs Card collision (AABB elastic) */
