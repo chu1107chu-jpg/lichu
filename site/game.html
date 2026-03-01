@@ -8,11 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Spicy+Rice&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/96469d30-27e0-4ecb-8348-319791411553" />
-  <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/f4fc3552-9385-40c5-ad67-e8c67086ab8d" />
+  <link rel="preload" as="image" href="https://www.figma.com/api/mcp/asset/05aa89fb-ab1d-4227-b6b1-3563f72350b2" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; cursor: none; }
 
+    /* ─── NAV ─────────────────────────────────────────────── */
     #nav {
       position: fixed; left: 0; top: 0;
       width: 260px; height: 100vh;
@@ -30,9 +31,30 @@
       font-family: 'Spicy Rice', serif; font-size: 80px; line-height: 1;
       background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43.375%, #a21287 108.75%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: auto;
+      margin-bottom: 0;
     }
 
+    /* Project list in nav — hidden during game, animated in on game over */
+    #nav-projects {
+      display: flex; flex-direction: column; gap: 24px;
+      margin-top: 32px; flex: 1; overflow: hidden;
+    }
+    #nav-projects a {
+      font-family: 'Inter', sans-serif; font-weight: 500;
+      font-size: 20px; color: #98999c;
+      text-decoration: none;
+      opacity: 0; transform: translateX(-14px);
+      transition: color 0.2s;
+      cursor: none; pointer-events: none;
+    }
+    #nav-projects a.show {
+      animation: slideInLeft 0.38s cubic-bezier(0.22,1,0.36,1) forwards;
+      pointer-events: auto;
+    }
+    #nav-projects a:hover { color: #e6e9e7; }
+    @keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
+
+    /* Lives */
     #lives-container { position: absolute; left: 0; bottom: 0; width: 260px; height: 96px; }
     .life-plate {
       position: absolute; height: 32px; border-radius: 4px;
@@ -46,8 +68,10 @@
     #plate-2 { left: 76px; bottom: 0;    width: 173px; background: #d9d9d9; }
     .life-plate.dead { opacity: 0.15; transform: scaleX(0.55); }
 
+    /* ─── CANVAS ─────────────────────────────────────────── */
     #game-canvas { position: fixed; left: 260px; top: 0; display: block; }
 
+    /* ─── HUD ─────────────────────────────────────────────── */
     #hud {
       position: fixed; right: 24px; top: 16px;
       font-family: 'Inter', sans-serif; font-size: 1rem;
@@ -55,53 +79,109 @@
     }
     #hud b { color: #e4e40e; }
 
+    /* ─── GAME OVER OVERLAY ─────────────────────────────── */
     #overlay {
       display: none;
       position: fixed; left: 260px; top: 0; right: 0; bottom: 0;
       z-index: 30;
-      background: rgba(26,26,26,0.93);
+      background: rgba(26,26,26,0.88);
       flex-direction: column; align-items: flex-start; justify-content: center;
-      gap: 32px; padding: 0 72px;
+      gap: 28px; padding: 0 72px;
       font-family: 'Inter', sans-serif; color: #e6e9e7;
     }
-    #overlay h2 { font-size: 2.2rem; font-weight: 700; }
-    #overlay .ol-sub { font-size: 1rem; color: #98999c; margin-top: -16px; }
 
-    #ol-projects {
-      display: flex; flex-direction: row; gap: 16px; flex-wrap: wrap;
+    /* Caught count */
+    #ol-caught { display: flex; flex-direction: column; gap: 8px; }
+    #ol-caught .caught-label { font-size: 20px; font-weight: 500; color: #98999c; }
+    #ol-caught .caught-number {
+      font-size: 72px; font-weight: 700; line-height: 1;
+      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .ol-proj {
-      display: inline-block;
-      padding: 14px 24px;
-      border-radius: 4px;
-      background: #3d3d3d;
-      color: #e6e9e7;
-      font-family: 'Inter', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: none;
-      opacity: 0;
-      transform: translateY(18px);
-      transition: background 0.2s, color 0.2s;
-    }
-    .ol-proj.show { animation: projIn 0.35s forwards; }
-    .ol-proj:hover { background: #e4e40e; color: #1a1a1a; }
-    @keyframes projIn { to { opacity: 1; transform: translateY(0); } }
+    #ol-caught .caught-sub { font-size: 20px; font-weight: 500; color: #98999c; }
 
     #ol-btn {
       padding: 12px 36px; border-radius: 4px; border: none;
       background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
       color: #1a1a1a; font-family: 'Inter', sans-serif;
       font-size: 1rem; font-weight: 700; cursor: none;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.35s 0.6s, transform 0.35s 0.6s;
+    }
+    #ol-btn.show { opacity: 1; transform: translateY(0); }
+
+    /* ─── CONTACT FORM MODAL ──────────────────────────────── */
+    #contact-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 50;
+      background: rgba(26,26,26,0.82);
+      align-items: center; justify-content: center;
+    }
+    #contact-modal.open { display: flex; }
+
+    #contact-box {
+      background: #292e2a; border-radius: 8px;
+      padding: 48px 48px 40px; width: 480px;
+      max-width: calc(100vw - 40px);
+      display: flex; flex-direction: column; gap: 20px;
+      animation: boxIn 0.3s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes boxIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:none; } }
+
+    #contact-box h3 {
+      font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700;
+      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1.1;
+    }
+    #contact-box label {
+      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+      color: #98999c; display: flex; flex-direction: column; gap: 6px;
+    }
+    #contact-box input,
+    #contact-box textarea {
+      background: #1e2320; border: 1px solid #3d3d3d; border-radius: 4px;
+      color: #e6e9e7; font-family: 'Inter', sans-serif; font-size: 15px;
+      padding: 10px 14px; outline: none; transition: border-color 0.2s;
+    }
+    #contact-box input:focus,
+    #contact-box textarea:focus { border-color: #3dd187; }
+    #contact-box textarea { resize: vertical; min-height: 90px; }
+
+    #contact-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; }
+    #contact-cancel {
+      padding: 10px 24px; border-radius: 4px; border: 1px solid #3d3d3d;
+      background: transparent; color: #98999c;
+      font-family: 'Inter', sans-serif; font-size: 14px; cursor: none;
+    }
+    #contact-submit {
+      padding: 10px 28px; border-radius: 4px; border: none;
+      background: linear-gradient(90deg, #3dd187 22%, #e4e40e 43%, #a21287 109%);
+      color: #1a1a1a; font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 700; cursor: none;
+    }
+    #contact-sent {
+      display: none; font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 500;
+      color: #3dd187; text-align: center; padding: 12px 0;
     }
   </style>
 </head>
 <body>
 
+<!-- ─── LEFT NAV ──────────────────────────────────────────── -->
 <div id="nav">
   <p class="role">UX UI Designer</p>
   <p class="name">Li Chu</p>
+
+  <div id="nav-projects">
+    <a href="project-01.html">Проект 1</a>
+    <a href="project-02.html">Проект 2</a>
+    <a href="project-03.html">Проект 3</a>
+    <a href="project-04.html">Проект 4</a>
+    <a href="project-05.html">Проект 5</a>
+  </div>
+
   <div id="lives-container">
     <div class="life-plate" id="plate-0"></div>
     <div class="life-plate" id="plate-1"></div>
@@ -109,25 +189,46 @@
   </div>
 </div>
 
+<!-- ─── HUD ──────────────────────────────────────────────── -->
 <div id="hud">Поймано: <b id="score-val">0</b></div>
+
+<!-- ─── CANVAS ───────────────────────────────────────────── -->
 <canvas id="game-canvas"></canvas>
 
+<!-- ─── GAME OVER OVERLAY ─────────────────────────────────── -->
 <div id="overlay">
-  <h2 id="ol-title"></h2>
-  <p class="ol-sub" id="ol-sub"></p>
-  <div id="ol-projects">
-    <a href="project-01.html" class="ol-proj">Проект 1</a>
-    <a href="project-02.html" class="ol-proj">Проект 2</a>
-    <a href="project-03.html" class="ol-proj">Проект 3</a>
-    <a href="project-04.html" class="ol-proj">Проект 4</a>
-    <a href="project-05.html" class="ol-proj">Проект 5</a>
+  <div id="ol-caught">
+    <span class="caught-label">пойманных проектов:</span>
+    <span class="caught-number" id="ol-caught-num">0</span>
+    <span class="caught-sub">из 5 возможных</span>
   </div>
   <button id="ol-btn">Играть снова</button>
 </div>
 
+<!-- ─── CONTACT FORM MODAL ────────────────────────────────── -->
+<div id="contact-modal">
+  <div id="contact-box">
+    <h3>Связаться со мной</h3>
+    <label>Имя
+      <input type="text" id="cf-name" placeholder="Ваше имя" />
+    </label>
+    <label>Email
+      <input type="email" id="cf-email" placeholder="your@email.com" />
+    </label>
+    <label>Сообщение
+      <textarea id="cf-msg" placeholder="Расскажите о проекте..."></textarea>
+    </label>
+    <div id="contact-row">
+      <button id="contact-cancel">Отмена</button>
+      <button id="contact-submit">Отправить</button>
+    </div>
+    <div id="contact-sent">Сообщение отправлено ✓</div>
+  </div>
+</div>
+
 <script>
 const BG_URL    = 'https://www.figma.com/api/mcp/asset/96469d30-27e0-4ecb-8348-319791411553';
-const PHOTO_URL = 'https://www.figma.com/api/mcp/asset/f4fc3552-9385-40c5-ad67-e8c67086ab8d';
+const PHOTO_URL = 'https://www.figma.com/api/mcp/asset/05aa89fb-ab1d-4227-b6b1-3563f72350b2';
 const bgImg    = new Image(); bgImg.src    = BG_URL;
 const photoImg = new Image(); photoImg.src = PHOTO_URL;
 
@@ -136,15 +237,17 @@ const canvas = document.getElementById('game-canvas');
 const ctx    = canvas.getContext('2d');
 let W, H;
 function resize() {
-  W = canvas.width  = window.innerWidth - NAV_W;
+  W = canvas.width  = window.innerWidth  - NAV_W;
   H = canvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resize);
 resize();
 
+/* ── constants ──────────────────────────────────────────────── */
 const PROJECTS    = ['Проект 1','Проект 2','Проект 3','Проект 4','Проект 5'];
-const FW = 114, FH = 44;
-const PW = 173, PH = 32;
+const FW = 114, FH = 44;          // project frame size
+const PHW = 80,  PHH = 80;        // photo frame size (square)
+const PW = 173,  PH = 32;         // paddle
 const PAD_Y_OFFSET = 48;
 const TOTAL_LIVES  = 3;
 
@@ -153,14 +256,20 @@ const PADDLE_STYLES = [
   { type: 'solid', color: '#3d3d3d' },
   { type: 'solid', color: '#d9d9d9' },
 ];
+const PLATE_POSITIONS = [
+  { bottom: 64, left: 0  },
+  { bottom: 32, left: 0  },
+  { bottom: 0,  left: 76 },
+];
 
-let lives, score, gameOver, frames, particles, lastTime;
+/* ── state ──────────────────────────────────────────────────── */
+let lives, score, gameOver, frames, photo, particles, lastTime;
 let mouseX = 300;
-
 let paddle = { x: 0, y: -PH - 20, dropIn: true, exploding: false, alpha: 1 };
 
 window.addEventListener('mousemove', e => { mouseX = e.clientX - NAV_W; });
 
+/* ── helpers ────────────────────────────────────────────────── */
 function rr(x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
@@ -170,18 +279,19 @@ function rr(x, y, w, h, r) {
   ctx.closePath();
 }
 function overlap(ax,ay,aw,ah, bx,by,bw,bh) {
-  return ax < bx+bw && ax+aw > bx && ay < by+bh && ay+ah > by;
+  return ax<bx+bw && ax+aw>bx && ay<by+bh && ay+ah>by;
 }
-function lerp(a, b, t) { return a + (b-a)*t; }
+function lerp(a,b,t){ return a+(b-a)*t; }
 
 function getPaddleGrad(x) {
   const g = ctx.createLinearGradient(x, 0, x+PW, 0);
-  g.addColorStop(0.22, '#3dd187');
-  g.addColorStop(0.43375, '#e4e40e');
-  g.addColorStop(1.0, '#a21287');
+  g.addColorStop(0.22,     '#3dd187');
+  g.addColorStop(0.43375,  '#e4e40e');
+  g.addColorStop(1.0,      '#a21287');
   return g;
 }
 
+/* ── draw paddle ────────────────────────────────────────────── */
 function drawPaddle() {
   if (lives <= 0) return;
   const style = PADDLE_STYLES[TOTAL_LIVES - lives];
@@ -196,32 +306,44 @@ function drawPaddle() {
   ctx.restore();
 }
 
-function spawnExplosion(cx, cy, styleIndex) {
+/* ── explosions ─────────────────────────────────────────────── */
+function spawnExplosion(cx, cy, styleIndex, count) {
+  count = count || 30;
   const colors = styleIndex === 0
     ? ['#3dd187','#e4e40e','#a21287','#fff']
     : styleIndex === 1
       ? ['#3d3d3d','#666','#999','#fff']
       : ['#d9d9d9','#fff','#aaa','#eee'];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < count; i++) {
     const ang = Math.random() * Math.PI * 2;
     const spd = 120 + Math.random() * 260;
     const size = 6 + Math.random() * 14;
     particles.push({
       x: cx, y: cy,
       vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd - 80,
-      w: size, h: size * (0.4 + Math.random()*0.6),
+      w: size, h: size*(0.4+Math.random()*0.6),
       color: colors[Math.floor(Math.random()*colors.length)],
-      alpha: 1, decay: 1.4 + Math.random()*1.2,
+      alpha: 1, decay: 1.4+Math.random()*1.2,
+    });
+  }
+}
+function spawnPhotoExplosion(cx, cy) {
+  const colors = ['#3dd187','#e4e40e','#a21287','#e6e9e7','#fff'];
+  for (let i = 0; i < 45; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const spd = 140 + Math.random() * 320;
+    const size = 7 + Math.random() * 16;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd - 120,
+      w: size, h: size,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      alpha: 1, decay: 1.2+Math.random()*0.9,
     });
   }
 }
 
-// plates animate down when top one leaves
-const PLATE_POSITIONS = [
-  { bottom: 64, left: 0   },
-  { bottom: 32, left: 0   },
-  { bottom: 0,  left: 76  },
-];
+/* ── plates ─────────────────────────────────────────────────── */
 function updatePlates() {
   let slot = 0;
   for (let i = 0; i < 3; i++) {
@@ -237,8 +359,8 @@ function updatePlates() {
   }
 }
 
+/* ── paddle helpers ─────────────────────────────────────────── */
 function paddleY() { return H - PAD_Y_OFFSET - PH; }
-
 function slidePaddleIn() {
   paddle.x        = Math.min(Math.max(mouseX - PW/2, 0), W - PW);
   paddle.y        = -PH - 20;
@@ -247,20 +369,7 @@ function slidePaddleIn() {
   paddle.alpha    = 1;
 }
 
-function init() {
-  lives     = TOTAL_LIVES;
-  score     = 0;
-  gameOver  = false;
-  lastTime  = null;
-  particles = [];
-  frames    = PROJECTS.map(lbl => makeFrame(lbl));
-  document.getElementById('score-val').textContent = '0';
-  document.getElementById('overlay').style.display = 'none';
-  document.querySelectorAll('.ol-proj').forEach(el => el.classList.remove('show'));
-  updatePlates();
-  slidePaddleIn();
-}
-
+/* ── spawn helpers ──────────────────────────────────────────── */
 function makeFrame(label) {
   const m = 30;
   return {
@@ -269,17 +378,68 @@ function makeFrame(label) {
     y: 40 + Math.random() * (H * 0.35),
     vx: (110 + Math.random()*90) * (Math.random()<0.5?1:-1),
     vy: 80 + Math.random()*80,
-    alpha: 1, dying: false, _flash: false,
+    alpha: 1, dying: false, _flash: false, isPhoto: false,
+  };
+}
+function makePhoto() {
+  const m = 30;
+  return {
+    x: m + Math.random() * (W - PHW - m*2),
+    y: 40 + Math.random() * (H * 0.3),
+    vx: (80 + Math.random()*70) * (Math.random()<0.5?1:-1),
+    vy: 70 + Math.random()*70,
+    alpha: 1, dying: false, _flash: false, isPhoto: true,
   };
 }
 
+/* ── init ───────────────────────────────────────────────────── */
+function init() {
+  lives     = TOTAL_LIVES;
+  score     = 0;
+  gameOver  = false;
+  lastTime  = null;
+  particles = [];
+  frames    = PROJECTS.map(lbl => makeFrame(lbl));
+  photo     = makePhoto();
+  document.getElementById('score-val').textContent = '0';
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('ol-btn').classList.remove('show');
+  document.querySelectorAll('#nav-projects a').forEach(el => {
+    el.classList.remove('show');
+    el.style.animation = 'none';
+    // force reflow so next add('show') re-triggers animation
+    void el.offsetWidth;
+  });
+  updatePlates();
+  slidePaddleIn();
+}
+
+/* ── game over ──────────────────────────────────────────────── */
+function showGameOver() {
+  gameOver = true;
+  document.getElementById('ol-caught-num').textContent = score;
+  document.getElementById('overlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('ol-btn').classList.add('show'), 500);
+  // Slide project links into left nav
+  document.querySelectorAll('#nav-projects a').forEach((el, i) => {
+    setTimeout(() => {
+      el.style.animation = '';
+      el.classList.add('show');
+    }, 200 + i * 90);
+  });
+}
+
+document.getElementById('ol-btn').addEventListener('click', () => {
+  init();
+});
+
+/* ── miss ───────────────────────────────────────────────────── */
 let transitioning = false;
-function onMiss(frameLabel) {
+function onMiss(obj) {
   if (transitioning) return;
   transitioning = true;
   lives = Math.max(0, lives - 1);
   updatePlates();
-
   const styleIndex = TOTAL_LIVES - lives - 1;
   spawnExplosion(paddle.x + PW/2, paddle.y + PH/2, styleIndex);
   paddle.exploding = true;
@@ -288,30 +448,47 @@ function onMiss(frameLabel) {
   setTimeout(() => {
     if (gameOver) return;
     transitioning = false;
-    frames.push(makeFrame(frameLabel));
+    if (obj.isPhoto) {
+      photo = makePhoto();
+    } else {
+      frames.push(makeFrame(obj.label));
+    }
     if (lives <= 0) {
-      gameOver = true;
-      document.getElementById('ol-title').textContent = 'Game Over';
-      document.getElementById('ol-sub').textContent   = 'Поймано: ' + score;
-      document.getElementById('overlay').style.display = 'flex';
-      document.querySelectorAll('.ol-proj').forEach((el, i) => {
-        setTimeout(() => el.classList.add('show'), 200 + i * 90);
-      });
+      showGameOver();
     } else {
       slidePaddleIn();
     }
   }, 950);
 }
 
-document.getElementById('ol-btn').addEventListener('click', () => {
-  document.querySelectorAll('.ol-proj').forEach(el => el.classList.remove('show'));
-  init();
+/* ── contact modal ──────────────────────────────────────────── */
+function openContact() {
+  document.getElementById('contact-modal').classList.add('open');
+  document.getElementById('contact-sent').style.display = 'none';
+  document.getElementById('cf-name').value  = '';
+  document.getElementById('cf-email').value = '';
+  document.getElementById('cf-msg').value   = '';
+}
+document.getElementById('contact-cancel').addEventListener('click', () => {
+  document.getElementById('contact-modal').classList.remove('open');
+});
+document.getElementById('contact-submit').addEventListener('click', () => {
+  document.getElementById('contact-sent').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('contact-modal').classList.remove('open');
+  }, 1800);
+});
+document.getElementById('contact-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('contact-modal'))
+    document.getElementById('contact-modal').classList.remove('open');
 });
 
+/* ── update ─────────────────────────────────────────────────── */
 function update(dt) {
   if (gameOver) return;
   const py = paddleY();
 
+  // paddle
   if (paddle.dropIn) {
     paddle.x = Math.min(Math.max(mouseX - PW/2, 0), W - PW);
     paddle.y = lerp(paddle.y, py, dt * 10);
@@ -321,12 +498,10 @@ function update(dt) {
     paddle.y = py;
   }
 
+  // ── project frames ──
   for (const f of frames) {
     if (f.dying) { f.alpha -= dt*3.5; continue; }
-
-    f.x += f.vx*dt;
-    f.y += f.vy*dt;
-
+    f.x += f.vx*dt; f.y += f.vy*dt;
     if (f.x < 0)    { f.x = 0;    f.vx =  Math.abs(f.vx); }
     if (f.x+FW > W) { f.x = W-FW; f.vx = -Math.abs(f.vx); }
     if (f.y < 0)    { f.y = 0;    f.vy =  Math.abs(f.vy); }
@@ -339,54 +514,65 @@ function update(dt) {
       score++;
       document.getElementById('score-val').textContent = score;
       f._flash = true;
-      const ref = f;
-      setTimeout(() => { ref._flash = false; }, 130);
-      // small burst on catch
-      spawnExplosion(f.x + FW/2, f.y + FH/2, 1);
+      const ref = f; setTimeout(() => { ref._flash = false; }, 130);
+      spawnExplosion(f.x+FW/2, f.y+FH/2, 1, 12);
       continue;
     }
+    if (f.y + FH >= H) { f.dying = true; onMiss(f); }
+  }
+  frames = frames.filter(f => f.alpha > 0);
 
-    if (f.y + FH >= H) {
-      f.dying = true;
-      onMiss(f.label);
+  // ── photo ──
+  if (photo) {
+    if (photo.dying) {
+      photo.alpha -= dt * 4;
+      if (photo.alpha <= 0) photo = null;
+    } else {
+      photo.x += photo.vx*dt; photo.y += photo.vy*dt;
+      if (photo.x < 0)       { photo.x = 0;        photo.vx =  Math.abs(photo.vx); }
+      if (photo.x+PHW > W)   { photo.x = W-PHW;    photo.vx = -Math.abs(photo.vx); }
+      if (photo.y < 0)       { photo.y = 0;         photo.vy =  Math.abs(photo.vy); }
+
+      if (!paddle.exploding && !paddle.dropIn &&
+          overlap(photo.x, photo.y, PHW, PHH, paddle.x, paddle.y, PW, PH)) {
+        photo.dying = true;
+        spawnPhotoExplosion(photo.x + PHW/2, photo.y + PHH/2);
+        setTimeout(() => {
+          photo = makePhoto();
+          openContact();
+        }, 500);
+      }
+      if (photo.y + PHH >= H) { photo.dying = true; onMiss(photo); }
     }
   }
 
-  frames = frames.filter(f => f.alpha > 0);
-
+  // ── particles ──
   for (const p of particles) {
-    p.x += p.vx * dt; p.y += p.vy * dt;
-    p.vy += 380 * dt;
-    p.alpha -= p.decay * dt;
+    p.x += p.vx*dt; p.y += p.vy*dt;
+    p.vy += 380*dt;
+    p.alpha -= p.decay*dt;
   }
   particles = particles.filter(p => p.alpha > 0);
 }
 
+/* ── draw ───────────────────────────────────────────────────── */
 function draw() {
   ctx.clearRect(0, 0, W, H);
 
+  // background
   if (bgImg.complete && bgImg.naturalWidth) {
     ctx.drawImage(bgImg, 0, 0, W, H);
   } else {
     ctx.fillStyle = '#2a1a3e'; ctx.fillRect(0, 0, W, H);
   }
 
-  if (photoImg.complete && photoImg.naturalWidth) {
-    ctx.save();
-    rr(193, 40, 264, 293, 4);
-    ctx.clip();
-    ctx.drawImage(photoImg, 193-48, 40, 359, 293);
-    ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fill();
-    ctx.restore();
-  }
-
+  // project frames
   for (const f of frames) {
     ctx.save();
     ctx.globalAlpha = f.alpha;
     ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10;
     ctx.fillStyle   = f._flash ? 'rgba(228,228,14,0.95)' : 'rgba(61,61,61,0.93)';
-    rr(f.x, f.y, FW, FH, 4);
-    ctx.fill();
+    rr(f.x, f.y, FW, FH, 4); ctx.fill();
     ctx.shadowBlur = 0;
     ctx.fillStyle  = f._flash ? '#1a1a1a' : '#e6e9e7';
     ctx.font = '400 18px Inter, sans-serif';
@@ -395,6 +581,28 @@ function draw() {
     ctx.restore();
   }
 
+  // photo frame (bouncing)
+  if (photo && photo.alpha > 0) {
+    ctx.save();
+    ctx.globalAlpha = photo.alpha;
+    // glow ring
+    ctx.shadowColor = 'rgba(61,209,135,0.7)'; ctx.shadowBlur = 20;
+    rr(photo.x, photo.y, PHW, PHH, 6);
+    if (photoImg.complete && photoImg.naturalWidth) {
+      ctx.clip();
+      const scale = Math.max(PHW / photoImg.naturalWidth, PHH / photoImg.naturalHeight);
+      const sw = photoImg.naturalWidth * scale;
+      const sh = photoImg.naturalHeight * scale;
+      ctx.drawImage(photoImg, photo.x + (PHW-sw)/2, photo.y + (PHH-sh)/2, sw, sh);
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(photo.x, photo.y, PHW, PHH);
+    } else {
+      ctx.fillStyle = '#3d3d3d'; ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // particles
   for (const p of particles) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, p.alpha);
@@ -406,6 +614,7 @@ function draw() {
   drawPaddle();
 }
 
+/* ── loop ───────────────────────────────────────────────────── */
 function loop(now) {
   if (!lastTime) lastTime = now;
   const dt = Math.min((now - lastTime) / 1000, 0.05);
