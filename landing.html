@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daria Kulchikhina — Платформа управления дизайн-проектами</title>
+  <title>Daria Kulchikhina Платформа управления дизайн-проектами</title>
   <meta name="description" content="Профессиональная платформа для дизайнеров интерьера: управление проектами, подрядчиками и клиентами в одном месте.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
 
   <style>
     /* ─────────────────── RESET & BASE ─────────────────── */
@@ -16,15 +14,14 @@
     :root {
       --bg:    #f7f6f2;
       --bg-2:  #eeecea;
-      --ink:   #0f0e0c;
+      --ink:   #242424;
       --ink-2: #545250;
       --ink-3: #9c9a95;
-      --line:  rgba(15,14,12,.09);
-      --line-strong: rgba(15,14,12,.18);
-      --accent: #1a1a18;
+      --line:  rgba(36,36,36,.06);
+      --line-strong: rgba(36,36,36,.11);
+      --accent: #242424;
       --green: #22c55e;
-      --serif: 'Instrument Serif', Georgia, serif;
-      --sans:  'Inter', system-ui, sans-serif;
+      --sans:  -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
       --r:     2px;
       --ease:  cubic-bezier(.25,.46,.45,.94);
     }
@@ -73,7 +70,7 @@
     }
 
     .nav-brand {
-      font-family: var(--serif);
+      font-family: var(--sans);
       font-size: 17px; letter-spacing: -.01em;
       display: flex; align-items: center; gap: 10px;
     }
@@ -155,7 +152,8 @@
     .hero-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
 
     .hero-h1 {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: clamp(52px, 7.5vw, 110px);
       line-height: .97; letter-spacing: -.035em;
       max-width: 900px;
@@ -240,7 +238,8 @@
     .proof-item:last-child { border-right: none; padding-right: 0; }
 
     .proof-num {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: 52px; line-height: 1; letter-spacing: -.03em;
       display: block; margin-bottom: 8px;
     }
@@ -261,7 +260,8 @@
     .problem-left { }
 
     .problem-h2 {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: clamp(34px, 4vw, 52px);
       letter-spacing: -.02em; line-height: 1.05;
       margin-top: 24px; margin-bottom: 32px;
@@ -273,7 +273,7 @@
     }
 
     .pain-item {
-      display: flex; align-items: flex-start; gap: 16px;
+      display: flex; align-items: center; gap: 16px;
       padding: 18px 22px;
       border-bottom: 1px solid var(--line);
       font-size: 14px; line-height: 1.6; color: var(--ink-2);
@@ -301,7 +301,8 @@
     }
 
     .solution-card-title {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: 28px; letter-spacing: -.015em; line-height: 1.2;
       margin-bottom: 16px;
     }
@@ -321,7 +322,8 @@
     }
 
     .section-h2 {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: clamp(36px, 4.5vw, 58px);
       letter-spacing: -.025em; line-height: 1;
       margin-top: 20px;
@@ -358,7 +360,8 @@
     }
 
     .feat-title {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 500;
       font-size: 22px; letter-spacing: -.01em; line-height: 1.2;
     }
 
@@ -422,7 +425,8 @@
     .how-step-body {}
 
     .how-step-title {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 500;
       font-size: 22px; letter-spacing: -.01em;
       margin-bottom: 8px;
     }
@@ -465,7 +469,8 @@
     }
 
     .role-title {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: 32px; letter-spacing: -.02em; line-height: 1.1;
       margin-bottom: 20px;
     }
@@ -531,7 +536,7 @@
     }
 
     .quote-mark {
-      font-family: var(--serif);
+      font-family: var(--sans);
       font-size: 120px; line-height: .8;
       color: var(--line-strong);
       display: block; margin-bottom: 16px;
@@ -539,7 +544,8 @@
     }
 
     .quote-text {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: clamp(24px, 3vw, 40px);
       letter-spacing: -.02em; line-height: 1.3;
       max-width: 820px; margin-bottom: 40px;
@@ -555,7 +561,7 @@
       width: 44px; height: 44px; border-radius: 50%;
       background: var(--bg-2); border: 1px solid var(--line);
       display: flex; align-items: center; justify-content: center;
-      font-family: var(--serif); font-size: 18px; color: var(--ink-2);
+      font-family: var(--sans); font-size: 18px; color: var(--ink-2);
     }
 
     .quote-name { font-size: 14px; font-weight: 500; }
@@ -591,7 +597,8 @@
     }
 
     .cta-h2 {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 300;
       font-size: clamp(48px, 7vw, 96px);
       letter-spacing: -.035em; line-height: 1;
       margin-bottom: 24px;
@@ -641,7 +648,8 @@
     }
 
     .footer-brand {
-      font-family: var(--serif);
+      font-family: var(--sans);
+      font-weight: 500;
       font-size: 18px; letter-spacing: -.01em;
       margin-bottom: 12px;
     }
@@ -767,7 +775,7 @@
 
   <!-- ─── HERO ─── -->
   <section class="hero">
-    <div class="bg-hero-grid" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(15,14,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(15,14,12,.05) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,black 40%,transparent 100%);"></div>
+    <div class="bg-hero-grid" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(36,36,36,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(36,36,36,.03) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,black 40%,transparent 100%);"></div>
     <div class="wrap hero-inner">
       <div class="hero-tag fade">
         <span class="hero-tag-dot"></span>
@@ -775,7 +783,7 @@
       </div>
 
       <h1 class="hero-h1 fade">
-        Весь проект —<br>
+        Весь проект<br>
         в одном <em>пространстве</em>
       </h1>
 
@@ -788,7 +796,6 @@
             Запросить доступ
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <span class="hero-cta-note">Без кредитной карты · Первые 30 дней бесплатно</span>
         </div>
       </div>
 
@@ -822,7 +829,7 @@
             <div style="display:flex;gap:16px;">
               <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:2px;padding:16px;">
                 <div style="height:8px;background:rgba(255,255,255,.1);border-radius:2px;width:40%;margin-bottom:8px;"></div>
-                <div style="height:22px;background:rgba(255,255,255,.2);border-radius:2px;width:55%;font-family:var(--serif);"></div>
+                <div style="height:22px;background:rgba(255,255,255,.2);border-radius:2px;width:55%;font-family:var(--sans);"></div>
               </div>
               <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:2px;padding:16px;">
                 <div style="height:8px;background:rgba(255,255,255,.1);border-radius:2px;width:50%;margin-bottom:8px;"></div>
@@ -939,11 +946,11 @@
         <ul class="pain-list">
           <li class="pain-item">
             <span class="pain-icon">✕</span>
-            <span>Переписка в WhatsApp и Telegram теряется — непонятно, кто что должен сделать и в какие сроки.</span>
+            <span>Переписка в WhatsApp и Telegram теряется непонятно, кто что должен сделать и в какие сроки.</span>
           </li>
           <li class="pain-item">
             <span class="pain-icon">✕</span>
-            <span>Реквизиты подрядчиков хранятся в заметках, юридические данные — в почте, а фото работ — в галерее телефона.</span>
+            <span>Реквизиты подрядчиков хранятся в заметках, юридические данные в почте, а фото работ в галерее телефона.</span>
           </li>
           <li class="pain-item">
             <span class="pain-icon">✕</span>
@@ -951,15 +958,15 @@
           </li>
           <li class="pain-item">
             <span class="pain-icon">✕</span>
-            <span>При каждом новом объекте — снова собирать документы, снова объяснять процесс новым мастерам с нуля.</span>
+            <span>При каждом новом объекте снова собирать документы, снова объяснять процесс новым мастерам с нуля.</span>
           </li>
         </ul>
       </div>
       <div class="problem-right fade">
         <div class="solution-card">
-          <span class="solution-card-label">Решение — Daria Kulchikhina</span>
+          <span class="solution-card-label">Решение Daria Kulchikhina</span>
           <div class="solution-card-title">Единое рабочее пространство для <em>каждого проекта</em></div>
-          <p class="solution-card-text">Все участники видят актуальный статус, подрядчики загружают фото прямо в карточку задачи, а дизайнер держит под рукой полную базу реквизитов, мудбордов и документов — всё в одном интерфейсе.</p>
+          <p class="solution-card-text">Все участники видят актуальный статус, подрядчики загружают фото прямо в карточку задачи, а дизайнер держит под рукой полную базу реквизитов, мудбордов и документов всё в одном интерфейсе.</p>
         </div>
         <div style="border:1px solid var(--line);padding:28px 32px;display:flex;flex-direction:column;gap:12px;">
           <span style="font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);">Результат</span>
@@ -1005,7 +1012,7 @@
           <div class="feat-icon">📋</div>
           <span class="feat-num">01</span>
           <div class="feat-title">Управление проектами</div>
-          <p class="feat-desc">Создавайте проекты, назначайте статусы — от лида до завершения. Дорожная карта с этапами, датами и бюджетами наглядно отражает прогресс для вас и клиента.</p>
+          <p class="feat-desc">Создавайте проекты, назначайте статусы от лида до завершения. Дорожная карта с этапами, датами и бюджетами наглядно отражает прогресс для вас и клиента.</p>
           <div class="feat-tags">
             <span class="tag">Roadmap</span>
             <span class="tag">Статусы</span>
@@ -1017,7 +1024,7 @@
           <div class="feat-icon">👷</div>
           <span class="feat-num">02</span>
           <div class="feat-title">CRM подрядчиков</div>
-          <p class="feat-desc">Полная база компаний и мастеров: контакты, паспортные данные, ИНН, ОГРН, банковские реквизиты, виды работ, рейтинг. Всё для договора — в два клика.</p>
+          <p class="feat-desc">Полная база компаний и мастеров: контакты, паспортные данные, ИНН, ОГРН, банковские реквизиты, виды работ, рейтинг. Всё для договора в два клика.</p>
           <div class="feat-tags">
             <span class="tag">Юр. данные</span>
             <span class="tag">Реквизиты</span>
@@ -1029,7 +1036,7 @@
           <div class="feat-icon">📸</div>
           <span class="feat-num">03</span>
           <div class="feat-title">Фото-отчёты</div>
-          <p class="feat-desc">Подрядчик фотографирует и загружает прогресс прямо в задачу через свой портал. Комментарии, согласования и история изменений — без мессенджеров.</p>
+          <p class="feat-desc">Подрядчик фотографирует и загружает прогресс прямо в задачу через свой портал. Комментарии, согласования и история изменений без мессенджеров.</p>
           <div class="feat-tags">
             <span class="tag">Портал мастера</span>
             <span class="tag">Фото</span>
@@ -1053,7 +1060,7 @@
           <div class="feat-icon">📄</div>
           <span class="feat-num">05</span>
           <div class="feat-title">Документы</div>
-          <p class="feat-desc">Все файлы по проекту в одном месте — договоры, сметы, технические задания, планировки. Структурированно, быстро находится, не теряется.</p>
+          <p class="feat-desc">Все файлы по проекту в одном месте договоры, сметы, технические задания, планировки. Структурированно, быстро находится, не теряется.</p>
           <div class="feat-tags">
             <span class="tag">Хранилище</span>
             <span class="tag">Договоры</span>
@@ -1065,7 +1072,7 @@
           <div class="feat-icon">👤</div>
           <span class="feat-num">06</span>
           <div class="feat-title">Клиентский профиль</div>
-          <p class="feat-desc">История всех объектов, предпочтения, контакты и переписка — в одной карточке клиента. Строите долгосрочные отношения, а не начинаете с нуля каждый раз.</p>
+          <p class="feat-desc">История всех объектов, предпочтения, контакты и переписка в одной карточке клиента. Строите долгосрочные отношения, а не начинаете с нуля каждый раз.</p>
           <div class="feat-tags">
             <span class="tag">CRM</span>
             <span class="tag">История</span>
@@ -1136,7 +1143,7 @@
             <span class="how-step-n">01</span>
             <div class="how-step-body">
               <div class="how-step-title">Создайте проект</div>
-              <p class="how-step-desc">Заведите объект, укажите этапы дорожной карты, добавьте клиента. Шаблоны типовых этапов созданы за вас — достаточно адаптировать под конкретный объект.</p>
+              <p class="how-step-desc">Заведите объект, укажите этапы дорожной карты, добавьте клиента. Шаблоны типовых этапов созданы за вас достаточно адаптировать под конкретный объект.</p>
             </div>
           </div>
           <div class="how-step fade">
@@ -1144,7 +1151,7 @@
             <span class="how-step-n">02</span>
             <div class="how-step-body">
               <div class="how-step-title">Добавьте подрядчиков</div>
-              <p class="how-step-desc">Назначьте мастеров на этапы из готовой базы. Каждый подрядчик получает персональный защищённый портал — заходит по ссылке и видит только свои задачи.</p>
+              <p class="how-step-desc">Назначьте мастеров на этапы из готовой базы. Каждый подрядчик получает персональный защищённый портал заходит по ссылке и видит только свои задачи.</p>
             </div>
           </div>
           <div class="how-step fade">
@@ -1152,7 +1159,7 @@
             <span class="how-step-n">03</span>
             <div class="how-step-body">
               <div class="how-step-title">Контролируйте в реальном времени</div>
-              <p class="how-step-desc">Подрядчики обновляют статусы и загружают фото, вы видите актуальную картину по каждому объекту. Никаких звонков «а как там у тебя?» — всё прозрачно.</p>
+              <p class="how-step-desc">Подрядчики обновляют статусы и загружают фото, вы видите актуальную картину по каждому объекту. Никаких звонков «а как там у тебя?» всё прозрачно.</p>
             </div>
           </div>
         </div>
@@ -1175,7 +1182,7 @@
         <div class="role-card">
           <span class="role-icon">✦</span>
           <div class="role-title">Дизайнер интерьера</div>
-          <p class="role-desc">Ваш центральный штаб для всех объектов одновременно. Больше никакого хаоса — только системная работа.</p>
+          <p class="role-desc">Ваш центральный штаб для всех объектов одновременно. Больше никакого хаоса только системная работа.</p>
           <ul class="role-list">
             <li>Ведите 10+ объектов без потери качества контроля</li>
             <li>Мгновенно находите любые данные по проекту или подрядчику</li>
@@ -1189,12 +1196,12 @@
         <div class="role-card">
           <span class="role-icon" style="filter:invert(0);">◉</span>
           <div class="role-title">Подрядчик и мастер</div>
-          <p class="role-desc">Один портал — вместо бесконечных переписок. Видите только своё, делаете быстро, не ошибаетесь.</p>
+          <p class="role-desc">Один портал вместо бесконечных переписок. Видите только своё, делаете быстро, не ошибаетесь.</p>
           <ul class="role-list" style="color:var(--ink-2);">
-            <li>Заходите по личной ссылке — без лишней регистрации</li>
+            <li>Заходите по личной ссылке без лишней регистрации</li>
             <li>Видите точный список задач и сроки именно для своего этапа</li>
-            <li>Загружаете фото прогресса прямо в задачу — не в мессенджер</li>
-            <li>Оставляете комментарии и вопросы — ничего не теряется</li>
+            <li>Загружаете фото прогресса прямо в задачу не в мессенджер</li>
+            <li>Оставляете комментарии и вопросы ничего не теряется</li>
             <li>Ваши реквизиты хранятся один раз, не переспрашивают</li>
           </ul>
         </div>
@@ -1208,7 +1215,7 @@
     <div class="wrap">
       <span class="quote-mark">"</span>
       <blockquote class="quote-text fade">
-        Раньше каждый объект — это отдельная папка в Dropbox, чат в WhatsApp и куча вкладок. Теперь <em>всё в одном окне</em>, и я наконец могу заниматься дизайном, а не администрированием.
+        Раньше каждый объект это отдельная папка в Dropbox, чат в WhatsApp и куча вкладок. Теперь <em>всё в одном окне</em>, и я наконец могу заниматься дизайном, а не администрированием.
       </blockquote>
       <div class="quote-author fade">
         <div class="quote-avatar">Д</div>
@@ -1230,7 +1237,7 @@
         <em>прямо сейчас</em>
       </h2>
       <p class="cta-sub fade">
-        30 дней бесплатно. Никаких карт, никаких обязательств. Настройка за 10 минут — мы поможем перенести данные из Excel.
+        30 дней бесплатно. Никаких карт, никаких обязательств. Настройка за 10 минут мы поможем перенести данные из Excel.
       </p>
       <div class="cta-actions fade">
         <a href="http://localhost:3002/admin/login" class="cta-btn-main">
