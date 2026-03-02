@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin — Li Chu Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f4f4f4; --card: #fff; --border: #e0e0e0;
+      --text: #1a1a1a; --muted: #888; --accent: #ff2fda;
+      --success: #22c55e; --danger: #ef4444; --radius: 8px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── AUTH ── */
+    #auth-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .auth-card {
+      background: var(--card); border-radius: 16px; padding: 48px;
+      width: 100%; max-width: 420px; box-shadow: 0 4px 32px rgba(0,0,0,.08);
+    }
+    .auth-card h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .auth-card p  { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+    .auth-card a  { color: var(--accent); }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    input[type="text"], input[type="password"], input[type="email"],
+    input[type="url"], textarea, select {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 15px; font-family: inherit;
+      background: #fafafa; outline: none; transition: border .15s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    button {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 10px 20px; border: none; border-radius: var(--radius);
+      font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity .15s;
+    }
+    button:hover { opacity: .85; }
+    button:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-primary { background: var(--text); color: #fff; }
+    .btn-accent  { background: var(--accent); color: #fff; }
+    .btn-danger  { background: var(--danger); color: #fff; font-size: 13px; padding: 6px 14px; }
+    .btn-sm      { font-size: 13px; padding: 6px 14px; }
+    .btn-ghost   { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    #auth-err { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; }
+
+    /* ── LAYOUT ── */
+    #app { display: none; height: 100vh; }
+    .app-header {
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 0 32px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .app-header .logo { font-size: 15px; font-weight: 700; }
+    .app-header .header-right { display: flex; gap: 12px; align-items: center; }
+    .app-header .header-right span { font-size: 13px; color: var(--muted); }
+    .app-body { display: flex; height: calc(100vh - 56px); }
+    .sidebar {
+      width: 220px; min-width: 220px; background: var(--card);
+      border-right: 1px solid var(--border); padding: 20px 0;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .sidebar-item {
+      padding: 10px 24px; font-size: 14px; font-weight: 500;
+      cursor: pointer; border-radius: 0; transition: background .12s, color .12s;
+      color: var(--muted); display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-item:hover  { background: var(--bg); color: var(--text); }
+    .sidebar-item.active { background: #fdf0fc; color: var(--accent); font-weight: 600; }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 0; }
+    .content { flex: 1; overflow-y: auto; padding: 32px; }
+
+    /* ── SECTION HEADING ── */
+    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+    .section-sub   { font-size: 14px; color: var(--muted); margin-bottom: 24px; margin-top: -16px; }
+
+    /* ── PROJECTS GRID ── */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; cursor: pointer; transition: box-shadow .15s;
+    }
+    .project-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.1); }
+    .project-card .pc-num { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+    .project-card .pc-title { font-size: 15px; font-weight: 600; margin-top: 6px; }
+    .project-card .pc-imgs  { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .pc-add {
+      background: transparent; border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 20px; cursor: pointer; text-align: center; color: var(--muted);
+      font-size: 14px; transition: border-color .15s, color .15s;
+    }
+    .pc-add:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── EDIT PROJECT ── */
+    #edit-panel { display: none; }
+    .edit-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .edit-header h2 { font-size: 20px; font-weight: 700; }
+    .images-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .img-row {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 16px; display: flex; align-items: center; gap: 14px;
+    }
+    .img-thumb { width: 80px; height: 50px; object-fit: cover; border-radius: 4px; background: #eee; }
+    .img-info { flex: 1; }
+    .img-info .img-name  { font-size: 14px; font-weight: 600; }
+    .img-info .img-order { font-size: 12px; color: var(--muted); }
+    .img-row-actions { display: flex; gap: 6px; }
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 32px; text-align: center; color: var(--muted); font-size: 14px;
+      transition: border-color .15s, background .15s; cursor: pointer;
+    }
+    .drop-zone.drag-over { border-color: var(--accent); background: #fdf0fc; }
+    .drop-zone input { display: none; }
+
+    /* ── NEW PROJECT ── */
+    .form-group { margin-bottom: 20px; }
+    .form-hint  { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* ── SETTINGS / NAV ── */
+    .nav-row {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    }
+    .nav-row input { flex: 1; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #1a1a1a; color: #fff; padding: 12px 20px;
+      border-radius: var(--radius); font-size: 14px; font-weight: 500;
+      opacity: 0; pointer-events: none; transform: translateY(8px);
+      transition: opacity .3s, transform .3s; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.error { background: var(--danger); }
+    #toast.ok    { background: var(--success); }
+
+    /* ── SPINNER ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .6s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading .spinner { display: inline-block; }
+    .loading .btn-label { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ AUTH ══════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <h1>Portfolio Admin</h1>
+    <p>Войдите с помощью GitHub Personal Access Token<br>
+       <a href="https://github.com/settings/tokens/new?scopes=repo&description=lichu-admin" target="_blank" rel="noopener">Создать токен →</a>
+       (нужны права: <code>repo</code>)
+    </p>
+    <div class="form-group">
+      <label for="pat-input">GitHub Personal Access Token</label>
+      <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxxxxxx" autocomplete="off">
+    </div>
+    <button class="btn-primary" id="login-btn" style="width:100%">
+      <span class="spinner"></span><span class="btn-label">Войти</span>
+    </button>
+    <p id="auth-err"></p>
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="app">
+  <header class="app-header">
+    <span class="logo">Li Chu — Admin</span>
+    <div class="header-right">
+      <span id="gh-user"></span>
+      <a href="/" target="_blank"><button class="btn-ghost btn-sm">Открыть сайт</button></a>
+      <button class="btn-ghost btn-sm" id="logout-btn">Выйти</button>
+    </div>
+  </header>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-item active" data-tab="projects">📁 Проекты</div>
+      <div class="sidebar-item" data-tab="new">➕ Новый проект</div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-item" data-tab="nav">🔗 Навигация</div>
+      <div class="sidebar-item" data-tab="settings">⚙️ Настройки</div>
+    </nav>
+
+    <main class="content" id="main-content">
+
+      <!-- ══ PROJECTS TAB ══ -->
+      <div id="tab-projects">
+        <div class="section-title">Проекты</div>
+        <div id="projects-grid" class="projects-grid">
+          <div class="pc-add" id="add-project-btn">+ Добавить проект</div>
+        </div>
+
+        <!-- EDIT PANEL (appears below grid) -->
+        <div id="edit-panel" style="margin-top:32px">
+          <div class="edit-header">
+            <button class="btn-ghost btn-sm" id="close-edit">← Назад</button>
+            <h2 id="edit-title">Редактировать проект</h2>
+          </div>
+
+          <div class="form-group">
+            <label>Название страницы</label>
+            <input type="text" id="edit-page-title" placeholder="Project 1 — Taxi">
+          </div>
+
+          <p style="font-size:14px;font-weight:600;margin-bottom:12px;">Изображения (порядок определяет отображение)</p>
+          <div id="images-list" class="images-list"></div>
+
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" accept="image/*" multiple>
+            <div>Перетащите изображения сюда или <strong>нажмите для выбора</strong></div>
+            <div style="margin-top:4px;font-size:12px;color:#aaa">JPG, PNG, WebP · до 5 МБ каждый</div>
+          </div>
+
+          <div id="upload-progress" style="display:none;margin-top:12px;font-size:14px;color:var(--muted)"></div>
+
+          <div style="display:flex;gap:12px;margin-top:24px;justify-content:flex-end">
+            <button class="btn-ghost" id="cancel-edit-btn">Отмена</button>
+            <button class="btn-primary" id="save-project-btn">
+              <span class="spinner"></span><span class="btn-label">Сохранить и задеплоить</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NEW PROJECT TAB ══ -->
+      <div id="tab-new" style="display:none">
+        <div class="section-title">Новый проект</div>
+        <div style="max-width:520px">
+          <div class="form-group">
+            <label>ID проекта</label>
+            <select id="new-project-id">
+              <option value="project-02">project-02</option>
+              <option value="project-03">project-03</option>
+              <option value="project-04">project-04</option>
+              <option value="project-05">project-05</option>
+              <option value="project-06">project-06 (новый)</option>
+              <option value="project-07">project-07 (новый)</option>
+            </select>
+            <div class="form-hint">Этот ID используется в URL страницы</div>
+          </div>
+          <div class="form-group">
+            <label>Название проекта</label>
+            <input type="text" id="new-project-title" placeholder="Project 2 — Branding">
+          </div>
+          <div class="form-group">
+            <label>Изображения</label>
+            <div class="drop-zone" id="new-drop-zone">
+              <input type="file" id="new-file-input" accept="image/*" multiple>
+              <div>Перетащите изображения или <strong>нажмите для выбора</strong></div>
+            </div>
+            <div id="new-file-list" style="margin-top:12px"></div>
+          </div>
+          <button class="btn-accent" id="create-project-btn" style="width:100%">
+            <span class="spinner"></span><span class="btn-label">Создать проект</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ NAV TAB ══ -->
+      <div id="tab-nav" style="display:none">
+        <div class="section-title">Навигация</div>
+        <p class="section-sub">Ссылки появляются в боковой панели на всех страницах</p>
+        <div id="nav-rows" style="display:flex;flex-direction:column;gap:10px;max-width:600px"></div>
+        <div style="margin-top:20px;display:flex;gap:10px">
+          <button class="btn-ghost btn-sm" id="add-nav-item">+ Добавить ссылку</button>
+          <button class="btn-primary" id="save-nav-btn">
+            <span class="spinner"></span><span class="btn-label">Сохранить навигацию</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS TAB ══ -->
+      <div id="tab-settings" style="display:none">
+        <div class="section-title">Настройки</div>
+        <div style="max-width:520px">
+          <div class="form-group">
+            <label>Email для формы обратной связи</label>
+            <input type="email" id="set-email" value="lapkazarapka8752@gmail.com">
+            <div class="form-hint">Куда приходят сообщения из игры</div>
+          </div>
+          <div class="form-group">
+            <label>EmailJS Public Key</label>
+            <input type="text" id="set-ejs-key" placeholder="xxxxxxxxxxxxxxxx">
+            <div class="form-hint">
+              <a href="https://www.emailjs.com/" target="_blank" rel="noopener">EmailJS</a> → Account → API Keys
+            </div>
+          </div>
+          <div class="form-group">
+            <label>EmailJS Service ID</label>
+            <input type="text" id="set-ejs-service" placeholder="service_xxxxxxx">
+          </div>
+          <div class="form-group">
+            <label>EmailJS Template ID</label>
+            <input type="text" id="set-ejs-template" placeholder="template_xxxxxxx">
+            <div class="form-hint">Шаблон должен иметь переменные: from_name, from_email, message</div>
+          </div>
+          <button class="btn-primary" id="save-settings-btn">
+            <span class="spinner"></span><span class="btn-label">Сохранить настройки</span>
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const OWNER = 'chu1107chu-jpg';
+const REPO  = 'lichu';
+const BRANCH_MAIN = 'main';
+const BRANCH_GHP  = 'gh-pages';
+const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+
+let PAT = '';
+let ghLogin = '';
+let currentEditProject = null;
+let newProjectFiles = [];
+
+// ─── HELPERS ───────────────────────────────────────────────────────────────
+
+const $ = id => document.getElementById(id);
+function toast(msg, type = '') {
+  const el = $('toast');
+  el.textContent = msg; el.className = 'show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 3000);
+}
+function setLoading(btn, on) {
+  btn.classList.toggle('loading', on);
+  btn.disabled = on;
+}
+
+function authHeaders() {
+  return { Authorization: `Bearer ${PAT}`, 'Content-Type': 'application/json' };
+}
+
+async function ghGet(path) {
+  const r = await fetch(`${API}${path}`, { headers: authHeaders() });
+  if (!r.ok) throw new Error(`GitHub API: ${r.status}`);
+  return r.json();
+}
+
+async function ghGetContents(filePath) {
+  try {
+    return await ghGet(`/contents/${filePath}?ref=${BRANCH_MAIN}`);
+  } catch { return null; }
+}
+
+async function ghPut(filePath, contentB64, message, sha = null, branch = BRANCH_MAIN) {
+  const body = { message, content: contentB64, branch };
+  if (sha) body.sha = sha;
+  const r = await fetch(`${API}/contents/${filePath}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(e.message || `PUT failed ${r.status}`);
+  }
+  return r.json();
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function strToB64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+// ─── AUTH ───────────────────────────────────────────────────────────────────
+
+$('login-btn').addEventListener('click', async () => {
+  const pat = $('pat-input').value.trim();
+  if (!pat) return;
+  setLoading($('login-btn'), true);
+  $('auth-err').style.display = 'none';
+  try {
+    const r = await fetch('https://api.github.com/user', {
+      headers: { Authorization: `Bearer ${pat}` }
+    });
+    if (!r.ok) throw new Error(`${r.status}`);
+    const user = await r.json();
+    PAT = pat;
+    ghLogin = user.login;
+    sessionStorage.setItem('lichu_admin_pat', pat);
+    sessionStorage.setItem('lichu_admin_user', ghLogin);
+    $('gh-user').textContent = ghLogin;
+    showApp();
+  } catch (e) {
+    $('auth-err').textContent = 'Неверный токен или ошибка доступа: ' + e.message;
+    $('auth-err').style.display = 'block';
+    setLoading($('login-btn'), false);
+  }
+});
+
+$('logout-btn').addEventListener('click', () => {
+  sessionStorage.clear();
+  PAT = ''; ghLogin = '';
+  $('app').style.display = 'none';
+  $('auth-screen').style.display = 'flex';
+  $('pat-input').value = '';
+});
+
+// ─── TABS ───────────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.sidebar-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    const tab = item.dataset.tab;
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+    $('tab-' + tab).style.display = '';
+    if (tab === 'projects') loadProjects();
+    if (tab === 'nav') loadNav();
+    if (tab === 'settings') loadSettings();
+  });
+});
+
+$('add-project-btn').addEventListener('click', () => {
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  document.querySelector('[data-tab="new"]').classList.add('active');
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+  $('tab-new').style.display = '';
+});
+
+// ─── SHOW APP ───────────────────────────────────────────────────────────────
+
+async function showApp() {
+  $('auth-screen').style.display = 'none';
+  $('app').style.display = '';
+  await loadProjects();
+}
+
+// ─── PROJECTS ───────────────────────────────────────────────────────────────
+
+async function loadProjects() {
+  const grid = $('projects-grid');
+  grid.innerHTML = '<div class="pc-add" id="add-project-btn">+ Добавить проект</div>';
+  $('add-project-btn').addEventListener('click', () => {
+    document.querySelector('[data-tab="new"]').click();
+  });
+
+  // Fetch all project HTML files
+  let contents;
+  try { contents = await ghGet(`/contents/site?ref=${BRANCH_MAIN}`); }
+  catch { toast('Не удалось загрузить список файлов', 'error'); return; }
+
+  const projectFiles = contents
+    .filter(f => /^project-\d+\.html$/.test(f.name))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  for (const f of projectFiles) {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    const id = f.name.replace('.html', '');
+    card.innerHTML = `
+      <div class="pc-num">${id.toUpperCase()}</div>
+      <div class="pc-title">${id}</div>
+      <div class="pc-imgs">Нажмите для редактирования</div>
+    `;
+    card.addEventListener('click', () => openEditProject(id));
+    grid.insertBefore(card, $('add-project-btn'));
+  }
+}
+
+async function openEditProject(projectId) {
+  currentEditProject = projectId;
+  $('edit-title').textContent = 'Редактировать: ' + projectId;
+  $('edit-page-title').value = '';
+  $('images-list').innerHTML = '<p style="color:var(--muted);font-size:14px">Загрузка…</p>';
+  $('edit-panel').style.display = '';
+
+  // Scroll to edit panel
+  $('edit-panel').scrollIntoView({ behavior: 'smooth' });
+
+  // Load current HTML to find images
+  try {
+    const file = await ghGetContents(`site/${projectId}.html`);
+    if (file) {
+      const html = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+      // Extract page title
+      const titleMatch = html.match(/<title>(.*?)<\/title>/);
+      if (titleMatch) $('edit-page-title').value = titleMatch[1];
+      // Extract section images
+      const imgMatches = [...html.matchAll(/src="(img\/[^"]+)"/g)];
+      const imgs = imgMatches.map(m => m[1]);
+      renderImagesList(imgs);
+    }
+  } catch (e) {
+    $('images-list').innerHTML = '<p style="color:var(--muted)">Файл не найден или пуст</p>';
+  }
+}
+
+function renderImagesList(imgs) {
+  const list = $('images-list');
+  list.innerHTML = '';
+  if (!imgs || !imgs.length) {
+    list.innerHTML = '<p style="color:var(--muted);font-size:14px">Нет изображений</p>';
+    return;
+  }
+  imgs.forEach((src, i) => {
+    const row = document.createElement('div');
+    row.className = 'img-row';
+    row.dataset.src = src;
+    row.innerHTML = `
+      <img class="img-thumb" src="${src}" onerror="this.style.background='#ddd'">
+      <div class="img-info">
+        <div class="img-name">${src.split('/').pop()}</div>
+        <div class="img-order">Позиция ${i + 1}</div>
+      </div>
+      <div class="img-row-actions">
+        ${i > 0 ? `<button class="btn-ghost btn-sm up-btn">↑</button>` : ''}
+        ${i < imgs.length - 1 ? `<button class="btn-ghost btn-sm dn-btn">↓</button>` : ''}
+        <button class="btn-danger del-btn">✕</button>
+      </div>
+    `;
+    row.querySelector('.up-btn')?.addEventListener('click', () => moveImg(row, -1));
+    row.querySelector('.dn-btn')?.addEventListener('click', () => moveImg(row, 1));
+    row.querySelector('.del-btn').addEventListener('click', () => {
+      row.remove();
+      renumberImages();
+    });
+    list.appendChild(row);
+  });
+}
+
+function moveImg(row, dir) {
+  const list = $('images-list');
+  if (dir === -1 && row.previousElementSibling) {
+    list.insertBefore(row, row.previousElementSibling);
+  } else if (dir === 1 && row.nextElementSibling) {
+    list.insertBefore(row.nextElementSibling, row);
+  }
+  renumberImages();
+}
+
+function renumberImages() {
+  [...$('images-list').querySelectorAll('.img-row')].forEach((r, i) => {
+    r.querySelector('.img-order').textContent = `Позиция ${i + 1}`;
+  });
+  // Rebuild up/dn buttons
+  const rows = [...$('images-list').querySelectorAll('.img-row')];
+  rows.forEach((row, i) => {
+    const actions = row.querySelector('.img-row-actions');
+    const del = actions.querySelector('.del-btn');
+    actions.innerHTML = '';
+    if (i > 0) {
+      const up = document.createElement('button');
+      up.className = 'btn-ghost btn-sm'; up.textContent = '↑';
+      up.addEventListener('click', () => moveImg(row, -1));
+      actions.appendChild(up);
+    }
+    if (i < rows.length - 1) {
+      const dn = document.createElement('button');
+      dn.className = 'btn-ghost btn-sm'; dn.textContent = '↓';
+      dn.addEventListener('click', () => moveImg(row, 1));
+      actions.appendChild(dn);
+    }
+    const d2 = document.createElement('button');
+    d2.className = 'btn-danger'; d2.textContent = '✕';
+    d2.addEventListener('click', () => { row.remove(); renumberImages(); });
+    actions.appendChild(d2);
+  });
+}
+
+// Drop zone for edit
+setupDropZone($('drop-zone'), $('file-input'), handleEditUpload);
+
+async function handleEditUpload(files) {
+  const progress = $('upload-progress');
+  progress.style.display = '';
+  for (const file of files) {
+    progress.textContent = `Загружаю ${file.name}…`;
+    try {
+      const b64 = await toBase64(file);
+      const path = `site/img/${currentEditProject}/${file.name}`;
+      const existing = await ghGetContents(path);
+      await ghPut(path, b64, `upload: ${file.name}`, existing?.sha);
+      // Add to list
+      const src = `img/${currentEditProject}/${file.name}`;
+      addImageToList(src);
+    } catch (e) {
+      toast(`Ошибка загрузки ${file.name}: ${e.message}`, 'error');
+    }
+  }
+  progress.textContent = ''; progress.style.display = 'none';
+  toast('Изображения загружены', 'ok');
+}
+
+function addImageToList(src) {
+  const list = $('images-list');
+  const placeholder = list.querySelector('p');
+  if (placeholder) placeholder.remove();
+  const row = document.createElement('div');
+  row.className = 'img-row';
+  row.dataset.src = src;
+  const i = list.querySelectorAll('.img-row').length;
+  row.innerHTML = `
+    <img class="img-thumb" src="${src}" onerror="this.style.background='#ddd'">
+    <div class="img-info">
+      <div class="img-name">${src.split('/').pop()}</div>
+      <div class="img-order">Позиция ${i + 1}</div>
+    </div>
+    <div class="img-row-actions">
+      <button class="btn-ghost btn-sm up-btn">↑</button>
+      <button class="btn-danger del-btn">✕</button>
+    </div>
+  `;
+  row.querySelector('.up-btn').addEventListener('click', () => moveImg(row, -1));
+  row.querySelector('.del-btn').addEventListener('click', () => { row.remove(); renumberImages(); });
+  list.appendChild(row);
+  renumberImages();
+}
+
+// Save project
+$('save-project-btn').addEventListener('click', async () => {
+  const btn = $('save-project-btn');
+  setLoading(btn, true);
+  try {
+    const imgs = [...$('images-list').querySelectorAll('.img-row')].map(r => r.dataset.src);
+    const pageTitle = $('edit-page-title').value || currentEditProject;
+    const html = generateProjectHTML(currentEditProject, pageTitle, imgs);
+    const b64 = strToB64(html);
+    const mainPath = `site/${currentEditProject}.html`;
+    const ghpPath  = `${currentEditProject}.html`;
+    const [fMain, fGhp] = await Promise.all([
+      ghGetContents(mainPath),
+      ghGet(`/contents/${ghpPath}?ref=${BRANCH_GHP}`).catch(() => null)
+    ]);
+    await ghPut(mainPath, b64, `admin: update ${currentEditProject}`, fMain?.sha, BRANCH_MAIN);
+    await ghPut(ghpPath, b64, `deploy: update ${currentEditProject}`, fGhp?.sha, BRANCH_GHP);
+    toast('Сохранено и задеплоено ✓', 'ok');
+  } catch (e) {
+    toast('Ошибка сохранения: ' + e.message, 'error');
+  }
+  setLoading(btn, false);
+});
+
+$('close-edit').addEventListener('click', () => { $('edit-panel').style.display = 'none'; currentEditProject = null; });
+$('cancel-edit-btn').addEventListener('click', () => { $('edit-panel').style.display = 'none'; });
+
+// ─── NEW PROJECT ─────────────────────────────────────────────────────────────
+
+setupDropZone($('new-drop-zone'), $('new-file-input'), files => {
+  newProjectFiles = [...(newProjectFiles || []), ...files];
+  const list = $('new-file-list');
+  list.innerHTML = newProjectFiles.map(f => `<div style="font-size:13px;color:var(--muted);padding:2px 0">${f.name}</div>`).join('');
+});
+
+$('create-project-btn').addEventListener('click', async () => {
+  const id = $('new-project-id').value;
+  const title = $('new-project-title').value || id;
+  if (!newProjectFiles.length) { toast('Добавьте хотя бы одно изображение', 'error'); return; }
+
+  const btn = $('create-project-btn');
+  setLoading(btn, true);
+  const uploadedSrcs = [];
+
+  try {
+    for (const file of newProjectFiles) {
+      const b64 = await toBase64(file);
+      const path = `site/img/${id}/${file.name}`;
+      const existing = await ghGetContents(path);
+      await ghPut(path, b64, `upload: ${id}/${file.name}`, existing?.sha);
+      uploadedSrcs.push(`img/${id}/${file.name}`);
+    }
+
+    const html = generateProjectHTML(id, title, uploadedSrcs);
+    const b64html = strToB64(html);
+    const mainPath = `site/${id}.html`;
+    const ghpPath  = `${id}.html`;
+    const [fMain, fGhp] = await Promise.all([
+      ghGetContents(mainPath),
+      ghGet(`/contents/${ghpPath}?ref=${BRANCH_GHP}`).catch(() => null)
+    ]);
+    await ghPut(mainPath, b64html, `feat: add ${id}`, fMain?.sha, BRANCH_MAIN);
+    await ghPut(ghpPath, b64html, `deploy: add ${id}`, fGhp?.sha, BRANCH_GHP);
+
+    toast(`Проект ${id} создан и задеплоен ✓`, 'ok');
+    newProjectFiles = [];
+    $('new-file-list').innerHTML = '';
+    $('new-project-title').value = '';
+    loadProjects();
+  } catch (e) {
+    toast('Ошибка: ' + e.message, 'error');
+  }
+  setLoading(btn, false);
+});
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+
+const DEFAULT_NAV = [
+  { label: 'Главная', href: 'index.html' },
+  { label: 'Project 1', href: 'project-01.html' },
+  { label: 'Project 2', href: 'project-02.html' },
+  { label: 'Project 3', href: 'project-03.html' },
+  { label: 'Project 4', href: 'project-04.html' },
+  { label: 'Project 5', href: 'project-05.html' },
+];
+
+let navItems = [...DEFAULT_NAV];
+
+async function loadNav() {
+  try {
+    const f = await ghGetContents('site/site-config.json');
+    if (f) {
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      if (cfg.nav) navItems = cfg.nav;
+    }
+  } catch {}
+  renderNavRows();
+}
+
+function renderNavRows() {
+  const container = $('nav-rows');
+  container.innerHTML = '';
+  navItems.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'nav-row';
+    row.innerHTML = `
+      <input type="text" value="${item.label}" placeholder="Название" data-field="label" data-idx="${i}">
+      <input type="text" value="${item.href}" placeholder="URL (напр. project-01.html)" data-field="href" data-idx="${i}">
+      <button class="btn-danger" data-idx="${i}">✕</button>
+    `;
+    row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', e => {
+      navItems[+e.target.dataset.idx][e.target.dataset.field] = e.target.value;
+    }));
+    row.querySelector('button').addEventListener('click', e => {
+      navItems.splice(+e.target.dataset.idx, 1);
+      renderNavRows();
+    });
+    container.appendChild(row);
+  });
+}
+
+$('add-nav-item').addEventListener('click', () => {
+  navItems.push({ label: 'Новый', href: '#' });
+  renderNavRows();
+});
+
+$('save-nav-btn').addEventListener('click', async () => {
+  const btn = $('save-nav-btn');
+  setLoading(btn, true);
+  try {
+    await saveConfig({ nav: navItems });
+    toast('Навигация сохранена ✓', 'ok');
+  } catch (e) { toast(e.message, 'error'); }
+  setLoading(btn, false);
+});
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+
+async function loadSettings() {
+  try {
+    const f = await ghGetContents('site/site-config.json');
+    if (f) {
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      if (cfg.email) $('set-email').value = cfg.email;
+      if (cfg.emailjs_key) $('set-ejs-key').value = cfg.emailjs_key;
+      if (cfg.emailjs_service) $('set-ejs-service').value = cfg.emailjs_service;
+      if (cfg.emailjs_template) $('set-ejs-template').value = cfg.emailjs_template;
+    }
+  } catch {}
+}
+
+$('save-settings-btn').addEventListener('click', async () => {
+  const btn = $('save-settings-btn');
+  setLoading(btn, true);
+  try {
+    const cfg = {
+      email: $('set-email').value,
+      emailjs_key: $('set-ejs-key').value,
+      emailjs_service: $('set-ejs-service').value,
+      emailjs_template: $('set-ejs-template').value,
+    };
+    await saveConfig(cfg);
+    toast('Настройки сохранены ✓', 'ok');
+  } catch (e) { toast(e.message, 'error'); }
+  setLoading(btn, false);
+});
+
+async function saveConfig(partial) {
+  const f = await ghGetContents('site/site-config.json');
+  let existing = {};
+  if (f) {
+    try { existing = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+  }
+  const merged = { ...existing, ...partial };
+  const b64 = strToB64(JSON.stringify(merged, null, 2));
+  await ghPut('site/site-config.json', b64, 'admin: update config', f?.sha, BRANCH_MAIN);
+}
+
+// ─── HTML GENERATOR ──────────────────────────────────────────────────────────
+
+function generateProjectHTML(id, title, images) {
+  const navLinks = navItems.map(n =>
+    `    <a href="${n.href}" class="nav-link${n.href.includes(id) ? ' active' : ''}">${n.label}</a>`
+  ).join('\n');
+
+  const imgTags = images.map(src =>
+    `      <img class="section-img" src="${src}" alt="" loading="lazy">`
+  ).join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>${title} | Li Chu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7,auto}
+    html,body{height:100%;cursor:var(--cursor);font-family:'Inter',sans-serif}
+    body{display:flex;background:#fff}
+    a{cursor:var(--cursor)}
+    .sidebar{width:260px;min-width:260px;background:#dcdcdc;height:100vh;position:sticky;top:0;display:flex;flex-direction:column;padding:40px 32px;gap:8px;overflow-y:auto;z-index:10}
+    .nav-link{font-size:18px;font-weight:500;color:#242424;text-decoration:none;padding:4px 0;transition:color .15s;line-height:1.4}
+    .nav-link:hover,.nav-link.active{color:#ff2fda}
+    .main{flex:1;overflow-x:hidden;overflow-y:auto;background:#fff}
+    .sections{width:1280px;display:flex;flex-direction:column}
+    .section-img{display:block;width:1280px}
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+${navLinks}
+  </aside>
+  <main class="main">
+    <div class="sections">
+${imgTags}
+    </div>
+  </main>
+</body>
+</html>`;
+}
+
+// ─── DROP ZONE HELPER ────────────────────────────────────────────────────────
+
+function setupDropZone(zone, fileInput, onFiles) {
+  zone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => onFiles([...fileInput.files]));
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    onFiles([...e.dataTransfer.files].filter(f => f.type.startsWith('image/')));
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+(function init() {
+  const storedPat  = sessionStorage.getItem('lichu_admin_pat');
+  const storedUser = sessionStorage.getItem('lichu_admin_user');
+  if (storedPat) {
+    PAT = storedPat;
+    ghLogin = storedUser || '';
+    $('gh-user').textContent = ghLogin;
+    showApp();
+  }
+})();
+</script>
+</body>
+</html>
