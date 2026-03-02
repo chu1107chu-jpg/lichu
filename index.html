@@ -29,7 +29,11 @@
       transition: opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1);
     }
     #nav.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-    #nav a { font-weight: 400; font-size: 20px; color: #98999c; text-decoration: none; display: block; }
+    #nav a { font-weight: 400; font-size: 18px; color: #98999c; text-decoration: none; display: block;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, pointer;
+      transition: color 0.18s;
+    }
+    #nav a:hover { color: #ff2fda; }
 
     /* ── GAME AREA — Figma: bg #242424 ── */
     #game-area { flex: 1; position: relative; background: #242424; overflow: hidden; }
@@ -113,11 +117,11 @@
       <nav id="nav">
         <a href="#">About</a>
         <a href="#">Contact</a>
-        <a href="#">Project 1</a>
-        <a href="#">Project 2</a>
-        <a href="#">Project 3</a>
-        <a href="#">Project 4</a>
-        <a href="#">Project 5</a>
+        <a href="project-01.html">Project 1</a>
+        <a href="project-02.html">Project 2</a>
+        <a href="project-03.html">Project 3</a>
+        <a href="project-04.html">Project 4</a>
+        <a href="project-05.html">Project 5</a>
       </nav>
     </div>
 
