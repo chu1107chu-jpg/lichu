@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div v-if="projectPending" style="font-size:.88rem;color:#999">Загрузка...</div>
-    <div v-else-if="!project" style="font-size:.88rem;color:#999">Проект не найден</div>
+    <div v-if="projectPending" class="proj-state-msg">Загрузка…</div>
+    <div v-else-if="!project" class="proj-state-msg">Проект не найден</div>
     <template v-else>
-      <div style="font-size:.78rem;color:#aaa;margin-bottom:12px">
-        <NuxtLink to="/admin" style="color:#888;text-decoration:none">проекты</NuxtLink>
-        <span style="margin:0 6px">/</span>
-        <span>{{ project.title }}</span>
-      </div>
+      <nav class="proj-breadcrumb" aria-label="Навигация">
+        <NuxtLink to="/admin" class="proj-breadcrumb-link">проекты</NuxtLink>
+        <span class="proj-breadcrumb-sep" aria-hidden="true">/</span>
+        <span class="proj-breadcrumb-current">{{ project.title }}</span>
+      </nav>
 
-      <div class="proj-client-card glass-card" style="margin-bottom:14px">
+      <div class="proj-client-card glass-card proj-info-card">
         <div class="proj-client-title">
           клиент проекта
           <button type="button" class="admin-mini-chip admin-mini-chip--dim" style="margin-left:8px" @click="showClientModal = true">+</button>
@@ -34,7 +34,7 @@
       </div>
 
       <!-- Contractor link card -->
-      <div class="proj-client-card glass-card" style="margin-bottom:14px">
+      <div class="proj-client-card glass-card proj-info-card">
         <div class="proj-client-title">
           подрядчики проекта
           <button type="button" class="admin-mini-chip admin-mini-chip--dim" style="margin-left:8px" @click="showContractorModal = true">+</button>
@@ -930,6 +930,33 @@ async function unlinkClientFromModal(clientId: string) {
 </script>
 
 <style scoped>
+/* ── State messages ── */
+.proj-state-msg {
+  font-size: var(--ds-text-sm, .88rem);
+  color: var(--glass-text); opacity: .45; padding: 20px 0;
+}
+
+/* ── Breadcrumb ── */
+.proj-breadcrumb {
+  display: flex; align-items: center; gap: 0;
+  font-size: .78rem; margin-bottom: 14px;
+}
+.proj-breadcrumb-link {
+  color: var(--glass-text); opacity: .45; text-decoration: none;
+  transition: opacity var(--ds-transition, 150ms ease);
+}
+.proj-breadcrumb-link:hover { opacity: .85; text-decoration: underline; }
+.proj-breadcrumb-sep {
+  color: var(--glass-text); opacity: .25; margin: 0 6px;
+}
+.proj-breadcrumb-current {
+  color: var(--glass-text); opacity: .7; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;
+}
+
+/* ── Info cards (client / contractor) spacing ── */
+.proj-info-card { margin-bottom: 14px; }
+
 .proj-client-card {
   padding: 12px 14px;
 }

@@ -499,15 +499,40 @@ html.dark .glass-input::placeholder {
   transition: opacity var(--ds-transition, 180ms ease), background var(--ds-transition, 180ms ease);
 }
 .a-btn-sm:hover  { opacity: .95; background: color-mix(in srgb, var(--btn-sm-border) 40%, transparent); }
-.a-btn-sm:active { opacity: 1; }
+.a-btn-sm:active { opacity: 1; transform: scale(.97); }
 .a-btn-sm:disabled { opacity: .28; cursor: default; }
+
+/* ── Global focus-visible outline (keyboard accessibility) ── */
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ds-accent, #6b9fd4) 80%, transparent);
+  outline-offset: 2px;
+  border-radius: var(--input-radius, 4px);
+}
+button:focus-visible, a:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ds-accent, #6b9fd4) 80%, transparent);
+  outline-offset: 2px;
+}
+
+/* ── Text selection colour ── */
+::selection {
+  background: color-mix(in srgb, var(--ds-accent, #6b9fd4) 22%, transparent);
+  color: var(--glass-text);
+}
 
 .a-btn-danger {
   border-color: rgba(160, 40, 40, .24);
   color: #a83232;
   opacity: .82;
 }
-.a-btn-danger:hover { background: rgba(160,40,40,.06); opacity: 1; border-color: rgba(160,40,40,.38); }
+.a-btn-danger:hover {
+  background: rgba(180, 30, 30, .08);
+  border-color: rgba(180, 30, 30, .46);
+  color: #be2222;
+  opacity: 1;
+}
+.a-btn-danger:active { transform: scale(.97); }
+html.dark .a-btn-danger { color: #f28080; border-color: rgba(240, 80, 80, .22); }
+html.dark .a-btn-danger:hover { background: rgba(220, 50, 50, .12); border-color: rgba(240, 80, 80, .40); color: #ff9f9f; }
 
 /* ════════════════════════════════════════════════════════════
    UI THEMES — data-theme="..." on <html>

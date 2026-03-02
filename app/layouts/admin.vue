@@ -7,10 +7,11 @@
         <button
           type="button"
           class="theme-dot"
-          :aria-label="isDark ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'"
+          :aria-label="isDark ? 'Светлая тема' : 'Тёмная тема'"
+          :title="isDark ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'"
           @click="toggleTheme"
-        ></button>
-        <NuxtLink to="/" class="admin-link">сайт</NuxtLink>
+        ><span class="theme-dot-icon" aria-hidden="true">{{ isDark ? '☀️' : '🌙' }}</span></button>
+        <NuxtLink to="/" class="admin-link" title="Перейти на сайт">сайт ↗</NuxtLink>
         <a href="#" class="admin-link" @click.prevent="logout">выйти</a>
       </div>
     </header>
@@ -516,26 +517,35 @@ async function logout() {
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--glass-text);
-  opacity: .45;
+  opacity: .58;
+  font-weight: 600;
+  user-select: none;
 }
 .admin-header-links { display: flex; gap: 14px; align-items: center; }
 .admin-link {
   font-size: .78rem;
   color: var(--glass-text);
-  opacity: .5;
+  opacity: .55;
   text-decoration: none;
+  transition: opacity var(--ds-transition, 150ms ease);
 }
 .admin-link:hover { opacity: 1; }
 
 .theme-dot {
-  width: 18px; height: 18px;
+  width: 26px; height: 26px;
   border-radius: 999px;
   border: none;
   background: color-mix(in srgb, var(--glass-bg) 80%, transparent);
   box-shadow: inset 0 0 0 1px var(--glass-border);
   cursor: pointer;
   padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .7rem;
+  line-height: 1;
+  transition: box-shadow var(--ds-transition, 150ms ease), opacity var(--ds-transition, 150ms ease);
 }
+.theme-dot:hover { box-shadow: inset 0 0 0 1px var(--glass-text); opacity: .85; }
+.theme-dot-icon { pointer-events: none; }
 
 /* ── Container / tabs ── */
 .admin-container { max-width: var(--ds-container-width, 1140px); margin: 22px auto; padding: 0 16px; transition: max-width var(--ds-transition, 180ms ease); }
@@ -560,13 +570,17 @@ async function logout() {
   font-size: var(--ds-text-sm, .78rem);
   line-height: 1;
   letter-spacing: var(--ds-letter-spacing);
-  opacity: .62;
+  opacity: .55;
   border-radius: 999px;
   white-space: nowrap;
-  transition: opacity var(--ds-transition, 150ms ease), background var(--ds-transition, 150ms ease);
+  transition: opacity var(--ds-transition, 150ms ease), background var(--ds-transition, 150ms ease), box-shadow var(--ds-transition, 150ms ease);
 }
-.admin-tab:hover  { opacity: .9; }
-.admin-tab--active { opacity: 1; font-weight: 600; }
+.admin-tab:hover  { opacity: .9; background: color-mix(in srgb, var(--glass-bg) 70%, transparent); }
+.admin-tab--active {
+  opacity: 1;
+  font-weight: 600;
+  box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--ds-accent, #6b9fd4) 60%, transparent);
+}
 
 /* ── Chip-tab wrapper (label + mini chip) ── */
 .admin-chip-tab {
