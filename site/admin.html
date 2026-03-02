@@ -50,7 +50,7 @@
     #auth-err { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; }
 
     /* ── LAYOUT ── */
-    #app { display: none; height: 100vh; }
+    #app { display: none; flex-direction: column; height: 100vh; }
     .app-header {
       background: var(--card); border-bottom: 1px solid var(--border);
       padding: 0 32px; height: 56px;
@@ -448,7 +448,7 @@ $('add-project-btn').addEventListener('click', () => {
 
 async function showApp() {
   $('auth-screen').style.display = 'none';
-  $('app').style.display = '';
+  $('app').style.display = 'flex';
   await loadProjects();
 }
 
