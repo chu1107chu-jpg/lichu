@@ -1,0 +1,39 @@
+import { useDb } from '~/server/db/index'
+import { contractors, projectContractors, projects } from '~/server/db/schema'
+import { eq, sql } from 'drizzle-orm'
+
+export default defineEventHandler(async (event) => {
+  requireAdmin(event)
+  const db = useDb()
+  const q = safeGetQuery(event)
+  const projectSlugFilter = (q.projectSlug as string) || ''
+
+  // Always show ALL contractors (with their linked projects info)
+  const rowsRaw = await db
+      .select({
+        contractor: contractors,
+        projectIds: sql<number[]>`array_remove(array_agg(${projectContractors.projectId}), null)`,
+        projectTitles: sql<string[]>`array_remove(array_agg(${projects.title}), null)`,
+        projectSlugs: sql<string[]>`array_remove(array_agg(${projects.slug}), null)`,
+      })
+      .from(contractors)
+      .leftJoin(projectContractors, eq(projectContractors.contractorId, contractors.id))
+      .leftJoin(projects, eq(projects.id, projectContractors.projectId))
+      .groupBy(contractors.id)
+      .orderBy(contractors.name)
+
+  const rows = Array.isArray(rowsRaw)
+    ? rowsRaw
+    : (rowsRaw ? Array.from(rowsRaw as any) : [])
+
+  return rows.map((r: any) => {
+    // Strip sensitive fields — slug used for contractor auth
+    const { slug: _slug, ...safeContractor } = r.contractor || {}
+    return {
+      ...safeContractor,
+      linkedProjectIds: Array.isArray(r.projectIds) ? r.projectIds : [],
+      linkedProjectTitles: Array.isArray(r.projectTitles) ? r.projectTitles : [],
+      linkedProjectSlugs: Array.isArray(r.projectSlugs) ? r.projectSlugs : [],
+    }
+  })
+})

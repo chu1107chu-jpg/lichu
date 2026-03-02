@@ -1,0 +1,57 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  devtools: { enabled: false },
+
+  modules: ['@nuxt/ui', '@pinia/nuxt'],
+
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark',
+  },
+
+  css: ['~/assets/css/main.css'],
+
+  runtimeConfig: {
+    // Server-only (private)
+    databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
+    sessionSecret: process.env.NUXT_SESSION_SECRET,
+    // Public
+    public: {
+      appName: 'Daria Kulchikhina',
+      yandexMapsApiKey: process.env.YANDEX_MAPS_API_KEY,
+    },
+  },
+
+  alias: {
+    '~/shared': `${process.cwd()}/shared`,
+  },
+
+  nitro: {
+    experimental: { websocket: true },
+    // Server and shared folders are at repo root
+    alias: {
+      '~/server': `${process.cwd()}/server`,
+      '~/shared': `${process.cwd()}/shared`,
+    },
+  },
+
+  imports: {
+    // Prevent Nuxt auto-import scanner from picking up generic type
+    // tokens like "string" from large Record<string,string> signatures
+    collectMeta: false,
+  },
+
+  typescript: {
+    strict: true,
+    shim: false,
+  },
+
+  sourcemap: { server: false, client: false },
+
+  vite: {
+    build: {
+      sourcemap: false,
+    },
+  },
+})

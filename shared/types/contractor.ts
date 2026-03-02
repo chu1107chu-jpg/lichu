@@ -1,0 +1,60 @@
+import { z } from 'zod'
+
+export const ContractorSchema = z.object({
+  id: z.number(),
+  slug: z.string().min(1),
+  name: z.string().min(1),
+  companyName: z.string().optional().nullable(),
+  contactPerson: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  email: z.string().optional().nullable(),
+  inn: z.string().optional().nullable(),
+  kpp: z.string().optional().nullable(),
+  ogrn: z.string().optional().nullable(),
+  bankName: z.string().optional().nullable(),
+  bik: z.string().optional().nullable(),
+  settlementAccount: z.string().optional().nullable(),
+  correspondentAccount: z.string().optional().nullable(),
+  legalAddress: z.string().optional().nullable(),
+  factAddress: z.string().optional().nullable(),
+  workTypes: z.array(z.string()),
+  roleTypes: z.array(z.string()).optional().default([]),
+  contractorType: z.enum(['master', 'company']).default('master'),
+  parentId: z.number().optional().nullable(),
+  notes: z.string().optional().nullable(),
+  messenger: z.string().optional().nullable(),
+  messengerNick: z.string().optional().nullable(),
+  website: z.string().optional().nullable(),
+  // Паспортные данные
+  passportSeries: z.string().optional().nullable(),
+  passportNumber: z.string().optional().nullable(),
+  passportIssuedBy: z.string().optional().nullable(),
+  passportIssueDate: z.string().optional().nullable(),
+  passportDepartmentCode: z.string().optional().nullable(),
+  birthDate: z.string().optional().nullable(),
+  birthPlace: z.string().optional().nullable(),
+  registrationAddress: z.string().optional().nullable(),
+  snils: z.string().optional().nullable(),
+  // Доп. контакты
+  telegram: z.string().optional().nullable(),
+  whatsapp: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  workRadius: z.string().optional().nullable(),
+  // Финансовые / организационные
+  taxSystem: z.string().optional().nullable(),
+  paymentMethods: z.array(z.string()).optional().default([]),
+  hourlyRate: z.string().optional().nullable(),
+  hasInsurance: z.boolean().optional().default(false),
+  insuranceDetails: z.string().optional().nullable(),
+  education: z.string().optional().nullable(),
+  certifications: z.array(z.string()).optional().default([]),
+  experienceYears: z.number().optional().nullable(),
+})
+export const CreateContractorSchema = z.object({
+  slug: z.string().min(1).regex(/^[a-z0-9_-]+$/),
+  name: z.string().min(1),
+  contractorType: z.enum(['master', 'company']).default('master'),
+  parentId: z.number().optional().nullable(),
+})
+export const UpdateContractorSchema = ContractorSchema.omit({ id: true }).partial()
+export type Contractor = z.infer<typeof ContractorSchema>
