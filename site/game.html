@@ -21,7 +21,7 @@
     }
     .sb-profile { position: absolute; left: 30px; top: 44px; width: 200px; display: flex; flex-direction: column; align-items: flex-start; }
     .sb-name { font-weight: 700; font-size: 60px; color: #292626; line-height: 1; }
-    .sb-job  { font-weight: 400; font-size: 28px; color: #98999c; white-space: nowrap; margin-top: 6px; }
+    .sb-job  { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 18px; color: #98999c; white-space: nowrap; margin-top: 6px; }
     #nav {
       position: absolute; left: 85px; top: 287px; width: 89px;
       display: flex; flex-direction: column; gap: 24px;
@@ -34,6 +34,14 @@
       transition: color 0.18s;
     }
     #nav a:hover { color: #ff2fda; }
+    #sb-contact {
+      position: absolute; left: 85px; bottom: 70px;
+      font-weight: 400; font-size: 18px; color: #ff2fda; text-decoration: none;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, pointer;
+      transition: opacity 0.18s; opacity: 0; pointer-events: none;
+    }
+    #sb-contact.show { opacity: 1; pointer-events: auto; }
+    #sb-contact:hover { opacity: 0.75; }
 
     /* ── GAME AREA — Figma: bg #242424 ── */
     #game-area { flex: 1; position: relative; background: #242424; overflow: hidden; }
@@ -87,6 +95,8 @@
     .ct-box textarea { height: 80px; resize: none; }
     .ct-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
     .ct-cancel { padding: 10px 22px; border-radius: 4px; border: 1px solid #555; background: transparent; color: #98999c; font-family: 'Inter',sans-serif; font-size: 15px; cursor: pointer; }
+    .ct-tg     { padding: 10px 18px; border-radius: 4px; border: none; background: #229ed9; color: #fff; font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .ct-tg:hover { background: #1a8bbf; }
     .ct-send   { padding: 10px 28px; border-radius: 4px; border: none; background: #f5f5f5; color: #1a1a1a; font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
 
     /* ── Lives ── */
@@ -114,9 +124,9 @@
         <p class="sb-name">Li Chu</p>
         <p class="sb-job">UX UI Designer</p>
       </div>
+      <a id="sb-contact" href="#">Contact</a>
       <nav id="nav">
         <a href="#">About</a>
-        <a href="#">Contact</a>
         <a href="project-01.html">Project 1</a>
         <a href="project-02.html">Project 2</a>
         <a href="project-03.html">Project 3</a>
@@ -152,6 +162,10 @@
           <textarea placeholder="Tell me about your project…"></textarea>
           <div class="ct-row">
             <button class="ct-cancel" id="ct-cancel">Cancel</button>
+            <a class="ct-tg" href="https://t.me/choowie" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/></svg>
+              Telegram
+            </a>
             <button class="ct-send"   id="ct-send">Send</button>
           </div>
         </div>
@@ -176,6 +190,13 @@
   var EJS_SERVICE_ID   = 'YOUR_SERVICE_ID';    // e.g. 'service_xxxxxx'
   var EJS_TEMPLATE_ID  = 'YOUR_TEMPLATE_ID';   // e.g. 'template_xxxxxx'
   var TO_EMAIL         = 'lapkazarapka8752@gmail.com';
+
+  // Mirror nav's .show class to #sb-contact
+  var sbContact = document.getElementById('sb-contact');
+  var navEl2    = document.getElementById('nav');
+  new MutationObserver(function() {
+    sbContact.classList.toggle('show', navEl2.classList.contains('show'));
+  }).observe(navEl2, { attributes: true, attributeFilter: ['class'] });
 
   function initEJS() {
     if (typeof emailjs === 'undefined') { setTimeout(initEJS, 100); return; }
