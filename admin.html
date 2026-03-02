@@ -295,8 +295,16 @@
 
           <div class="form-group">
             <label>Текст на летающих карточках</label>
-            <input type="text" id="set-card-text" placeholder="Оставьте пустым — будет иконка" maxlength="40">
-            <div class="form-hint">Отображается на карточках, которые летают в игре. Оставьте пустым — покажется иконка по умолчанию.</div>
+            <div class="form-hint" style="margin-bottom:12px">Каждое поле — отдельная карточка. Оставьте пустым — будет иконка.</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <input type="text" id="set-card-text-1" placeholder="Карточка 1" maxlength="30">
+              <input type="text" id="set-card-text-2" placeholder="Карточка 2" maxlength="30">
+              <input type="text" id="set-card-text-3" placeholder="Карточка 3" maxlength="30">
+              <input type="text" id="set-card-text-4" placeholder="Карточка 4" maxlength="30">
+              <input type="text" id="set-card-text-5" placeholder="Карточка 5" maxlength="30">
+              <input type="text" id="set-card-text-6" placeholder="Карточка 6" maxlength="30">
+              <input type="text" id="set-card-text-7" placeholder="Карточка 7" maxlength="30">
+            </div>
           </div>
 
           <button class="btn-primary" id="save-game-btn">
@@ -858,7 +866,8 @@ async function loadGameSettings() {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
       const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
-      $('set-card-text').value   = cfg.card_text    || '';
+      var ct = cfg.card_texts || [];
+      for (var i = 1; i <= 7; i++) { $('set-card-text-' + i).value = ct[i-1] || ''; }
       $('set-start-title').value = cfg.start_title  || '';
       $('set-start-sub').value   = cfg.start_sub    || '';
     }
@@ -870,7 +879,7 @@ $('save-game-btn').addEventListener('click', async () => {
   setLoading(btn, true);
   try {
     await saveConfig({
-      card_text:   $('set-card-text').value,
+      card_texts: [1,2,3,4,5,6,7].map(function(i){ return $('set-card-text-'+i).value.trim(); }),
       start_title: $('set-start-title').value,
       start_sub:   $('set-start-sub').value,
     });

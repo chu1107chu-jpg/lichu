@@ -191,21 +191,29 @@
 
 <script>
 /* ── Flying-cards custom text (set via admin) ── */
-window.LICHU_CARD_TEXT = '';
+window.LICHU_CARD_TEXT  = '';   // legacy single text
+window.LICHU_CARD_TEXTS = null; // array[7] — one per card
 (function () {
   var _orig = CanvasRenderingContext2D.prototype.fillText;
+  var _idx = 0, _lastTs = 0;
   CanvasRenderingContext2D.prototype.fillText = function (text, x, y, mw) {
-    if (window.LICHU_CARD_TEXT && this.font &&
+    var texts  = window.LICHU_CARD_TEXTS;
+    var single = window.LICHU_CARD_TEXT;
+    if ((texts || single) && this.font &&
         this.font.indexOf('Material') !== -1 &&
         this.canvas && this.canvas.id === 'game-canvas') {
       var size = parseInt(this.font) || 0;
       if (size < 40) {
+        var now = performance.now();
+        if (now - _lastTs > 10) { _idx = 0; _lastTs = now; }
+        var t = texts ? (texts[_idx] !== undefined ? texts[_idx] : '') : single;
+        _idx++;
+        if (!t) return (mw != null) ? _orig.call(this, text, x, y, mw) : _orig.call(this, text, x, y);
         var sf = this.font, sa = this.textAlign, sb = this.textBaseline;
         this.font = '500 13px Inter, sans-serif';
         this.textAlign = 'center';
         this.textBaseline = 'middle';
-        var r = (mw != null) ? _orig.call(this, window.LICHU_CARD_TEXT, x, y, mw)
-                             : _orig.call(this, window.LICHU_CARD_TEXT, x, y);
+        var r = (mw != null) ? _orig.call(this, t, x, y, mw) : _orig.call(this, t, x, y);
         this.font = sf; this.textAlign = sa; this.textBaseline = sb;
         return r;
       }
@@ -246,8 +254,12 @@ window.LICHU_CARD_TEXT = '';
     .catch(function(){ return {}; })
     .then(function(cfg){
       window._LICHU_CFG = cfg;
-      // Load custom card text for flying frames
-      if (cfg.card_text) window.LICHU_CARD_TEXT = cfg.card_text;
+      // Load custom card texts for flying cards (per-card or legacy single)
+      if (cfg.card_texts && cfg.card_texts.length) {
+        window.LICHU_CARD_TEXTS = cfg.card_texts;
+      } else if (cfg.card_text) {
+        window.LICHU_CARD_TEXT = cfg.card_text;
+      }
       // Apply start screen text if set
       if (cfg.start_title) {
         var el = document.querySelector('#modal-start .go-title');
