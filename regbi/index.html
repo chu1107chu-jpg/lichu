@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Академия Регби — Самара</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1B5730;
+  --green-light:#2D6A4F;
+  --cream:#F5F0E0;
+  --black:#1A1A1A;
+  --white:#FFFFFF;
+  --blue:#4A8BC4;
+  --orange:#E07020;
+  --gray:#6B6B6B;
+  --border:#E0E0E0;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--black);background:var(--white);overflow-x:hidden}
+
+/* === HEADER === */
+header{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);height:72px;display:flex;align-items:center}
+.header-inner{max-width:1280px;margin:0 auto;padding:0 40px;width:100%;display:flex;align-items:center;gap:32px}
+.logo{display:flex;align-items:center;gap:10px;margin-right:auto;text-decoration:none;color:var(--black)}
+.logo svg{width:40px;height:40px;flex-shrink:0}
+.logo-text{font-family:'Caveat',cursive;font-size:20px;font-weight:700;line-height:1.1}
+nav{display:flex;gap:36px}
+nav a{text-decoration:none;color:var(--black);font-size:15px;white-space:nowrap;position:relative;padding-bottom:2px}
+nav a.active::after{content:'';position:absolute;bottom:-2px;left:0;width:100%;height:2px;background:var(--black);border-radius:2px}
+.header-actions{display:flex;align-items:center;gap:20px;margin-left:auto}
+.toggle{width:44px;height:24px;background:#34C759;border-radius:12px;position:relative;cursor:pointer;flex-shrink:0}
+.toggle::after{content:'';position:absolute;top:2px;right:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s}
+.phone-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;cursor:pointer}
+
+/* === HERO === */
+.hero{background:var(--green);margin:0 40px;border-radius:20px;position:relative;overflow:hidden;min-height:460px;display:flex;align-items:flex-end}
+.hero-bg{position:absolute;inset:0}
+.hero-stripe{position:absolute;background:var(--cream);opacity:.9;transform:rotate(-15deg);transform-origin:top left}
+.hero-stripe-1{width:120px;height:900px;top:-100px;left:30px}
+.hero-stripe-2{width:80px;height:900px;top:-100px;right:60px}
+.hero-stripe-3{width:40px;height:600px;top:-50px;right:130px;opacity:.6}
+.hero-grass{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,rgba(0,0,0,.15))}
+.hero-title{position:absolute;top:50px;left:0;right:0;text-align:center;z-index:2}
+.hero-title h1{font-family:'Caveat',cursive;font-size:90px;font-weight:800;color:var(--white);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000;line-height:1}
+.hero-kids{position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;gap:0;z-index:3;width:400px;justify-content:center}
+.hero-kids svg{width:180px;height:auto}
+.hero-decor{position:absolute;top:20px;right:200px;z-index:2}
+.hero-decor span{display:block;width:3px;height:30px;background:var(--green-light);border-radius:2px;transform:rotate(-20deg);margin-bottom:6px}
+
+/* === CTA SECTION === */
+.cta-section{text-align:center;padding:60px 40px 50px;max-width:900px;margin:0 auto}
+.cta-section .subtitle{color:var(--gray);font-size:17px;margin-bottom:18px}
+.cta-section h2{font-family:'Caveat',cursive;font-size:52px;font-weight:800;margin-bottom:28px}
+.btn-primary{display:inline-block;background:var(--black);color:var(--white);padding:18px 60px;border-radius:50px;font-size:17px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:transform .15s,background .15s}
+.btn-primary:hover{background:#333;transform:translateY(-1px)}
+
+/* === ABOUT === */
+.section{padding:60px 40px;max-width:1280px;margin:0 auto}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.about-text h3{font-family:'Caveat',cursive;font-size:32px;font-weight:700;margin-bottom:16px;line-height:1.2}
+.about-text p{color:var(--gray);font-size:15px;line-height:1.7}
+.about-badge{display:inline-flex;align-items:center;gap:8px;background:var(--cream);padding:10px 18px;border-radius:30px;font-size:13px;margin-bottom:20px}
+.about-badge span{background:#E8F5E9;color:var(--green);padding:3px 8px;border-radius:20px;font-weight:600;font-size:12px}
+.about-photos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.about-photo{border-radius:16px;overflow:hidden;height:200px;background:#C8D8C0;position:relative}
+.about-photo img{width:100%;height:100%;object-fit:cover}
+.about-photo-main{border-radius:16px;overflow:hidden;height:416px;background:#C8D8C0;grid-column:1;grid-row:1/3}
+
+/* === RUGBY TYPES === */
+.section-title{font-family:'Caveat',cursive;font-size:38px;font-weight:700;margin-bottom:40px}
+.rugby-types{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
+.rugby-card{background:var(--cream);border-radius:20px;padding:32px}
+.rugby-card .icon{font-size:32px;margin-bottom:14px}
+.rugby-card h4{font-family:'Caveat',cursive;font-size:24px;font-weight:700;margin-bottom:10px}
+.rugby-card p{color:var(--gray);font-size:14px;line-height:1.7}
+.skills-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.skill-tag{background:var(--cream);border:1px solid var(--border);padding:8px 18px;border-radius:30px;font-size:14px;color:var(--black)}
+.skill-tag.primary{background:var(--black);color:var(--white);border-color:var(--black)}
+
+/* === TRAINER === */
+.trainer-section{background:var(--cream);border-radius:20px;padding:40px;display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:center;margin:0 40px 40px}
+.trainer-photo{border-radius:16px;overflow:hidden;height:320px;background:#A8B890}
+.trainer-photo img{width:100%;height:100%;object-fit:cover}
+.trainer-info h3{font-family:'Caveat',cursive;font-size:30px;font-weight:700;margin-bottom:6px}
+.trainer-info .role{color:var(--gray);font-size:14px;margin-bottom:20px}
+.trainer-feats{list-style:none;display:flex;flex-direction:column;gap:10px}
+.trainer-feats li{font-size:14px;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.trainer-feats li::before{content:'✦';color:var(--green);flex-shrink:0;font-size:12px;margin-top:2px}
+
+/* === FULL IMAGE BANNER === */
+.img-banner{margin:0 40px;border-radius:20px;overflow:hidden;height:400px;background:linear-gradient(180deg,#1A3A20 0%,#2D5530 50%,#1A3A20 100%);position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.img-banner-content{text-align:center;color:var(--white);z-index:2}
+.img-banner-content p{font-size:15px;margin-bottom:8px;opacity:.9}
+.img-banner-content .btn-white{background:var(--white);color:var(--black);padding:14px 40px;border-radius:50px;font-size:15px;font-weight:500;border:none;cursor:pointer;text-decoration:none;display:inline-block;margin-top:6px}
+.rhino-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Caveat',cursive;font-size:72px;font-weight:800;color:rgba(255,255,255,.15);letter-spacing:4px;pointer-events:none}
+
+/* === PLAYER BANNER === */
+.player-banner{margin:0 40px;border-radius:20px;overflow:hidden;height:200px;background:linear-gradient(135deg,#222 0%,#444 100%);position:relative;display:flex;align-items:center;justify-content:flex-end;padding:0 60px;margin-bottom:40px}
+.player-banner-text{color:var(--white)}
+.player-banner-text p{font-size:14px;opacity:.8}
+.player-banner-text a{color:var(--white);font-size:15px;font-weight:600;text-decoration:underline}
+
+/* === SCHEDULE === */
+.schedule-section{padding:60px 40px;max-width:1280px;margin:0 auto}
+.schedule-section h2{font-family:'Caveat',cursive;font-size:42px;font-weight:700;margin-bottom:32px}
+.schedule-table{width:100%;border-collapse:separate;border-spacing:8px}
+.schedule-table th{font-size:13px;color:var(--gray);font-weight:500;text-align:left;padding:0 0 8px}
+.schedule-table td{vertical-align:top;width:14.28%}
+.time-col{font-size:13px;color:var(--gray);padding-top:12px;white-space:nowrap;width:60px}
+.slot{border-radius:12px;padding:12px 14px;cursor:pointer;transition:box-shadow .15s,transform .15s;min-height:70px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.slot:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.slot.green{background:#D4EDDA;border:1px solid #A8D5B5}
+.slot.blue{background:#D4E6F5;border:1px solid #A8C8E8}
+.slot.empty{background:transparent;cursor:default;min-height:0}
+.slot:hover.empty{transform:none;box-shadow:none}
+.slot .slot-title{font-size:13px;font-weight:600;color:var(--black);margin-bottom:4px}
+.slot .slot-sub{font-size:11px;color:var(--gray)}
+.slot .slot-badge{position:absolute;top:8px;right:8px;background:var(--green);color:var(--white);border-radius:10px;padding:2px 7px;font-size:10px}
+
+/* === POPUP OVERLAY === */
+.popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.popup-overlay.open{opacity:1;pointer-events:all}
+.popup-wrapper{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:0}
+.popup-char{width:160px;flex-shrink:0;opacity:0;position:relative;bottom:0}
+.popup-char.char-left{transform:translateX(-120px)}
+.popup-char.char-right{transform:translateX(120px)}
+.popup-char.animated{opacity:1;transform:translateX(0);transition:transform .6s cubic-bezier(.17,.67,.35,1.3),opacity .4s ease}
+.popup-card{background:var(--white);border-radius:20px;padding:28px 28px 24px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.2);flex-shrink:0;transform:translateY(-40px);opacity:0;transition:transform .5s cubic-bezier(.17,.67,.35,1.3),opacity .4s ease}
+.popup-card.animated{transform:translateY(0);opacity:1}
+.popup-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.popup-header .dot{width:10px;height:10px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.popup-header .name{font-weight:600;font-size:14px}
+.popup-header .date{color:var(--gray);font-size:12px;margin-left:auto}
+.form-group{margin-bottom:10px}
+.form-group label{font-size:12px;color:#D32F2F;display:block;margin-bottom:4px}
+.form-group input{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.form-group input:focus{border-color:var(--blue)}
+.form-check{display:flex;align-items:flex-start;gap:8px;margin:14px 0 18px;font-size:12px;color:var(--gray)}
+.form-check input{width:14px;height:14px;flex-shrink:0;margin-top:1px;cursor:pointer}
+.form-check a{color:var(--gray);text-decoration:underline}
+.btn-submit{width:100%;background:var(--black);color:var(--white);border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.btn-submit:hover{background:#333}
+.popup-close{position:absolute;top:10px;right:10px;width:32px;height:32px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--gray);z-index:1;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s}
+.popup-close:hover{background:var(--cream)}
+
+/* === OPEN TRAININGS === */
+.trainings-section{padding:60px 40px;max-width:1280px;margin:0 auto}
+.trainings-section h2{font-family:'Caveat',cursive;font-size:38px;font-weight:700;margin-bottom:32px}
+.trainings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.training-card{border-radius:16px;overflow:hidden;position:relative;height:220px;cursor:pointer;group}
+.training-card .tc-img{width:100%;height:100%;object-fit:cover;background:#8aaa80;display:block;transition:transform .3s}
+.training-card:hover .tc-img{transform:scale(1.05)}
+.training-card .tc-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.65));display:flex;align-items:flex-end;padding:16px}
+.training-card .tc-title{color:var(--white);font-family:'Caveat',cursive;font-size:18px;font-weight:700;line-height:1.2}
+.training-card.big{grid-column:1/2;grid-row:1/3;height:auto;min-height:456px}
+.training-card.big .tc-title{font-size:24px}
+.training-card-info{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between}
+.training-card-info .ti-date{font-size:12px;color:var(--gray);margin-bottom:8px}
+.training-card-info .ti-title{font-family:'Caveat',cursive;font-size:20px;font-weight:700;margin-bottom:auto}
+.training-card-info .ti-link{font-size:13px;color:var(--green);text-decoration:none;font-weight:500;margin-top:16px}
+
+/* === GREEN CTA BANNER === */
+.green-banner{background:var(--green);border-radius:24px;margin:0 40px 60px;padding:60px;position:relative;overflow:hidden;min-height:320px;display:flex;align-items:center}
+.green-banner-text{z-index:2;position:relative}
+.green-banner-text h2{font-family:'Caveat',cursive;font-size:52px;font-weight:800;color:var(--white);margin-bottom:24px;line-height:1.1}
+.green-banner-text p{color:rgba(255,255,255,.85);font-size:16px;max-width:460px;margin-bottom:28px;line-height:1.6}
+.green-banner-kids{position:absolute;right:60px;bottom:0;display:flex;align-items:flex-end;gap:16px}
+.green-banner-kids svg{height:280px;width:auto}
+
+/* === CONTACTS === */
+.contacts-section{padding:60px 40px;max-width:1280px;margin:0 auto}
+.contacts-section h2{font-family:'Caveat',cursive;font-size:38px;font-weight:700;margin-bottom:8px}
+.contacts-address{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray);margin-bottom:32px}
+.contacts-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.contacts-info{display:flex;flex-direction:column;gap:24px}
+.contact-item h4{font-size:13px;color:var(--gray);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.contact-item p,.contact-item a{font-size:15px;color:var(--black);text-decoration:none;display:block;line-height:1.6}
+.contacts-map{border-radius:20px;overflow:hidden;height:340px;background:#D4E4C0;position:relative}
+.contacts-map iframe{width:100%;height:100%;border:none}
+.map-btn{display:block;background:var(--black);color:var(--white);text-align:center;padding:14px;font-size:14px;font-weight:500;border-radius:0 0 20px 20px;text-decoration:none;margin-top:0}
+
+/* === FOOTER === */
+footer{background:var(--black);color:var(--white);padding:40px 40px 24px;margin-top:0}
+.footer-inner{max-width:1280px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1.5fr;gap:40px;margin-bottom:32px}
+.footer-col h4{font-size:13px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.footer-col a,.footer-col p{font-size:14px;color:rgba(255,255,255,.75);text-decoration:none;display:block;margin-bottom:8px;line-height:1.5}
+.footer-col a:hover{color:#fff}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.footer-logo-text{font-family:'Caveat',cursive;font-size:18px;color:var(--white)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:20px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.5)}
+.footer-socials{display:flex;gap:12px}
+.footer-social{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;text-decoration:none;color:rgba(255,255,255,.7);font-size:14px;transition:background .15s}
+.footer-social:hover{background:rgba(255,255,255,.2)}
+
+/* === SVG KIDS === */
+.kid-boy,.kid-girl{display:block}
+
+/* === RESPONSIVE HELPERS === */
+@media(max-width:900px){
+  .hero{margin:0 16px}
+  .hero-title h1{font-size:56px}
+  .hero-kids svg{width:130px}
+  .about-grid,.rugby-types,.trainer-section,.contacts-grid{grid-template-columns:1fr}
+  .trainings-grid{grid-template-columns:1fr 1fr}
+  .training-card.big{grid-column:auto;grid-row:auto}
+  .green-banner-kids{display:none}
+  .footer-top{grid-template-columns:1fr 1fr}
+  nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" stroke="#1A1A1A" stroke-width="2"/>
+        <ellipse cx="20" cy="20" rx="8" ry="14" stroke="#1A1A1A" stroke-width="2"/>
+        <line x1="6" y1="20" x2="34" y2="20" stroke="#1A1A1A" stroke-width="2"/>
+        <line x1="9" y1="12" x2="31" y2="12" stroke="#1A1A1A" stroke-width="1.5"/>
+        <line x1="9" y1="28" x2="31" y2="28" stroke="#1A1A1A" stroke-width="1.5"/>
+      </svg>
+      <span class="logo-text">Академия<br>регби</span>
+    </a>
+    <nav>
+      <a href="#about" class="active">О нас</a>
+      <a href="#schedule">Расписание</a>
+      <a href="#contacts">Адрес</a>
+      <a href="#news">Новости</a>
+    </nav>
+    <div class="header-actions">
+      <div class="toggle" title="Режим"></div>
+      <div class="phone-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="#1A1A1A"/></svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div style="margin:0 40px;margin-top:20px">
+  <div class="hero">
+    <div class="hero-bg">
+      <div class="hero-stripe hero-stripe-1"></div>
+      <div class="hero-stripe hero-stripe-2"></div>
+      <div class="hero-stripe hero-stripe-3"></div>
+    </div>
+    <!-- Grass decor elements -->
+    <div style="position:absolute;top:24px;left:260px;z-index:2">
+      <svg width="20" height="32" viewBox="0 0 20 32"><path d="M10 30 Q4 20 6 2 M10 30 Q14 18 12 1" stroke="#5A8A3A" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div style="position:absolute;top:60px;right:300px;z-index:2">
+      <svg width="20" height="28" viewBox="0 0 20 28"><path d="M10 26 Q4 16 6 2 M10 26 Q14 14 12 1" stroke="#5A8A3A" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div style="position:absolute;bottom:40px;right:180px;z-index:2">
+      <svg width="16" height="24" viewBox="0 0 16 24"><path d="M8 22 Q3 14 5 2 M8 22 Q11 12 9 1" stroke="#4A7A2A" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div class="hero-title">
+      <h1>Академия регби</h1>
+    </div>
+    <!-- Kids SVG characters in hero -->
+    <div class="hero-kids">
+      <!-- Boy -->
+      <svg viewBox="0 0 160 320" class="kid-boy" xmlns="http://www.w3.org/2000/svg">
+        <!-- Head -->
+        <ellipse cx="80" cy="52" rx="34" ry="36" fill="#F5C5A0"/>
+        <!-- Hair -->
+        <ellipse cx="80" cy="28" rx="36" ry="22" fill="#2A1A0A"/>
+        <ellipse cx="55" cy="42" rx="14" ry="18" fill="#2A1A0A"/>
+        <!-- Eyes -->
+        <ellipse cx="68" cy="50" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="92" cy="50" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="69" cy="48" rx="2" ry="2" fill="white"/>
+        <ellipse cx="93" cy="48" rx="2" ry="2" fill="white"/>
+        <!-- Smile -->
+        <path d="M68 65 Q80 74 92 65" stroke="#C08060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Ear -->
+        <ellipse cx="46" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <ellipse cx="114" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <!-- Neck -->
+        <rect x="68" y="84" width="24" height="20" fill="#F5C5A0"/>
+        <!-- Jersey stripes blue/white -->
+        <rect x="44" y="104" width="72" height="90" rx="10" fill="#4A8BC4"/>
+        <rect x="44" y="104" width="72" height="16" rx="4" fill="#4A8BC4"/>
+        <rect x="44" y="120" width="72" height="12" fill="white"/>
+        <rect x="44" y="132" width="72" height="12" fill="#4A8BC4"/>
+        <rect x="44" y="144" width="72" height="12" fill="white"/>
+        <rect x="44" y="156" width="72" height="12" fill="#4A8BC4"/>
+        <rect x="44" y="168" width="72" height="26" rx="3" fill="#4A8BC4"/>
+        <!-- Arms -->
+        <rect x="16" y="108" width="32" height="16" rx="8" fill="#4A8BC4"/>
+        <rect x="112" y="108" width="32" height="16" rx="8" fill="#4A8BC4"/>
+        <!-- Right hand/arm extended holding ball -->
+        <rect x="104" y="118" width="28" height="14" rx="7" fill="#F5C5A0" transform="rotate(30 110 125)"/>
+        <!-- Shorts dark -->
+        <rect x="48" y="190" width="64" height="56" rx="8" fill="#444"/>
+        <line x1="80" y1="190" x2="80" y2="246" stroke="#333" stroke-width="2"/>
+        <!-- Socks white -->
+        <rect x="52" y="244" width="24" height="32" rx="4" fill="white"/>
+        <rect x="84" y="244" width="24" height="32" rx="4" fill="white"/>
+        <!-- Shoes -->
+        <ellipse cx="64" cy="278" rx="18" ry="10" fill="#222"/>
+        <ellipse cx="96" cy="278" rx="18" ry="10" fill="#222"/>
+        <!-- Rugby ball in hand (right side) -->
+        <ellipse cx="118" cy="166" rx="22" ry="14" fill="#C04010" transform="rotate(-20 118 166)"/>
+        <path d="M100 158 Q118 152 136 172" stroke="#F5DEB3" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M106 153 Q118 148 130 177" stroke="#F5DEB3" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <!-- Nose -->
+        <circle cx="80" cy="60" r="3" fill="#E0A080"/>
+      </svg>
+      <!-- Girl -->
+      <svg viewBox="0 0 160 320" class="kid-girl" xmlns="http://www.w3.org/2000/svg">
+        <!-- Head -->
+        <ellipse cx="80" cy="52" rx="34" ry="36" fill="#F5C5A0"/>
+        <!-- Hair dark long -->
+        <ellipse cx="80" cy="26" rx="38" ry="22" fill="#1A1A1A"/>
+        <rect x="44" y="30" width="18" height="80" rx="9" fill="#1A1A1A"/>
+        <rect x="98" y="30" width="18" height="80" rx="9" fill="#1A1A1A"/>
+        <!-- Eyes -->
+        <ellipse cx="68" cy="52" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="92" cy="52" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="69" cy="50" rx="2" ry="2" fill="white"/>
+        <ellipse cx="93" cy="50" rx="2" ry="2" fill="white"/>
+        <!-- Smile -->
+        <path d="M68 66 Q80 75 92 66" stroke="#C08060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Ears -->
+        <ellipse cx="46" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <ellipse cx="114" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <!-- Neck -->
+        <rect x="68" y="84" width="24" height="20" fill="#F5C5A0"/>
+        <!-- Jersey blue/white -->
+        <rect x="44" y="104" width="72" height="90" rx="10" fill="#4A8BC4"/>
+        <rect x="44" y="120" width="72" height="12" fill="white"/>
+        <rect x="44" y="132" width="72" height="12" fill="#4A8BC4"/>
+        <rect x="44" y="144" width="72" height="12" fill="white"/>
+        <rect x="44" y="156" width="72" height="12" fill="#4A8BC4"/>
+        <rect x="44" y="168" width="72" height="26" rx="3" fill="#4A8BC4"/>
+        <!-- Arms -->
+        <rect x="16" y="108" width="32" height="14" rx="7" fill="#4A8BC4"/>
+        <rect x="112" y="108" width="32" height="14" rx="7" fill="#4A8BC4"/>
+        <rect x="16" y="118" width="22" height="12" rx="6" fill="#F5C5A0" transform="rotate(-20 20 124)"/>
+        <rect x="122" y="118" width="22" height="12" rx="6" fill="#F5C5A0" transform="rotate(20 130 124)"/>
+        <!-- Shorts -->
+        <rect x="48" y="190" width="64" height="56" rx="8" fill="#444"/>
+        <line x1="80" y1="190" x2="80" y2="246" stroke="#333" stroke-width="2"/>
+        <!-- Socks -->
+        <rect x="52" y="244" width="24" height="32" rx="4" fill="white"/>
+        <rect x="84" y="244" width="24" height="32" rx="4" fill="white"/>
+        <!-- Shoes -->
+        <ellipse cx="64" cy="278" rx="18" ry="10" fill="#222"/>
+        <ellipse cx="96" cy="278" rx="18" ry="10" fill="#222"/>
+        <!-- Nose -->
+        <circle cx="80" cy="62" r="3" fill="#E0A080"/>
+        <!-- Small logo on jersey -->
+        <circle cx="80" cy="118" r="8" stroke="white" stroke-width="1.5" fill="none"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- CTA SECTION -->
+<div class="cta-section" id="about">
+  <p class="subtitle">Спорт, который развивает характер, дисциплину, силу и командный дух</p>
+  <h2>Записаться на тренировку</h2>
+  <button class="btn-primary" onclick="openPopup()">Попробовать бесплатно</button>
+</div>
+
+<!-- ABOUT SECTION -->
+<div class="section">
+  <div class="about-grid">
+    <div class="about-text">
+      <div class="about-badge">📅 Открытые тренировки <span>Скидки для детей 8–13 лет</span></div>
+      <h3>Академия регби — место, где дети растут сильными и уверенными</h3>
+      <p style="margin-bottom:16px">Мы развиваем не только физические качества детей, но и учим работать в команде, принимать решения и брать ответственность. Регби — это дружба, дисциплина и постоянное движение&nbsp;вперёд.</p>
+      <p>Тренировки проходят в игровом формате, адаптированы для разного возраста и уровня подготовки. У нас всегда рады новичкам!</p>
+    </div>
+    <div class="about-photos">
+      <div class="about-photo-main" style="background:linear-gradient(135deg,#2D5520,#4A7A30)">
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:60px">🏉</div>
+      </div>
+      <div class="about-photo" style="background:linear-gradient(135deg,#3A5A70,#5A7A90)">
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:40px">📸</div>
+      </div>
+      <div class="about-photo" style="background:linear-gradient(135deg,#5A7A40,#7A9A60)">
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:40px">🏃</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RUGBY TYPES -->
+<div class="section" style="padding-top:0">
+  <div class="rugby-types">
+    <div class="rugby-card">
+      <div class="icon">🏉</div>
+      <h4>Контактный регби</h4>
+      <p>Дети учатся работать в команде, развивают координацию и силу. Контактный регби воспитывает смелость, уверенность и умение действовать в стрессовых ситуациях — всё это пригодится в жизни.</p>
+      <div class="skills-tags" style="margin-top:16px">
+        <span class="skill-tag primary">Ловкость, Координация</span>
+        <span class="skill-tag">Тактические навыки</span>
+        <span class="skill-tag">Быстрые решения</span>
+        <span class="skill-tag">Командное мышление</span>
+        <span class="skill-tag">Стратегическое видение</span>
+        <span class="skill-tag">Концентрация</span>
+        <span class="skill-tag">Скорость</span>
+        <span class="skill-tag">Выносливость</span>
+        <span class="skill-tag">Сила</span>
+        <span class="skill-tag">Командная работа</span>
+        <span class="skill-tag">Подержание тела</span>
+        <span class="skill-tag">Ответственность</span>
+        <span class="skill-tag">Ловкость</span>
+        <span class="skill-tag">Коммуникация</span>
+      </div>
+    </div>
+    <div class="rugby-card">
+      <div class="icon">🤸</div>
+      <h4>Бесконтактный регби</h4>
+      <p>Безопасная и динамичная игра — вместо захватов используются жилеты с лентами. Идеально для новичков и тех, кто хочет освоить технику регби без контактных столкновений.</p>
+      <div class="skills-tags" style="margin-top:16px">
+        <span class="skill-tag primary">Ловкость, Динамика</span>
+        <span class="skill-tag">Быстрое принятие решений</span>
+        <span class="skill-tag">Командная работа</span>
+        <span class="skill-tag">Стратегическое мышление</span>
+        <span class="skill-tag">Координация</span>
+        <span class="skill-tag">Скорость</span>
+        <span class="skill-tag">Выносливость</span>
+        <span class="skill-tag">Сила</span>
+        <span class="skill-tag">Ответственность</span>
+        <span class="skill-tag">Ловкость</span>
+        <span class="skill-tag">Коммуникация</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRAINER -->
+<div class="trainer-section">
+  <div class="trainer-photo">
+    <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#3A4A30,#5A6A50);color:rgba(255,255,255,.5)">
+      <div style="font-size:64px;margin-bottom:8px">👤</div>
+      <div style="font-size:13px">Фото тренера</div>
+    </div>
+  </div>
+  <div class="trainer-info">
+    <h3>Тренер</h3>
+    <div style="font-family:'Caveat',cursive;font-size:22px;font-weight:700;margin-bottom:4px">Николаев Максим Вениаминович</div>
+    <p class="role">Судья и тренер по регби</p>
+    <ul class="trainer-feats">
+      <li>Чемпион России по регби</li>
+      <li>Чемпион всего чемпионата регби (2012–2020)</li>
+      <li>Профессиональный тренер</li>
+      <li>Большой опыт работы с детьми</li>
+      <li>Автор программ по бесконтактному регби</li>
+      <li>Автор программ по бесконтактному регби для начинающих</li>
+    </ul>
+  </div>
+</div>
+
+<!-- RHINO BANNER -->
+<div class="img-banner" style="margin:0 40px 16px">
+  <div class="rhino-logo">RHINO</div>
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#111 0%,#2A4020 40%,#1A3A10 100%)"></div>
+  <div class="img-banner-content">
+    <p>Смотреть тренера</p>
+    <a href="#" class="btn-white">Смотреть тренера</a>
+  </div>
+</div>
+
+<!-- PLAYER ACTION BANNER -->
+<div class="player-banner">
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1A2A3A 0%,#2A3A4A 100%)"></div>
+  <div class="player-banner-text" style="z-index:2;position:relative">
+    <p>Хочешь в расписание</p>
+    <a href="#schedule">Перейти в расписание →</a>
+  </div>
+</div>
+
+<!-- SCHEDULE -->
+<div class="schedule-section" id="schedule">
+  <h2>Запись на тренировку</h2>
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th class="time-col"></th>
+        <th>Пн</th>
+        <th>Вт</th>
+        <th>Ср</th>
+        <th>Чт</th>
+        <th>Пт</th>
+        <th>Сб</th>
+        <th>Вс</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="time-col">17:00</td>
+        <td><div class="slot green" onclick="openPopup('Контактный регби','Пн 17:00')">
+          <div class="slot-title">Контактный регби</div>
+          <div class="slot-sub">8–13 лет</div>
+        </div></td>
+        <td><div class="slot empty"></div></td>
+        <td><div class="slot green" onclick="openPopup('Контактный регби','Ср 17:00')">
+          <div class="slot-title">Контактный регби</div>
+          <div class="slot-sub">8–13 лет</div>
+        </div></td>
+        <td><div class="slot empty"></div></td>
+        <td><div class="slot blue" onclick="openPopup('Бесконтактный регби','Пт 17:00')">
+          <div class="slot-title">Бесконтактный регби</div>
+          <div class="slot-sub">6–9 лет</div>
+        </div></td>
+        <td><div class="slot empty"></div></td>
+        <td><div class="slot empty"></div></td>
+      </tr>
+      <tr>
+        <td class="time-col">19:00</td>
+        <td><div class="slot empty"></div></td>
+        <td><div class="slot blue" onclick="openPopup('Бесконтактный регби','Вт 19:00')">
+          <div class="slot-title">Бесконтактный регби</div>
+          <div class="slot-sub">10–14 лет</div>
+        </div></td>
+        <td><div class="slot empty"></div></td>
+        <td><div class="slot green" onclick="openPopup('Контактный регби','Чт 19:00')">
+          <div class="slot-title">Контактный регби</div>
+          <div class="slot-sub">12–16 лет</div>
+          <span class="slot-badge">✓</span>
+        </div></td>
+        <td><div class="slot empty"></div></td>
+        <td><div class="slot green" onclick="openPopup('Открытая тренировка','Сб 10:00')">
+          <div class="slot-title">Открытая тренировка</div>
+          <div class="slot-sub">Все возрасты</div>
+        </div></td>
+        <td><div class="slot empty"></div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- OPEN TRAININGS -->
+<div class="trainings-section" id="news">
+  <h2>Открытые тренировки</h2>
+  <div class="trainings-grid">
+    <!-- Big card -->
+    <div class="training-card big" onclick="openPopup()">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,#2D5520 0%,#1A3A10 100%);display:flex;align-items:center;justify-content:center;font-size:80px">🏟️</div>
+      <div class="tc-overlay">
+        <div class="tc-title">Открытая тренировка для родителей</div>
+      </div>
+    </div>
+    <!-- Info card -->
+    <div class="training-card-info">
+      <div class="ti-date">Сб, 15 марта 2025</div>
+      <div class="ti-title">Открытая тренировка для родителей</div>
+      <a href="#" class="ti-link">Записаться →</a>
+    </div>
+    <!-- Small photo card -->
+    <div class="training-card" onclick="openPopup()">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#3A5A70,#5A7A90);display:flex;align-items:center;justify-content:center;font-size:50px">👨‍👩‍👧</div>
+      <div class="tc-overlay">
+        <div class="tc-title">Открытая тренировка для родителей</div>
+      </div>
+    </div>
+    <!-- Row 2 -->
+    <div class="training-card" onclick="openPopup()">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#4A6A30,#6A8A50);display:flex;align-items:center;justify-content:center;font-size:50px">🏃‍♂️</div>
+      <div class="tc-overlay">
+        <div class="tc-title">Открытая тренировка для родителей</div>
+      </div>
+    </div>
+    <div class="training-card" onclick="openPopup()">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#2A3A50,#4A5A70);display:flex;align-items:center;justify-content:center;font-size:50px">🤸</div>
+      <div class="tc-overlay">
+        <div class="tc-title">Открытая тренировка для родителей</div>
+      </div>
+    </div>
+    <div class="training-card" onclick="openPopup()">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#5A4A20,#7A6A40);display:flex;align-items:center;justify-content:center;font-size:50px">🏆</div>
+      <div class="tc-overlay">
+        <div class="tc-title">Открытая тренировка для родителей</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GREEN CTA BANNER -->
+<div class="green-banner">
+  <div class="green-banner-text">
+    <h2>Самара</h2>
+    <p>Запишите ребёнка на бесплатную пробную тренировку. Без обязательств — просто попробуйте!</p>
+    <button class="btn-primary" style="background:white;color:black" onclick="openPopup()">Записаться на тренировку</button>
+  </div>
+  <div class="green-banner-kids">
+    <!-- Boy in banner -->
+    <svg width="130" height="260" viewBox="0 0 160 320" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="80" cy="52" rx="34" ry="36" fill="#F5C5A0"/>
+      <ellipse cx="80" cy="28" rx="36" ry="22" fill="#2A1A0A"/>
+      <ellipse cx="55" cy="42" rx="14" ry="18" fill="#2A1A0A"/>
+      <ellipse cx="68" cy="50" rx="5" ry="6" fill="#1A1A1A"/>
+      <ellipse cx="92" cy="50" rx="5" ry="6" fill="#1A1A1A"/>
+      <ellipse cx="69" cy="48" rx="2" ry="2" fill="white"/>
+      <ellipse cx="93" cy="48" rx="2" ry="2" fill="white"/>
+      <path d="M68 65 Q80 74 92 65" stroke="#C08060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="68" y="84" width="24" height="20" fill="#F5C5A0"/>
+      <rect x="44" y="104" width="72" height="90" rx="10" fill="#4A8BC4"/>
+      <rect x="44" y="120" width="72" height="12" fill="white"/>
+      <rect x="44" y="132" width="72" height="12" fill="#4A8BC4"/>
+      <rect x="44" y="144" width="72" height="12" fill="white"/>
+      <rect x="44" y="156" width="72" height="38" rx="3" fill="#4A8BC4"/>
+      <rect x="16" y="108" width="32" height="14" rx="7" fill="#4A8BC4"/>
+      <rect x="112" y="108" width="32" height="14" rx="7" fill="#4A8BC4"/>
+      <rect x="48" y="190" width="64" height="56" rx="8" fill="#444"/>
+      <rect x="52" y="244" width="24" height="32" rx="4" fill="white"/>
+      <rect x="84" y="244" width="24" height="32" rx="4" fill="white"/>
+      <ellipse cx="64" cy="278" rx="18" ry="10" fill="#222"/>
+      <ellipse cx="96" cy="278" rx="18" ry="10" fill="#222"/>
+    </svg>
+    <!-- Girl in banner -->
+    <svg width="130" height="260" viewBox="0 0 160 320" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="80" cy="52" rx="34" ry="36" fill="#F5C5A0"/>
+      <ellipse cx="80" cy="26" rx="38" ry="22" fill="#1A1A1A"/>
+      <rect x="44" y="30" width="18" height="80" rx="9" fill="#1A1A1A"/>
+      <rect x="98" y="30" width="18" height="80" rx="9" fill="#1A1A1A"/>
+      <ellipse cx="68" cy="52" rx="5" ry="6" fill="#1A1A1A"/>
+      <ellipse cx="92" cy="52" rx="5" ry="6" fill="#1A1A1A"/>
+      <ellipse cx="69" cy="50" rx="2" ry="2" fill="white"/>
+      <ellipse cx="93" cy="50" rx="2" ry="2" fill="white"/>
+      <path d="M68 66 Q80 75 92 66" stroke="#C08060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="68" y="84" width="24" height="20" fill="#F5C5A0"/>
+      <rect x="44" y="104" width="72" height="90" rx="10" fill="#4A8BC4"/>
+      <rect x="44" y="120" width="72" height="12" fill="white"/>
+      <rect x="44" y="132" width="72" height="12" fill="#4A8BC4"/>
+      <rect x="44" y="144" width="72" height="12" fill="white"/>
+      <rect x="44" y="156" width="72" height="38" rx="3" fill="#4A8BC4"/>
+      <ellipse cx="120" cy="170" rx="22" ry="14" fill="#C04010" transform="rotate(-20 120 170)"/>
+      <path d="M102 162 Q120 156 138 176" stroke="#F5DEB3" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <rect x="48" y="190" width="64" height="56" rx="8" fill="#444"/>
+      <rect x="52" y="244" width="24" height="32" rx="4" fill="white"/>
+      <rect x="84" y="244" width="24" height="32" rx="4" fill="white"/>
+      <ellipse cx="64" cy="278" rx="18" ry="10" fill="#222"/>
+      <ellipse cx="96" cy="278" rx="18" ry="10" fill="#222"/>
+    </svg>
+  </div>
+</div>
+
+<!-- CONTACTS -->
+<div class="contacts-section" id="contacts">
+  <h2>Контакты</h2>
+  <div class="contacts-address">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#666"/></svg>
+    Стадион «Локомотив» Самара, ул. Агибалова, д. 19, 443030
+  </div>
+  <div class="contacts-grid">
+    <div class="contacts-info">
+      <div class="contact-item">
+        <h4>Часы работы</h4>
+        <p>Пн–Пт: 17:00–21:00</p>
+        <p>Сб: 10:00–14:00</p>
+      </div>
+      <div class="contact-item">
+        <h4>Телефон</h4>
+        <a href="tel:+79277620097">+7 (927) 762-00-97</a>
+      </div>
+      <div class="contact-item">
+        <h4>Email</h4>
+        <a href="mailto:info@rugby-samara.ru">info@rugby-samara.ru</a>
+      </div>
+      <div class="contact-item">
+        <h4>Социальные сети</h4>
+        <a href="#">ВКонтакте</a>
+        <a href="#">Telegram</a>
+      </div>
+      <button class="btn-primary" onclick="openPopup()" style="align-self:flex-start;margin-top:8px">
+        Записаться на тренировку
+      </button>
+    </div>
+    <div>
+      <div class="contacts-map">
+        <iframe
+          src="https://yandex.ru/map-widget/v1/?ll=50.194085%2C53.204556&z=15&pt=50.194085,53.204556,pm2rdm"
+          title="Карта Самара"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="footer-logo">
+          <svg width="32" height="32" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" stroke="white" stroke-width="2"/><ellipse cx="20" cy="20" rx="8" ry="14" stroke="white" stroke-width="2"/><line x1="6" y1="20" x2="34" y2="20" stroke="white" stroke-width="2"/></svg>
+          <span class="footer-logo-text">Академия регби</span>
+        </div>
+        <p>© 2025 Академия регби Самара</p>
+        <p style="margin-top:8px">Все права защищены</p>
+      </div>
+      <div class="footer-col">
+        <h4>Навигация</h4>
+        <a href="#about">О нас</a>
+        <a href="#schedule">Расписание</a>
+        <a href="#contacts">Адрес</a>
+        <a href="#news">Новости</a>
+      </div>
+      <div class="footer-col">
+        <h4>Контакты</h4>
+        <a href="tel:+79277620097">+7 (927) 762-00-97</a>
+        <a href="mailto:info@rugby-samara.ru">info@rugby-samara.ru</a>
+      </div>
+      <div class="footer-col">
+        <h4>Социальные сети</h4>
+        <a href="#">ВКонтакте</a>
+        <a href="#">Telegram</a>
+        <a href="#">Instagram</a>
+      </div>
+      <div class="footer-col">
+        <h4>Адрес</h4>
+        <p>г. Самара, ул. Агибалова, д. 19, 443030</p>
+        <p style="margin-top:8px">Стадион «Локомотив»</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Политика конфиденциальности</span>
+      <div class="footer-socials">
+        <a class="footer-social" href="#">ВК</a>
+        <a class="footer-social" href="#">TG</a>
+      </div>
+      <span>+7 (927) 762-00-97</span>
+    </div>
+  </div>
+</footer>
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopupOnBg(event)">
+  <div class="popup-wrapper" id="popupWrapper">
+    <!-- Left character (Boy) -->
+    <div class="popup-char char-left" id="charLeft">
+      <svg width="140" height="280" viewBox="0 0 160 320" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="80" cy="52" rx="34" ry="36" fill="#F5C5A0"/>
+        <ellipse cx="80" cy="28" rx="36" ry="22" fill="#2A1A0A"/>
+        <ellipse cx="55" cy="42" rx="14" ry="18" fill="#2A1A0A"/>
+        <ellipse cx="68" cy="50" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="92" cy="50" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="69" cy="48" rx="2" ry="2" fill="white"/>
+        <ellipse cx="93" cy="48" rx="2" ry="2" fill="white"/>
+        <circle cx="80" cy="60" r="3" fill="#E0A080"/>
+        <path d="M68 65 Q80 74 92 65" stroke="#C08060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="46" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <ellipse cx="114" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <rect x="68" y="84" width="24" height="20" fill="#F5C5A0"/>
+        <rect x="44" y="104" width="72" height="90" rx="10" fill="#4A8BC4"/>
+        <rect x="44" y="120" width="72" height="12" fill="white"/>
+        <rect x="44" y="132" width="72" height="12" fill="#4A8BC4"/>
+        <rect x="44" y="144" width="72" height="12" fill="white"/>
+        <rect x="44" y="156" width="72" height="38" rx="3" fill="#4A8BC4"/>
+        <rect x="14" y="106" width="34" height="16" rx="8" fill="#4A8BC4"/>
+        <rect x="112" y="106" width="34" height="16" rx="8" fill="#4A8BC4"/>
+        <rect x="14" y="116" width="30" height="14" rx="7" fill="#F5C5A0" transform="rotate(-15 20 120)"/>
+        <rect x="48" y="190" width="64" height="56" rx="8" fill="#444"/>
+        <line x1="80" y1="190" x2="80" y2="246" stroke="#333" stroke-width="2"/>
+        <rect x="52" y="244" width="24" height="32" rx="4" fill="white"/>
+        <rect x="84" y="244" width="24" height="32" rx="4" fill="white"/>
+        <ellipse cx="64" cy="278" rx="18" ry="10" fill="#222"/>
+        <ellipse cx="96" cy="278" rx="18" ry="10" fill="#222"/>
+        <!-- Leaning forward -->
+        <line x1="80" y1="190" x2="120" y2="250" stroke="transparent"/>
+      </svg>
+    </div>
+    <!-- Form card -->
+    <div class="popup-card" id="popupCard">
+      <button class="popup-close" onclick="closePopup()">×</button>
+      <div class="popup-header">
+        <span class="dot"></span>
+        <span class="name">Максим Саврасов</span>
+        <span class="date" id="popupDate">Пт 1.01.2025</span>
+      </div>
+      <div class="form-group">
+        <label>*</label>
+        <input type="text" placeholder="Имя" id="fieldName">
+      </div>
+      <div class="form-group">
+        <label>*</label>
+        <input type="tel" placeholder="+7" id="fieldPhone">
+      </div>
+      <div class="form-group">
+        <input type="email" placeholder="E-mail" id="fieldEmail">
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="agree">
+        <label for="agree">Я согласен с <a href="#">политикой обработки персональных данных</a></label>
+      </div>
+      <button class="btn-submit" onclick="submitForm()">Готово</button>
+    </div>
+    <!-- Right character (Girl) -->
+    <div class="popup-char char-right" id="charRight">
+      <svg width="140" height="280" viewBox="0 0 160 320" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="80" cy="52" rx="34" ry="36" fill="#F5C5A0"/>
+        <ellipse cx="80" cy="26" rx="38" ry="22" fill="#1A1A1A"/>
+        <rect x="44" y="30" width="18" height="80" rx="9" fill="#1A1A1A"/>
+        <rect x="98" y="30" width="18" height="80" rx="9" fill="#1A1A1A"/>
+        <ellipse cx="68" cy="52" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="92" cy="52" rx="5" ry="6" fill="#1A1A1A"/>
+        <ellipse cx="69" cy="50" rx="2" ry="2" fill="white"/>
+        <ellipse cx="93" cy="50" rx="2" ry="2" fill="white"/>
+        <circle cx="80" cy="62" r="3" fill="#E0A080"/>
+        <path d="M68 66 Q80 75 92 66" stroke="#C08060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="46" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <ellipse cx="114" cy="54" rx="6" ry="8" fill="#F5C5A0"/>
+        <rect x="68" y="84" width="24" height="20" fill="#F5C5A0"/>
+        <rect x="44" y="104" width="72" height="90" rx="10" fill="#4A8BC4"/>
+        <rect x="44" y="120" width="72" height="12" fill="white"/>
+        <rect x="44" y="132" width="72" height="12" fill="#4A8BC4"/>
+        <rect x="44" y="144" width="72" height="12" fill="white"/>
+        <rect x="44" y="156" width="72" height="38" rx="3" fill="#4A8BC4"/>
+        <rect x="14" y="106" width="34" height="16" rx="8" fill="#4A8BC4"/>
+        <rect x="112" y="106" width="34" height="16" rx="8" fill="#4A8BC4"/>
+        <!-- Ball in right hand -->
+        <ellipse cx="120" cy="168" rx="22" ry="14" fill="#C04010" transform="rotate(-15 120 168)"/>
+        <path d="M102 162 Q120 156 138 174" stroke="#F5DEB3" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <rect x="48" y="190" width="64" height="56" rx="8" fill="#444"/>
+        <line x1="80" y1="190" x2="80" y2="246" stroke="#333" stroke-width="2"/>
+        <rect x="52" y="244" width="24" height="32" rx="4" fill="white"/>
+        <rect x="84" y="244" width="24" height="32" rx="4" fill="white"/>
+        <ellipse cx="64" cy="278" rx="18" ry="10" fill="#222"/>
+        <ellipse cx="96" cy="278" rx="18" ry="10" fill="#222"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+let charsAnimated = false;
+
+function openPopup(title, dateStr) {
+  const overlay = document.getElementById('popupOverlay');
+  const card = document.getElementById('popupCard');
+  const charLeft = document.getElementById('charLeft');
+  const charRight = document.getElementById('charRight');
+
+  // Set date in header
+  if (dateStr) {
+    document.getElementById('popupDate').textContent = dateStr;
+  } else {
+    const now = new Date();
+    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    document.getElementById('popupDate').textContent =
+      days[now.getDay()] + ' ' + now.getDate() + '.' +
+      String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
+  }
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Animate card dropping in
+  setTimeout(() => {
+    card.classList.add('animated');
+  }, 50);
+
+  // Characters fly in only once (per spec: "один раз при открытии")
+  if (!charsAnimated) {
+    setTimeout(() => {
+      charLeft.classList.add('animated');
+      charRight.classList.add('animated');
+      charsAnimated = true;
+    }, 250);
+  } else {
+    // Already animated — show them directly without transition
+    charLeft.style.opacity = '1';
+    charLeft.style.transform = 'translateX(0)';
+    charRight.style.opacity = '1';
+    charRight.style.transform = 'translateX(0)';
+  }
+}
+
+function closePopup() {
+  const overlay = document.getElementById('popupOverlay');
+  const card = document.getElementById('popupCard');
+  overlay.classList.remove('open');
+  card.classList.remove('animated');
+  document.body.style.overflow = '';
+}
+
+function closePopupOnBg(e) {
+  if (e.target === document.getElementById('popupOverlay')) {
+    closePopup();
+  }
+}
+
+function submitForm() {
+  const name = document.getElementById('fieldName').value.trim();
+  const phone = document.getElementById('fieldPhone').value.trim();
+  const agree = document.getElementById('agree').checked;
+  if (!name || !phone) {
+    alert('Пожалуйста, заполните имя и телефон');
+    return;
+  }
+  if (!agree) {
+    alert('Необходимо согласие на обработку данных');
+    return;
+  }
+  alert('Отлично! Мы свяжемся с вами в ближайшее время 🏉');
+  closePopup();
+  document.getElementById('fieldName').value = '';
+  document.getElementById('fieldPhone').value = '';
+  document.getElementById('fieldEmail').value = '';
+  document.getElementById('agree').checked = false;
+}
+
+// Keyboard close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePopup();
+});
+
+// Phone input auto-format
+document.getElementById('fieldPhone').addEventListener('input', function() {
+  if (this.value && !this.value.startsWith('+7')) {
+    this.value = '+7' + this.value.replace(/^\+?7?/, '');
+  }
+});
+</script>
+</body>
+</html>
