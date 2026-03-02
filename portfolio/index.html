@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- Canvas background animation -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Side navigation -->
+  <nav class="side-nav" id="sideNav">
+    <div class="nav-toggle" id="navToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <ul class="nav-list">
+      <li><a href="#home"   class="nav-link active" data-index="01">Home</a></li>
+      <li><a href="#work"   class="nav-link"        data-index="02">Work</a></li>
+      <li><a href="#about"  class="nav-link"        data-index="03">About</a></li>
+      <li><a href="#process" class="nav-link"       data-index="04">Process</a></li>
+      <li><a href="#studio" class="nav-link"        data-index="05">Studio</a></li>
+      <li><a href="#contact" class="nav-link"       data-index="06">Contact</a></li>
+    </ul>
+    <div class="nav-footer">
+      <span class="nav-year">2026</span>
+    </div>
+  </nav>
+
+  <!-- Hero section -->
+  <main class="hero" id="home">
+    <div class="hero-content">
+      <p class="hero-label">Portfolio</p>
+      <h1 class="hero-title">
+        <span class="line">Creative</span>
+        <span class="line">Developer</span>
+      </h1>
+      <div class="hero-sub">
+        <div class="scroll-hint">
+          <span class="scroll-line"></span>
+          <span class="scroll-text">Scroll</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Noise overlay -->
+  <div class="noise"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
