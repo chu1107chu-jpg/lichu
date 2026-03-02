@@ -50,8 +50,6 @@
     }
     #pdf-scroll canvas {
       display: block;
-      width: 100%;
-      height: auto;
     }
   </style>
 </head>
@@ -86,12 +84,20 @@
   pdfjsLib.getDocument('Taxi.pdf').promise.then(function(pdf) {
     var renderPage = function(n) {
       return pdf.getPage(n).then(function(page) {
+        var dpr = Math.min(window.devicePixelRatio || 1, 3);
         var availW = container.clientWidth - 80;
         var vp0 = page.getViewport({ scale: 1 });
-        var vp = page.getViewport({ scale: availW / vp0.width });
+        var baseScale = availW / vp0.width;
+        var scale = baseScale * dpr;
+        // cap canvas height to browser limit
+        var maxH = 16000;
+        if (vp0.height * scale > maxH) { scale = maxH / vp0.height; }
+        var vp = page.getViewport({ scale: scale });
         var canvas = document.createElement('canvas');
         canvas.width = vp.width;
         canvas.height = vp.height;
+        canvas.style.width  = (vp.width  / dpr) + 'px';
+        canvas.style.height = (vp.height / dpr) + 'px';
         container.appendChild(canvas);
         return page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
       });
