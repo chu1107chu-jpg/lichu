@@ -112,6 +112,7 @@
       </div>
       <nav id="nav">
         <a href="#">About</a>
+        <a href="#">Contact</a>
         <a href="#">Project 1</a>
         <a href="#">Project 2</a>
         <a href="#">Project 3</a>
@@ -227,7 +228,7 @@ function burst(cx,cy,colors,n) {
 }
 
 function missExplosion(cx,cy) {
-  const colors=['#242424','#1a1a1a','#3a3a3a','#f5f5f5','#ffffff','#dcdcdc','#8f8f90','#b0b0b0'];
+  const colors=['#ff2fda','#ff80e8','#ffb3f0','#cc00aa','#ffffff','#f5f5f5','#ff59e0','#e600c2'];
   for(let i=0;i<70;i++){
     const a=-Math.PI+Math.random()*Math.PI, s=280+Math.random()*560, life=0.55+Math.random()*0.55;
     parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-80,sz:5+Math.random()*15,col:colors[Math.floor(Math.random()*colors.length)],life,max:life});
@@ -334,7 +335,7 @@ function update(dt) {
           const rel=(c.x+c.w/2-(paddle.x+PAD_SZ/2))/(PAD_SZ/2);
           c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#dcdcdc','#ffffff']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80e8','#ffffff','#f5f5f5']);
           beep(760+Math.random()*120,0.08);
         }
         /* Miss → explosion + lose life + respawn */
@@ -368,7 +369,7 @@ function update(dt) {
           c.vx=rel*CARD_SPD*1.2+(Math.random()-0.5)*50;
           if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#dcdcdc','#ffffff','#98999c']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80e8','#ffffff','#f5f5f5','#ffb3f0']);
           beep(820+Math.random()*140,0.07);
         }
       }
@@ -424,14 +425,14 @@ function draw() {
 
   /* Cards — Figma: bg #f5f5f5, text #252426, 15px Inter, radius 4 */
   for(const c of cards){
-    ctx.fillStyle = c.flash>0 ? '#e4e40e' : '#f5f5f5';
+    ctx.fillStyle = c.flash>0 ? '#ff2fda' : '#f5f5f5';
     roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.fill();
     /* Distinguish falling card with a subtle border */
     if(c.falling && c.flash<=0){
       ctx.strokeStyle='#8f8f90'; ctx.lineWidth=1.5;
       roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.stroke();
     }
-    ctx.fillStyle='#252426'; ctx.font='400 15px Inter,sans-serif';
+    ctx.fillStyle = c.flash>0 ? '#ffffff' : '#252426'; ctx.font='400 15px Inter,sans-serif';
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText('Project 1', c.x+CARD_W/2, c.y+CARD_H/2);
   }
