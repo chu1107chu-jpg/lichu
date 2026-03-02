@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Contact | Li Chu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, auto;
+      --accent: #ff2fda;
+    }
+    html, body { height: 100%; cursor: var(--cursor); font-family: 'Inter', sans-serif; }
+    body { display: flex; background: #fff; }
+    a { cursor: var(--cursor); }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 260px; min-width: 260px;
+      background: #dcdcdc;
+      height: 100vh; position: sticky; top: 0;
+      display: flex; flex-direction: column;
+      padding: 40px 32px; gap: 8px;
+      overflow-y: auto; z-index: 10;
+    }
+    .nav-link {
+      font-size: 18px; font-weight: 500;
+      color: #242424; text-decoration: none; padding: 4px 0;
+      transition: color .15s; line-height: 1.4;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--accent); }
+    .nav-divider { height: 1px; background: #c4c4c4; margin: 8px 0; }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1; overflow-x: hidden; overflow-y: auto;
+      background: #fff; display: flex; align-items: flex-start;
+    }
+    .contact-wrap {
+      padding: 80px 80px 80px 80px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    /* ── HERO ── */
+    .ct-hero-title {
+      font-size: 64px; font-weight: 600; color: #3d3d3d;
+      line-height: 1.05; margin-bottom: 24px;
+    }
+    .ct-hero-sub {
+      font-size: 20px; font-weight: 400; color: #98999c;
+      margin-bottom: 56px; line-height: 1.6; max-width: 520px;
+    }
+
+    /* ── LINKS ── */
+    .ct-links { display: flex; flex-direction: column; gap: 20px; margin-bottom: 56px; }
+    .ct-link {
+      display: inline-flex; align-items: center; gap: 14px;
+      text-decoration: none; color: #242424;
+      font-size: 20px; font-weight: 500;
+      padding: 20px 28px;
+      background: #f4f4f4; border-radius: 12px;
+      transition: background .15s, color .15s;
+      max-width: 480px;
+    }
+    .ct-link:hover { background: #242424; color: #fff; }
+    .ct-link svg { flex-shrink: 0; }
+
+    /* ── FORM ── */
+    .ct-form-title { font-size: 24px; font-weight: 700; color: #242424; margin-bottom: 20px; }
+    .ct-form { display: flex; flex-direction: column; gap: 12px; max-width: 480px; }
+    .ct-form input, .ct-form textarea {
+      padding: 14px 18px; border: 1.5px solid #e0e0e0; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 15px; color: #242424;
+      background: #fafafa; outline: none; transition: border-color .15s;
+      cursor: var(--cursor);
+    }
+    .ct-form input:focus, .ct-form textarea:focus { border-color: var(--accent); }
+    .ct-form textarea { height: 120px; resize: none; }
+    .ct-form-row { display: flex; gap: 10px; justify-content: flex-end; }
+    .ct-tg-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 20px; border-radius: 8px; border: none;
+      background: #229ed9; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
+      text-decoration: none; cursor: var(--cursor);
+      transition: background .15s;
+    }
+    .ct-tg-btn:hover { background: #1a8bbf; }
+    .ct-send-btn {
+      padding: 12px 32px; border-radius: 8px; border: none;
+      background: #242424; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: var(--cursor); transition: background .15s;
+    }
+    .ct-send-btn:hover { background: #333; }
+    .ct-send-btn:disabled { opacity: .5; cursor: not-allowed; }
+    #ct-status { font-size: 14px; color: var(--accent); min-height: 20px; text-align: right; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="game.html" class="nav-link">Главная</a>
+    <a href="project-01.html" class="nav-link">Project 1</a>
+    <a href="project-02.html" class="nav-link">Project 2</a>
+    <a href="project-03.html" class="nav-link">Project 3</a>
+    <a href="project-04.html" class="nav-link">Project 4</a>
+    <a href="project-05.html" class="nav-link">Project 5</a>
+    <div class="nav-divider"></div>
+    <a href="contact.html" class="nav-link active">Contact</a>
+  </aside>
+
+  <main class="main">
+    <div class="contact-wrap">
+      <h1 class="ct-hero-title">Let's work<br>together.</h1>
+      <p class="ct-hero-sub">
+        UX/UI Designer open to freelance projects, collaborations,
+        and full-time opportunities. Reach out — let's build something great.
+      </p>
+
+      <div class="ct-links">
+        <a class="ct-link" href="https://t.me/choowie" target="_blank" rel="noopener">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/>
+          </svg>
+          @choowie — Telegram
+        </a>
+        <a class="ct-link" href="mailto:lapkazarapka8752@gmail.com">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+          </svg>
+          lapkazarapka8752@gmail.com
+        </a>
+      </div>
+
+      <p class="ct-form-title">Or send me a message</p>
+      <div class="ct-form">
+        <input type="text" id="ct-name" placeholder="Your name">
+        <input type="email" id="ct-email" placeholder="your@email.com">
+        <textarea id="ct-msg" placeholder="Tell me about your project…"></textarea>
+        <div class="ct-form-row">
+          <a class="ct-tg-btn" href="https://t.me/choowie" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/>
+            </svg>
+            Telegram
+          </a>
+          <button class="ct-send-btn" id="ct-send">Send</button>
+        </div>
+        <div id="ct-status"></div>
+      </div>
+    </div>
+  </main>
+
+<script>
+(function () {
+  var FORMSPREE_ENDPOINT = '';
+  var TO_EMAIL = 'lapkazarapka8752@gmail.com';
+
+  fetch('site-config.json?_=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : {}; })
+    .catch(function(){ return {}; })
+    .then(function(cfg){
+      FORMSPREE_ENDPOINT = cfg.formspree_endpoint || '';
+      TO_EMAIL = cfg.email || TO_EMAIL;
+    });
+
+  document.getElementById('ct-send').addEventListener('click', function() {
+    var btn     = document.getElementById('ct-send');
+    var status  = document.getElementById('ct-status');
+    var nameVal  = document.getElementById('ct-name').value.trim();
+    var emailVal = document.getElementById('ct-email').value.trim();
+    var msgVal   = document.getElementById('ct-msg').value.trim();
+
+    if (!nameVal || !emailVal || !msgVal) {
+      status.textContent = 'Заполните все поля ✱';
+      setTimeout(function(){ status.textContent = ''; }, 2500);
+      return;
+    }
+
+    // Fallback: если Formspree не настроен — открыть почтовый клиент
+    if (!FORMSPREE_ENDPOINT) {
+      var subject = encodeURIComponent('Portfolio contact: ' + nameVal);
+      var body = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
+      window.location.href = 'mailto:' + TO_EMAIL + '?subject=' + subject + '&body=' + body;
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = '...';
+    fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
+    })
+    .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+    .then(function(res){
+      if (res.ok) {
+        status.textContent = 'Отправлено ✓';
+        document.getElementById('ct-name').value  = '';
+        document.getElementById('ct-email').value = '';
+        document.getElementById('ct-msg').value   = '';
+      } else {
+        status.textContent = 'Ошибка: ' + (res.data.error || 'попробуйте ещё раз');
+      }
+      btn.textContent = 'Send'; btn.disabled = false;
+    })
+    .catch(function(){
+      status.textContent = 'Ошибка сети — попробуйте ещё раз';
+      btn.textContent = 'Send'; btn.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1280">
-  <title>Project 1 — Taxi | Li Chu</title>
+  <title>Project 4 | Li Chu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -15,7 +15,6 @@
     body { display: flex; background: #fff; }
     a { cursor: var(--cursor); }
 
-    /* ── SIDEBAR ── */
     .sidebar {
       width: 260px; min-width: 260px;
       background: #dcdcdc;
@@ -30,47 +29,40 @@
       transition: color .15s; line-height: 1.4;
     }
     .nav-link:hover, .nav-link.active { color: #ff2fda; }
+    .nav-divider { height: 1px; background: #c4c4c4; margin: 8px 0; }
 
-    /* ── MAIN ── */
-    .main {
-      flex: 1; overflow-x: hidden; overflow-y: auto;
-      background: #fff;
+    .main { flex: 1; overflow-x: hidden; overflow-y: auto; background: #fff; }
+    .sections { width: 1280px; display: flex; flex-direction: column; }
+    .section-img { display: block; width: 1280px; }
+
+    .placeholder {
+      width: 1280px; height: 640px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      background: #f7f7f7;
     }
-    .sections {
-      width: 1280px; display: flex; flex-direction: column;
-    }
-    .section-img {
-      display: block; width: 1280px;
-      /* Images are 1920px wide (1.5x), display at 1280px = exact 1:1 pixel match */
-      image-rendering: auto;
-    }
+    .placeholder-title { font-size: 32px; font-weight: 700; color: #c8c8c8; }
+    .placeholder-sub   { font-size: 16px; font-weight: 400; color: #c0c0c0; }
   </style>
 </head>
 <body>
   <aside class="sidebar">
     <a href="game.html" class="nav-link">Главная</a>
-    <a href="project-01.html" class="nav-link active">Project 1</a>
+    <a href="project-01.html" class="nav-link">Project 1</a>
     <a href="project-02.html" class="nav-link">Project 2</a>
     <a href="project-03.html" class="nav-link">Project 3</a>
-    <a href="project-04.html" class="nav-link">Project 4</a>
+    <a href="project-04.html" class="nav-link active">Project 4</a>
     <a href="project-05.html" class="nav-link">Project 5</a>
-    <div style="height:1px;background:#c4c4c4;margin:8px 0"></div>
+    <div class="nav-divider"></div>
     <a href="contact.html" class="nav-link">Contact</a>
   </aside>
 
   <main class="main">
     <div class="sections">
-      <img class="section-img" src="img/taxi-sect-hero.jpg"     alt="" loading="eager">
-      <img class="section-img" src="img/taxi-sect-zadacha.jpg"  alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-bench.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-checkers.jpg" alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-userflow.jpg" alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-quotes.jpg"   alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-case1.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-itog1.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-case2.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-itog2.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-finish.jpg"   alt="" loading="lazy">
+      <div class="placeholder">
+        <div class="placeholder-title">Project 4</div>
+        <div class="placeholder-sub">Coming soon — добавьте изображения через Admin</div>
+      </div>
     </div>
   </main>
 </body>
