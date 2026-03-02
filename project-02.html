@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>project-02 | Li Chu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7,auto}
+    html,body{height:100%;cursor:var(--cursor);font-family:'Inter',sans-serif}
+    body{display:flex;background:#fff}
+    a{cursor:var(--cursor)}
+    .sidebar{width:260px;min-width:260px;background:#dcdcdc;height:100vh;position:sticky;top:0;display:flex;flex-direction:column;padding:40px 32px;gap:8px;overflow-y:auto;z-index:10}
+    .nav-link{font-size:18px;font-weight:500;color:#242424;text-decoration:none;padding:4px 0;transition:color .15s;line-height:1.4}
+    .nav-link:hover,.nav-link.active{color:#ff2fda}
+    .main{flex:1;overflow-x:hidden;overflow-y:auto;background:#fff}
+    .sections{width:1280px;display:flex;flex-direction:column}
+    .section-img{display:block;width:1280px}
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="index.html" class="nav-link">Главная</a>
+    <a href="project-01.html" class="nav-link">Project 1</a>
+    <a href="project-02.html" class="nav-link active">Project 2</a>
+    <a href="project-03.html" class="nav-link">Project 3</a>
+    <a href="project-04.html" class="nav-link">Project 4</a>
+    <a href="project-05.html" class="nav-link">Project 5</a>
+  </aside>
+  <main class="main">
+    <div class="sections">
+      <img class="section-img" src="img/project-02/mandala-artwork-colorful-pattern-background.jpg" alt="" loading="lazy">
+    </div>
+  </main>
+</body>
+</html>
