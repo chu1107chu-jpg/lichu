@@ -172,17 +172,17 @@
       </div>
       <div id="modal-ct">
         <div class="ct-box">
-          <p class="ct-title">Contact Li Chu</p>
-          <input type="text" placeholder="Your name">
+          <p class="ct-title">Написать Ли Чу</p>
+          <input type="text" placeholder="Ваше имя">
           <input type="email" placeholder="your@email.com">
-          <textarea placeholder="Tell me about your project…"></textarea>
+          <textarea placeholder="Расскажите о вашем проекте…"></textarea>
           <div class="ct-row">
-            <button class="ct-cancel" id="ct-cancel">Cancel</button>
+            <button class="ct-cancel" id="ct-cancel">Отмена</button>
             <a class="ct-tg" href="https://t.me/choowie" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/></svg>
               Telegram
             </a>
-            <button class="ct-send"   id="ct-send">Send</button>
+            <button class="ct-send" id="ct-send">Отправить</button>
           </div>
         </div>
       </div>
@@ -279,32 +279,6 @@ window.LICHU_CARD_TEXT = '';
     sbContact.classList.toggle('show', navEl2.classList.contains('show'));
   }).observe(navEl2, { attributes: true, attributeFilter: ['class'] });
 
-  function saveMessage(name, email, msg) {
-    var cfg = window._LICHU_CFG || {};
-    var token = cfg.write_token;
-    if (!token) return;
-    var owner = 'chu1107chu-jpg', repo = 'lichu', branch = 'gh-pages';
-    var api = 'https://api.github.com/repos/' + owner + '/' + repo;
-    var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-    // Read existing messages.json
-    fetch(api + '/contents/messages.json?ref=' + branch, { headers: headers })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .catch(function(){ return null; })
-      .then(function(f){
-        var list = [];
-        if (f && f.content) {
-          try { list = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){}
-        }
-        list.unshift({ date: new Date().toISOString(), name: name, email: email, message: msg });
-        var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(list, null, 2))));
-        return fetch(api + '/contents/messages.json', {
-          method: 'PUT',
-          headers: headers,
-          body: JSON.stringify({ message: 'new contact message', content: b64, branch: branch, sha: f ? f.sha : undefined })
-        });
-      }).catch(function(){});
-  }
-
   function initContactForm() {
     var cfg = window._LICHU_CFG || {};
     var formspree = cfg.formspree_endpoint || '';
@@ -324,33 +298,32 @@ window.LICHU_CARD_TEXT = '';
       var msgVal   = box.querySelector('textarea').value.trim();
 
       if (!nameVal || !emailVal || !msgVal) {
-        titleEl.textContent = 'Fill in all fields ✱';
-        setTimeout(function () { titleEl.textContent = 'Contact Li Chu'; }, 2000);
+        titleEl.textContent = 'Заполните все поля ✱';
+        setTimeout(function () { titleEl.textContent = 'Написать Ли Чу'; }, 2000);
         return;
       }
 
-      newBtn.textContent = '...';
+      newBtn.textContent = 'Отправка…';
       newBtn.disabled = true;
 
       function onSuccess() {
-        saveMessage(nameVal, emailVal, msgVal);
-        titleEl.textContent = 'Sent ✓';
+        titleEl.textContent = 'Отправлено ✓';
         setTimeout(function () {
           document.getElementById('modal-ct').classList.remove('show');
-          titleEl.textContent = 'Contact Li Chu';
+          titleEl.textContent = 'Написать Ли Чу';
           box.querySelector('input[type="text"]').value  = '';
           box.querySelector('input[type="email"]').value = '';
           box.querySelector('textarea').value            = '';
-          newBtn.textContent = 'Send';
+          newBtn.textContent = 'Отправить';
           newBtn.disabled    = false;
         }, 1800);
       }
 
       function onError() {
-        titleEl.textContent = 'Error — try again';
-        newBtn.textContent  = 'Send';
+        titleEl.textContent = 'Ошибка — попробуйте ещё раз';
+        newBtn.textContent  = 'Отправить';
         newBtn.disabled     = false;
-        setTimeout(function () { titleEl.textContent = 'Contact Li Chu'; }, 3000);
+        setTimeout(function () { titleEl.textContent = 'Написать Ли Чу'; }, 3000);
       }
 
       if (formspree) {
