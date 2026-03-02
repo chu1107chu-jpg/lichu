@@ -1,1 +1,17 @@
-{"email":"lapkazarapka8752@gmail.com","formspree_endpoint":"https://formspree.io/f/xnjbkpro"}
+{
+  "email": "lapkazarapka8752@gmail.com",
+  "emailjs_key": "https://formspree.io/f/xnjbkpro",
+  "emailjs_service": "",
+  "emailjs_template": "",
+  "card_texts": [
+    "Agile",
+    "JTBD",
+    "Person",
+    "CJM",
+    "UserFlow",
+    "UseCase",
+    "ERD"
+  ],
+  "start_title": "",
+  "start_sub": ""
+}
