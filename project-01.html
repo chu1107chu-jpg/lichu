@@ -4,24 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project 1 — Taxi | Li Chu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { font-family: 'Inter', sans-serif; height: 100%; overflow: hidden; }
+    html, body { font-family: 'Inter', sans-serif; height: 100%; overflow: hidden; background: #242424; }
     :root { --px-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, pointer; }
-    a, button { cursor: var(--px-cursor); }
+    a { cursor: var(--px-cursor); }
     #root { display: flex; height: 100vh; }
 
-    /* SIDEBAR */
     #sidebar {
       width: 260px; min-width: 260px;
       background: #dcdcdc;
       position: relative;
       height: 100vh;
       display: flex; flex-direction: column;
-      z-index: 20; flex-shrink: 0;
+      flex-shrink: 0;
     }
     .sb-profile { margin: 44px 0 0 30px; }
     .sb-name { font-weight: 700; font-size: 60px; color: #292626; line-height: 1; }
@@ -30,10 +27,10 @@
     #nav a {
       font-weight: 400; font-size: 18px; color: #98999c;
       text-decoration: none; display: block;
-      cursor: var(--px-cursor); transition: color 0.18s;
+      transition: color 0.18s;
     }
     #nav a:hover { color: #ff2fda; }
-    #nav a.active { color: #292626; font-weight: 500; }
+    #nav a.active { color: #ff2fda; font-weight: 500; }
     .sb-back {
       position: absolute; bottom: 28px; left: 30px;
       font-size: 14px; color: #98999c; text-decoration: none;
@@ -41,7 +38,6 @@
     }
     .sb-back:hover { color: #ff2fda; }
 
-    /* PDF CONTENT */
     #pdf-scroll {
       flex: 1;
       overflow-y: auto;
@@ -49,13 +45,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 0;
-      gap: 24px;
+      padding: 48px 40px;
+      gap: 20px;
     }
     #pdf-scroll canvas {
       display: block;
-      max-width: 100%;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+      width: 100%;
+      height: auto;
     }
   </style>
 </head>
@@ -67,8 +63,8 @@
       <div class="sb-job">UX UI Designer</div>
     </div>
     <nav id="nav">
-      <a href="#">About</a>
-      <a href="#">Contact</a>
+      <a href="index.html">About</a>
+      <a href="index.html">Contact</a>
       <a href="project-01.html" class="active">Project 1</a>
       <a href="project-02.html">Project 2</a>
       <a href="project-03.html">Project 3</a>
@@ -77,30 +73,34 @@
     </nav>
     <a class="sb-back" href="index.html">← Back</a>
   </aside>
-
   <div id="pdf-scroll"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs" type="module"></script>
-<script type="module">
-  import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs';
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs';
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   const container = document.getElementById('pdf-scroll');
-  const availableWidth = container.clientWidth || (window.innerWidth - 260 - 80);
-  const scale = availableWidth / 595; // A4 width in pts
 
-  const pdf = await pdfjsLib.getDocument('Taxi.pdf').promise;
-
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale });
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    container.appendChild(canvas);
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-  }
+  pdfjsLib.getDocument('Taxi.pdf').promise.then(function(pdf) {
+    var renderPage = function(n) {
+      return pdf.getPage(n).then(function(page) {
+        var availW = container.clientWidth - 80;
+        var vp0 = page.getViewport({ scale: 1 });
+        var vp = page.getViewport({ scale: availW / vp0.width });
+        var canvas = document.createElement('canvas');
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        container.appendChild(canvas);
+        return page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      });
+    };
+    var chain = Promise.resolve();
+    for (var i = 1; i <= pdf.numPages; i++) {
+      (function(n){ chain = chain.then(function(){ return renderPage(n); }); })(i);
+    }
+  });
 </script>
 </body>
 </html>
