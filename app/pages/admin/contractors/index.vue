@@ -948,7 +948,7 @@ html.dark .ct-badge--master { background: rgba(99, 140, 255, .15); color: #82a5f
 .ct-projects-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
 .ct-project-check {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 10px; border-radius: 8px; cursor: pointer;
+  padding: 5px 10px; border-radius: 10px; cursor: pointer;
   font-size: .78rem; color: var(--glass-text); opacity: .5;
   transition: all .12s; user-select: none;
 }
@@ -1034,8 +1034,7 @@ html.dark .ct-badge--master { background: rgba(99, 140, 255, .15); color: #82a5f
 .ct-cert-chip {
   display: inline-block;
   padding: 2px 8px;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--ds-accent, #6366f1) 10%, transparent);
+  border-radius: 10px;
   color: var(--ds-accent, #6366f1);
   font-size: .75rem; font-weight: 500;
   margin-right: 4px; margin-bottom: 2px;

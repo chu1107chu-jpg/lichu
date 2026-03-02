@@ -135,9 +135,7 @@ async function save() {
 
   background: color-mix(in srgb, var(--glass-bg) 90%, transparent);
   border: none;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 16px;
+  border-radius: 10px;
 }
 .pg-row {
   display: flex;

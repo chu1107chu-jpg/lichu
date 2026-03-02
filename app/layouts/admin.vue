@@ -154,16 +154,11 @@
             v-model="newClientForm.name"
             type="text"
             required
-            style="width:100%;padding:10px;border:1px solid var(--glass-border);border-radius:6px;background:var(--glass-bg);color:var(--glass-text)"
-            placeholder="Введите имя клиента"
-          />
-        </div>
-        <div style="margin-bottom:16px">
-          <label style="display:block;font-size:.8rem;margin-bottom:6px;color:var(--glass-text)">Email</label>
+            style="width:100%;padding:10px;border:1px solid var(--glass-border);border-radius:10px;background:var(--glass-bg);color:var(--glass-text)"
           <input
             v-model="newClientForm.email"
             type="email"
-            style="width:100%;padding:10px;border:1px solid var(--glass-border);border-radius:6px;background:var(--glass-bg);color:var(--glass-text)"
+            style="width:100%;padding:10px;border:1px solid var(--glass-border);border-radius:10px;background:var(--glass-bg);color:var(--glass-text)"
             placeholder="Введите email"
           />
         </div>
@@ -172,7 +167,7 @@
           <input
             v-model="newClientForm.phone"
             type="tel"
-            style="width:100%;padding:10px;border:1px solid var(--glass-border);border-radius:6px;background:var(--glass-bg);color:var(--glass-text)"
+            style="width:100%;padding:10px;border:1px solid var(--glass-border);border-radius:10px;background:var(--glass-bg);color:var(--glass-text)"
             placeholder="Введите телефон"
           />
         </div>

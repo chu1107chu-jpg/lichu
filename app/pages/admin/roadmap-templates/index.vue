@@ -252,7 +252,7 @@ async function removeTemplate(tpl: any) {
 </script>
 
 <style scoped>
-.a-card { background: var(--glass-bg); border: none; box-shadow: var(--glass-shadow); -webkit-backdrop-filter: blur(18px) saturate(145%); backdrop-filter: blur(18px) saturate(145%); border-radius: 14px; }
+.a-card { background: var(--glass-bg); border: none; box-shadow: var(--glass-shadow); -webkit-backdrop-filter: blur(18px) saturate(145%); backdrop-filter: blur(18px) saturate(145%); border-radius: 10px; }
 .a-btn-sm {
   border: none; background: var(--glass-bg); padding: 4px 10px;
   font-size: .78rem; cursor: pointer; font-family: inherit; border-radius: 2px;
@@ -271,7 +271,7 @@ async function removeTemplate(tpl: any) {
 .a-input {
   display: block; width: 100%; border: none;
   background: color-mix(in srgb, var(--glass-bg) 90%, transparent);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px 0; font-size: .88rem; outline: none; font-family: inherit;
 }
 .a-input:focus { opacity: .92; }
@@ -279,7 +279,7 @@ async function removeTemplate(tpl: any) {
   position: fixed; inset: 0; background: rgba(0,0,0,0.3);
   display: flex; align-items: center; justify-content: center; z-index: 100;
 }
-.a-modal { background: var(--glass-bg); border: none; box-shadow: var(--glass-shadow); -webkit-backdrop-filter: blur(20px) saturate(145%); backdrop-filter: blur(20px) saturate(145%); border-radius: 14px; padding: 24px; max-height: 90vh; overflow: auto; }
-.a-stage-item { border: none; border-radius: 12px; background: color-mix(in srgb, var(--glass-bg) 88%, transparent); padding: 10px; }
+.a-modal { background: var(--glass-bg); border: none; box-shadow: var(--glass-shadow); -webkit-backdrop-filter: blur(20px) saturate(145%); backdrop-filter: blur(20px) saturate(145%); border-radius: 10px; padding: 24px; max-height: 90vh; overflow: auto; }
+.a-stage-item { border: none; border-radius: 10px; background: color-mix(in srgb, var(--glass-bg) 88%, transparent); padding: 10px; }
 html.dark .a-stage-item { background: #1e1e20; }
 </style>

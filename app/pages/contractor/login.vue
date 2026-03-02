@@ -92,7 +92,7 @@ async function submit() {
   width: 100%;
   max-width: 380px;
   padding: 40px 32px;
-  border-radius: 24px;
+  border-radius: 10px;
 }
 
 .login-header {
@@ -162,7 +162,7 @@ async function submit() {
 .login-btn {
   width: 100%;
   padding: 11px;
-  border-radius: 20px;
+  border-radius: 10px;
   border: 1px solid rgba(180, 180, 220, 0.45);
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(10px);

@@ -292,7 +292,7 @@ function openClientCabinet(client: any) {
   background: rgba(0,0,0,.08); color: var(--glass-text); font-size: .62rem;
 }
 .cl-add-btn {
-  padding: 8px 18px; border-radius: 8px; font-size: .78px;
+  padding: 8px 18px; border-radius: 10px; font-size: .78px;
   border: none; background: var(--glass-text);
   color: var(--glass-page-bg); cursor: pointer; font-family: inherit;
   white-space: nowrap; transition: opacity .15s; font-size: .78rem;
@@ -334,8 +334,7 @@ function openClientCabinet(client: any) {
 .cl-card-actions { display: flex; gap: 5px; flex-shrink: 0; }
 .cl-icon-btn {
   display: flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 7px; cursor: pointer;
-  border: none; background: var(--glass-bg);
+  width: 28px; height: 28px; border-radius: 10px; cursor: pointer;
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   color: var(--glass-text); opacity: .6; transition: opacity .15s;
 }
@@ -349,7 +348,7 @@ function openClientCabinet(client: any) {
 
 .cl-notes { font-size: .76rem; color: var(--glass-text); opacity: .45; line-height: 1.45; margin: 0 0 8px; font-style: italic; }
 
-.cl-credentials { display: flex; align-items: center; gap: 6px; margin: 4px 0 8px; padding: 7px 10px; border-radius: 7px; background: rgba(0,0,0,.04); }
+.cl-credentials { display: flex; align-items: center; gap: 6px; margin: 4px 0 8px; padding: 7px 10px; border-radius: 10px; background: rgba(0,0,0,.04); }
 .cl-cred-item { font-size: .72rem; color: var(--glass-text); opacity: .6; }
 .cl-cred-item b { font-weight: 600; opacity: 1; font-family: monospace; letter-spacing: .5px; }
 .cl-cred-sep { color: var(--glass-text); opacity: .25; }
@@ -378,7 +377,7 @@ function openClientCabinet(client: any) {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: .74rem; text-decoration: none; font-family: inherit;
   color: var(--glass-page-bg); background: var(--glass-text);
-  padding: 5px 10px; border-radius: 7px; border: none; cursor: pointer;
+  padding: 5px 10px; border-radius: 10px; border: none; cursor: pointer;
   opacity: .75; transition: opacity .15s; white-space: nowrap;
 }
 .cl-cabinet-btn:hover { opacity: 1; }
@@ -393,7 +392,7 @@ function openClientCabinet(client: any) {
 .cl-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
 .cl-modal-head span { font-size: .72rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--glass-text); opacity: .5; }
 .cl-close {
-  width: 28px; height: 28px; border-radius: 7px; border: none;
+  width: 28px; height: 28px; border-radius: 10px; border: none;
   background: rgba(0,0,0,.08); color: var(--glass-text); cursor: pointer; font-size: 1rem;
   display: flex; align-items: center; justify-content: center; transition: background .15s;
 }
@@ -403,10 +402,10 @@ function openClientCabinet(client: any) {
 .cl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .cl-field { display: flex; flex-direction: column; gap: 5px; }
 .cl-field label { font-size: .7rem; text-transform: uppercase; letter-spacing: .5px; color: var(--glass-text); opacity: .45; }
-.cl-input { padding: 8px 12px; border-radius: 8px; font-size: .88rem; font-family: inherit; width: 100%; box-sizing: border-box; }
+.cl-input { padding: 8px 12px; border-radius: 10px; font-size: .88rem; font-family: inherit; width: 100%; box-sizing: border-box; }
 .cl-ta { resize: vertical; min-height: 72px; }
 .cl-select { cursor: pointer; }
-.cl-error { font-size: .78rem; color: #dc2626; margin: 0; padding: 7px 12px; background: rgba(220,38,38,.08); border-radius: 6px; }
+.cl-error { font-size: .78rem; color: #dc2626; margin: 0; padding: 7px 12px; background: rgba(220,38,38,.08); border-radius: 10px; }
 
 .cl-link-preview { padding: 12px 14px; border-radius: 10px; font-size: .8rem; }
 .cl-link-preview-title { font-size: .68rem; text-transform: uppercase; letter-spacing: .5px; opacity: .45; margin: 0 0 8px; }
@@ -415,13 +414,13 @@ function openClientCabinet(client: any) {
 
 .cl-modal-foot { display: flex; gap: 8px; justify-content: flex-end; padding-top: 4px; }
 .cl-cancel-btn {
-  padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: .8rem;
+  padding: 8px 16px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: .8rem;
   border: none; background: color-mix(in srgb, var(--glass-bg) 90%, transparent);
   color: var(--glass-text); opacity: .65; transition: opacity .15s;
 }
 .cl-cancel-btn:hover { opacity: 1; }
 .cl-save-btn {
-  padding: 8px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: .8rem; font-weight: 500;
+  padding: 8px 20px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: .8rem; font-weight: 500;
   border: none; background: var(--glass-text); color: var(--glass-page-bg); transition: opacity .15s;
 }
 .cl-save-btn:hover:not(:disabled) { opacity: .82; }

@@ -1142,7 +1142,7 @@ async function unlinkClientFromModal(clientId: string) {
 .proj-preview-exit {
   font-size: .7rem; color: var(--glass-text); opacity: .45;
   text-decoration: none; padding: 2px 6px;
-  border: 1px solid var(--glass-border); border-radius: 4px;
+  border: 1px solid var(--glass-border); border-radius: 10px;
   white-space: nowrap;
 }
 .proj-preview-exit:hover { opacity: .9; }
