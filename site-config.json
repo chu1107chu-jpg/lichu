@@ -1,6 +1,4 @@
 {
   "email": "lapkazarapka8752@gmail.com",
-  "emailjs_key": "https://formspree.io/f/xnjbkpro",
-  "emailjs_service": "",
-  "emailjs_template": ""
+  "formspree_endpoint": "https://formspree.io/f/xnjbkpro"
 }
