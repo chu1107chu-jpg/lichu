@@ -30,18 +30,29 @@
     }
     #nav.show { opacity: 1; pointer-events: auto; }
     #nav a { font-weight: 500; font-size: 18px; color: #242424; text-decoration: none; display: block;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, pointer;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
       transition: color 0.18s;
     }
     #nav a:hover { color: #ff2fda; }
-    #sb-contact {
-      margin-top: auto;
-      font-weight: 400; font-size: 18px; color: #ff2fda; text-decoration: none;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, pointer;
-      opacity: 1 !important; pointer-events: auto !important;
+    .sb-contacts { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+    .sb-contacts-row { display: flex; gap: 8px; align-items: center; }
+    .sb-icon-btn {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(36,36,36,0.22);
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none; color: #242424;
+      transition: border-color 0.18s, color 0.18s;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
     }
-    #sb-contact.show { opacity: 1 !important; pointer-events: auto !important; }
-    #sb-contact:hover { opacity: 0.75; }
+    .sb-icon-btn:hover { border-color: #242424; color: #000; }
+    .sb-phone {
+      display: flex; align-items: center; gap: 7px;
+      text-decoration: none; color: #242424;
+      font-size: 13px; font-weight: 400; letter-spacing: -.01em;
+      opacity: 0.45; transition: opacity 0.18s;
+    }
+    .sb-phone:hover { opacity: 1; }
+    .sb-phone .material-symbols-outlined { font-size: 15px; font-variation-settings: 'opsz' 20; }
 
     /* ── GAME AREA — Figma: bg #242424 ── */
     #game-area { flex: 1; position: relative; background: #242424; overflow: hidden; }
@@ -62,10 +73,7 @@
 
     #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: none; }
 
-    /* ── START MODAL ── */
-    #modal-start { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 100; }
-    #modal-start.show { display: flex; }
-    .go-subtitle { font-size: 18px; font-weight: 400; color: #98999c; margin-top: -22px; }
+
 
     /* ── GAME OVER MODAL — Figma: bg #e6e9e7, 475x305, radius 8, white glow ── */
     #modal-go { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 100; }
@@ -91,18 +99,70 @@
     #play-again-btn span { font-weight: 500; font-size: 32px; color: #e6e9e7; white-space: nowrap; font-family: 'Inter', sans-serif; }
 
     /* ── CONTACT MODAL ── */
-    #modal-ct { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 110; }
+    #modal-ct {
+      position: absolute; inset: 0;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(8,8,8,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 110;
+    }
     #modal-ct.show { display: flex; }
-    .ct-box { width: 420px; background: #2c2c2c; border-radius: 8px; padding: 44px; display: flex; flex-direction: column; gap: 16px; animation: popIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards; }
-    .ct-title { font-weight: 600; font-size: 28px; color: #e6e9e7; margin-bottom: 4px; }
-    .ct-box input, .ct-box textarea { background: #3a3a3a; border: 1px solid #555; border-radius: 4px; padding: 10px 14px; color: #e6e9e7; font-family: 'Inter',sans-serif; font-size: 16px; outline: none; width: 100%; transition: border-color 0.15s; }
-    .ct-box input:focus, .ct-box textarea:focus { border-color: #f5f5f5; }
+    .ct-box {
+      position: relative;
+      width: 480px;
+      background: rgba(18,18,18,0.97);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 52px 52px 44px;
+      display: flex; flex-direction: column; gap: 0;
+      animation: popIn 0.32s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .ct-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 32px; height: 32px;
+      border: none; background: transparent;
+      color: rgba(255,255,255,0.25); font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23f0f0f0' stroke='%23111' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
+      transition: color 0.15s;
+    }
+    .ct-close:hover { color: rgba(255,255,255,0.8); }
+    .ct-label { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
+    .ct-title { font-weight: 600; font-size: 30px; letter-spacing: -.02em; color: #f0f0f0; margin-bottom: 28px; }
+    .ct-box input, .ct-box textarea {
+      padding: 14px 0;
+      border: none; border-bottom: 1px solid rgba(255,255,255,0.10);
+      background: transparent;
+      color: #f0f0f0; font-family: 'Inter',sans-serif; font-size: 15px;
+      outline: none; width: 100%;
+      transition: border-color 0.18s;
+    }
+    .ct-box input:focus, .ct-box textarea:focus { border-color: rgba(255,255,255,0.45); }
+    .ct-box input::placeholder, .ct-box textarea::placeholder { color: rgba(255,255,255,0.22); }
     .ct-box textarea { height: 80px; resize: none; }
-    .ct-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
-    .ct-cancel { padding: 10px 22px; border-radius: 4px; border: 1px solid #555; background: transparent; color: #98999c; font-family: 'Inter',sans-serif; font-size: 15px; cursor: pointer; }
-    .ct-tg     { padding: 10px 18px; border-radius: 4px; border: none; background: #229ed9; color: #fff; font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
-    .ct-tg:hover { background: #1a8bbf; }
-    .ct-send   { padding: 10px 28px; border-radius: 4px; border: none; background: #f5f5f5; color: #1a1a1a; font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .ct-row { display: flex; align-items: center; justify-content: space-between; padding-top: 28px; gap: 12px; }
+    .ct-tg {
+      width: 40px; height: 40px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: transparent; color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: border-color 0.18s, color 0.18s;
+    }
+    .ct-tg:hover { border-color: #229ed9; color: #229ed9; }
+    .ct-send {
+      margin-left: auto;
+      padding: 0; border: none; background: transparent;
+      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23f0f0f0' stroke='%23111' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: color 0.18s;
+    }
+    .ct-send:hover { color: #fff; }
+    .ct-send .arr { transition: transform 0.18s; }
+    .ct-send:hover .arr { transform: translateX(4px); }
 
     /* ── Lives ── */
     #lives-display { display: none; }
@@ -137,7 +197,20 @@
         <a href="project-04.html">Project 4</a>
         <a href="project-05.html">Project 5</a>
       </nav>
-      <a id="sb-contact" href="contact.html" class="show">Contact</a>
+      <div class="sb-contacts">
+        <div class="sb-contacts-row">
+          <a class="sb-icon-btn" href="https://t.me/choowie" target="_blank" title="Telegram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/></svg>
+          </a>
+          <a class="sb-icon-btn" href="mailto:lapkazarapka8752@gmail.com" title="Gmail">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+          </a>
+        </div>
+        <a class="sb-phone" href="tel:+79613823333">
+          <span class="material-symbols-outlined">call</span>
+          <span>+7&nbsp;961&nbsp;382&#8209;33&#8209;33</span>
+        </a>
+      </div>
     </div>
 
     <div id="game-area">
@@ -151,16 +224,6 @@
         <div class="life-dot" id="life2"></div>
       </div>
       <canvas id="game-canvas"></canvas>
-      <!-- ── START MODAL ── -->
-      <div id="modal-start" class="show">
-        <div class="go-box">
-          <div class="go-inner">
-            <p class="go-title">Portfolio!</p>
-            <p class="go-subtitle">UX/UI Designer</p>
-            <button id="start-play-btn" style="filter:url(#noiseF)"><span>Play →</span></button>
-          </div>
-        </div>
-      </div>
 
       <div id="modal-go">
         <div class="go-box">
@@ -172,17 +235,17 @@
       </div>
       <div id="modal-ct">
         <div class="ct-box">
-          <p class="ct-title">Написать Ли Чу</p>
-          <input type="text" placeholder="Ваше имя">
-          <input type="email" placeholder="your@email.com">
-          <textarea placeholder="Расскажите о вашем проекте…"></textarea>
+          <button class="ct-close" id="ct-close">✕</button>
+          <span class="ct-label">Contact</span>
+          <p class="ct-title">Get in touch</p>
+          <input type="text" placeholder="Name">
+          <input type="email" placeholder="Email">
+          <textarea placeholder="Message…"></textarea>
           <div class="ct-row">
-            <button class="ct-cancel" id="ct-cancel">Отмена</button>
-            <a class="ct-tg" href="https://t.me/choowie" target="_blank" rel="noopener">
+            <a class="ct-tg" href="https://t.me/choowie" target="_blank" rel="noopener" title="Telegram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/></svg>
-              Telegram
             </a>
-            <button class="ct-send" id="ct-send">Отправить</button>
+            <button class="ct-send" id="ct-send">Send <span class="arr">→</span></button>
           </div>
         </div>
       </div>
@@ -248,39 +311,14 @@ window.LICHU_CARD_TEXT = '';
       window._LICHU_CFG = cfg;
       // Load custom card text for flying frames
       if (cfg.card_text) window.LICHU_CARD_TEXT = cfg.card_text;
-      // Apply start screen text if set
-      if (cfg.start_title) {
-        var el = document.querySelector('#modal-start .go-title');
-        if (el) el.textContent = cfg.start_title;
-      }
-      if (cfg.start_sub) {
-        var el2 = document.querySelector('#modal-start .go-subtitle');
-        if (el2) el2.textContent = cfg.start_sub;
-      }
-      initContactForm();
+      // Close button
+  var closeBtn = document.getElementById('ct-close');
+  if (closeBtn) closeBtn.addEventListener('click', function () {
+    document.getElementById('modal-ct').classList.remove('show');
+  });
+
+  initContactForm();
     });
-
-  // Start button handler
-  (function () {
-    var modalStart = document.getElementById('modal-start');
-    var startBtn   = document.getElementById('start-play-btn');
-    if (startBtn && modalStart) {
-      startBtn.addEventListener('click', function () {
-        modalStart.classList.remove('show');
-        if (typeof resetGame === 'function') resetGame();
-      });
-    }
-  })();
-
-  // Mirror nav's .show class to #sb-contact
-  var sbContact = document.getElementById('sb-contact');
-  var navEl2    = document.getElementById('nav');
-  new MutationObserver(function() {
-    sbContact.classList.toggle('show', navEl2.classList.contains('show'));
-  }).observe(navEl2, { attributes: true, attributeFilter: ['class'] });
-
-  function initContactForm() {
-    var cfg = window._LICHU_CFG || {};
     var formspree = cfg.formspree_endpoint || '';
     var toEmail   = cfg.email || 'lapkazarapka8752@gmail.com';
 
@@ -298,32 +336,32 @@ window.LICHU_CARD_TEXT = '';
       var msgVal   = box.querySelector('textarea').value.trim();
 
       if (!nameVal || !emailVal || !msgVal) {
-        titleEl.textContent = 'Заполните все поля ✱';
-        setTimeout(function () { titleEl.textContent = 'Написать Ли Чу'; }, 2000);
+        titleEl.textContent = 'Fill in all fields ✱';
+        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 2000);
         return;
       }
 
-      newBtn.textContent = 'Отправка…';
+      newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
       newBtn.disabled = true;
 
       function onSuccess() {
-        titleEl.textContent = 'Отправлено ✓';
+        titleEl.textContent = 'Sent ✓';
         setTimeout(function () {
           document.getElementById('modal-ct').classList.remove('show');
-          titleEl.textContent = 'Написать Ли Чу';
+          titleEl.textContent = 'Get in touch';
           box.querySelector('input[type="text"]').value  = '';
           box.querySelector('input[type="email"]').value = '';
           box.querySelector('textarea').value            = '';
-          newBtn.textContent = 'Отправить';
+          newBtn.innerHTML = 'Send <span class="arr">→</span>';
           newBtn.disabled    = false;
         }, 1800);
       }
 
       function onError() {
-        titleEl.textContent = 'Ошибка — попробуйте ещё раз';
-        newBtn.textContent  = 'Отправить';
+        titleEl.textContent = 'Error — try again';
+        newBtn.innerHTML  = 'Send <span class="arr">→</span>';
         newBtn.disabled     = false;
-        setTimeout(function () { titleEl.textContent = 'Написать Ли Чу'; }, 3000);
+        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 3000);
       }
 
       if (formspree) {
