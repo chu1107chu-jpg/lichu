@@ -16,7 +16,7 @@
     /* ── SIDEBAR — Figma: bg #dcdcdc ── */
     #sidebar {
       width: 260px; min-width: 260px; height: 100vh;
-      background: #dcdcdc; overflow: hidden;
+      background: #dcdcdc; overflow: visible;
       position: relative; z-index: 20;
     }
     .sb-profile { position: absolute; left: 30px; top: 44px; width: 200px; display: flex; flex-direction: column; align-items: flex-start; }
@@ -25,10 +25,10 @@
     #nav {
       position: absolute; left: 85px; top: 287px; width: 89px;
       display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; pointer-events: none; transform: translateX(-18px);
-      transition: opacity 0.38s cubic-bezier(0.22,1,0.36,1), transform 0.38s cubic-bezier(0.22,1,0.36,1);
+      opacity: 0; pointer-events: none; transform: translateY(12px);
+      transition: opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1);
     }
-    #nav.show { opacity: 1; pointer-events: auto; transform: translateX(0); }
+    #nav.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
     #nav a { font-weight: 400; font-size: 20px; color: #98999c; text-decoration: none; display: block; }
 
     /* ── GAME AREA — Figma: bg #242424 ── */
@@ -85,7 +85,10 @@
     .ct-cancel { padding: 10px 22px; border-radius: 4px; border: 1px solid #555; background: transparent; color: #98999c; font-family: 'Inter',sans-serif; font-size: 15px; cursor: pointer; }
     .ct-send   { padding: 10px 28px; border-radius: 4px; border: none; background: #f5f5f5; color: #1a1a1a; font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
 
-
+    /* ── Lives ── */
+    #lives-display { position: absolute; top: 18px; right: 18px; z-index: 15; display: flex; gap: 8px; pointer-events: none; }
+    .life-dot { width: 12px; height: 12px; border-radius: 50%; background: #f5f5f5; transition: opacity 0.25s, background 0.25s; }
+    .life-dot.lost { opacity: 0.18; }
   </style>
 </head>
 <body>
@@ -108,6 +111,7 @@
         <p class="sb-job">UX UI Designer</p>
       </div>
       <nav id="nav">
+        <a href="#">About</a>
         <a href="#">Project 1</a>
         <a href="#">Project 2</a>
         <a href="#">Project 3</a>
@@ -120,6 +124,11 @@
       <div id="photo-el">
         <img src="https://www.figma.com/api/mcp/asset/57af1af0-251e-488c-9f81-8cf2bd9dcf69" alt="Li Chu">
         <div class="ph-ov"></div>
+      </div>
+      <div id="lives-display">
+        <div class="life-dot" id="life0"></div>
+        <div class="life-dot" id="life1"></div>
+        <div class="life-dot" id="life2"></div>
       </div>
       <canvas id="game-canvas"></canvas>
       <div id="modal-go">
@@ -160,6 +169,7 @@ const FALL_GRAV  = 90;   /* falling card gravity px/s² */
 const FALL_VX    = 55;   /* max horizontal speed for falling card */
 const CARD_DRIFT = 8;    /* gentle vertical drift for chaotic cards */
 const PHOTO_SPD  = 115;
+const MAX_LIVES  = 3;
 
 /* ── DOM ── */
 const canvas  = document.getElementById('game-canvas');
@@ -168,9 +178,10 @@ const photoEl = document.getElementById('photo-el');
 const modalGO = document.getElementById('modal-go');
 const modalCT = document.getElementById('modal-ct');
 const navEl   = document.getElementById('nav');
+const lifeEls = [0,1,2].map(i => document.getElementById('life'+i));
 
 /* ── STATE ── */
-let W=0, H=0, mouseX=-9999, gameOver=false, cardsOn=false, photoHit=false, lastTs=0;
+let W=0, H=0, mouseX=-9999, gameOver=false, cardsOn=false, photoHit=false, lastTs=0, lives=MAX_LIVES;
 const paddle = { x:0, y:0, w:PAD_SZ, h:PAD_SZ };
 let cards=[], photo=null, parts=[];
 
@@ -216,7 +227,7 @@ function burst(cx,cy,colors,n) {
 }
 
 function missExplosion(cx,cy) {
-  const colors=['#ff2200','#ff6600','#ffaa00','#242424','#f5f5f5','#ffffff','#8f8f90'];
+  const colors=['#242424','#1a1a1a','#3a3a3a','#f5f5f5','#ffffff','#dcdcdc','#8f8f90','#b0b0b0'];
   for(let i=0;i<70;i++){
     const a=-Math.PI+Math.random()*Math.PI, s=280+Math.random()*560, life=0.55+Math.random()*0.55;
     parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-80,sz:5+Math.random()*15,col:colors[Math.floor(Math.random()*colors.length)],life,max:life});
@@ -228,6 +239,16 @@ function missExplosion(cx,cy) {
   setTimeout(()=>{ga.style.transform='translate(5px,-5px)';},100);
   setTimeout(()=>{ga.style.transform='translate(-3px,3px)';},150);
   setTimeout(()=>{ga.style.transform='translate(0,0)'; ga.style.transition='';},200);
+}
+
+/* ── LIVES ── */
+function updateLivesUI() {
+  lifeEls.forEach((el,i) => el.classList.toggle('lost', i >= lives));
+}
+function loseLife() {
+  lives = Math.max(0, lives-1);
+  updateLivesUI();
+  if(lives <= 0) setTimeout(endGame, 400);
 }
 
 /* ── INIT CARDS ── */
@@ -267,14 +288,18 @@ function initPhoto() {
 /* ── GAME OVER ── */
 function endGame() {
   if(gameOver) return;
-  gameOver=true; photoEl.style.display='none';
+  gameOver = true;
+  cardsOn  = false;
+  photoEl.style.display = 'none';
   modalGO.classList.add('show');
-  setTimeout(()=>navEl.classList.add('show'),120);
+  /* Nav appears 200ms after modal, with slide-up animation */
+  setTimeout(() => navEl.classList.add('show'), 200);
 }
 
 /* ── RESET ── */
 function resetGame() {
-  gameOver=false; cardsOn=false; photoHit=false; parts=[];
+  gameOver=false; cardsOn=false; photoHit=false; parts=[]; lives=MAX_LIVES;
+  updateLivesUI();
   modalGO.classList.remove('show'); navEl.classList.remove('show');
   paddle.x=W/2-PAD_SZ/2; paddle.y=H-PAD_SZ-16;
   initCards(); initPhoto();
@@ -312,11 +337,15 @@ function update(dt) {
           burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#dcdcdc','#ffffff']);
           beep(760+Math.random()*120,0.08);
         }
-        /* Miss → explosion + game over */
+        /* Miss → explosion + lose life + respawn */
         if(c.y > H+12) {
           missExplosion(c.x+c.w/2, H-20);
           beep(160,0.4);
-          setTimeout(endGame, 380);
+          loseLife();
+          c.x  = W*0.2+Math.random()*W*0.6-CARD_W/2;
+          c.y  = -CARD_H-10;
+          c.vx = (Math.random()-0.5)*FALL_VX*2;
+          c.vy = 40+Math.random()*30;
         }
 
       } else {
@@ -457,6 +486,7 @@ modalCT.addEventListener('click', e=>{ if(e.target===modalCT) modalCT.classList.
 /* ── START ── */
 resize();
 paddle.x=W/2-PAD_SZ/2;
+updateLivesUI();
 initCards(); initPhoto();
 setTimeout(()=>{ cardsOn=true; }, 500);
 requestAnimationFrame(loop);
