@@ -808,7 +808,11 @@ async function saveConfig(partial) {
   }
   const merged = { ...existing, ...partial };
   const b64 = strToB64(JSON.stringify(merged, null, 2));
+  // Save to main branch
   await ghPut('site/site-config.json', b64, 'admin: update config', f?.sha, BRANCH_MAIN);
+  // Also deploy to gh-pages root so game.html can fetch it
+  const fGhp = await ghGet(`/contents/site-config.json?ref=${BRANCH_GHP}`).catch(() => null);
+  await ghPut('site-config.json', b64, 'deploy: update config', fGhp?.sha, BRANCH_GHP);
 }
 
 // ─── HTML GENERATOR ──────────────────────────────────────────────────────────

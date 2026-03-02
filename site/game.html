@@ -186,10 +186,22 @@
   // │  3. Email Templates > create template with variables:          │
   // │     {{from_name}}, {{from_email}}, {{message}}                 │
   // └─────────────────────────────────────────────────────────────────┘
-  var EJS_PUBLIC_KEY   = 'YOUR_PUBLIC_KEY';    // e.g. 'abc123XYZ'
-  var EJS_SERVICE_ID   = 'YOUR_SERVICE_ID';    // e.g. 'service_xxxxxx'
-  var EJS_TEMPLATE_ID  = 'YOUR_TEMPLATE_ID';   // e.g. 'template_xxxxxx'
+  var EJS_PUBLIC_KEY   = '';
+  var EJS_SERVICE_ID   = '';
+  var EJS_TEMPLATE_ID  = '';
   var TO_EMAIL         = 'lapkazarapka8752@gmail.com';
+
+  // Load keys from site-config.json (saved by admin panel)
+  fetch('site-config.json?_=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : {}; })
+    .catch(function(){ return {}; })
+    .then(function(cfg){
+      EJS_PUBLIC_KEY  = cfg.emailjs_key      || '';
+      EJS_SERVICE_ID  = cfg.emailjs_service  || '';
+      EJS_TEMPLATE_ID = cfg.emailjs_template || '';
+      TO_EMAIL        = cfg.email            || TO_EMAIL;
+      initEJS();
+    });
 
   // Mirror nav's .show class to #sb-contact
   var sbContact = document.getElementById('sb-contact');
@@ -200,6 +212,7 @@
 
   function initEJS() {
     if (typeof emailjs === 'undefined') { setTimeout(initEJS, 100); return; }
+    if (!EJS_PUBLIC_KEY) return; // keys not configured yet
     emailjs.init({ publicKey: EJS_PUBLIC_KEY });
 
     // Replace ct-send to strip the obfuscated close-only listener
