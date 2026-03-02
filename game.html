@@ -141,16 +141,8 @@
     .ct-box input:focus, .ct-box textarea:focus { border-color: rgba(255,255,255,0.45); }
     .ct-box input::placeholder, .ct-box textarea::placeholder { color: rgba(255,255,255,0.22); }
     .ct-box textarea { height: 80px; resize: none; }
-    .ct-row { display: flex; align-items: center; justify-content: space-between; padding-top: 28px; gap: 12px; }
-    .ct-tg {
-      width: 40px; height: 40px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: transparent; color: rgba(255,255,255,0.45);
-      text-decoration: none;
-      display: inline-flex; align-items: center; justify-content: center;
-      flex-shrink: 0; transition: border-color 0.18s, color 0.18s;
-    }
-    .ct-tg:hover { border-color: #229ed9; color: #229ed9; }
+    .ct-row { display: flex; align-items: center; justify-content: flex-end; padding-top: 28px; gap: 12px; }
+
     .ct-send {
       margin-left: auto;
       padding: 0; border: none; background: transparent;
@@ -243,9 +235,6 @@
           <input type="email" placeholder="Email">
           <textarea placeholder="Message…"></textarea>
           <div class="ct-row">
-            <a class="ct-tg" href="https://t.me/choowie" target="_blank" rel="noopener" title="Telegram">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/></svg>
-            </a>
             <button class="ct-send" id="ct-send">Send <span class="arr">→</span></button>
           </div>
         </div>
@@ -469,7 +458,7 @@ function update(dt){
           const rel=(c.x+c.w/2-(paddle.x+PAD_W/2))/(PAD_W/2);
           c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#252426','#ffffff']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff']);
           beep(760+Math.random()*120,0.08);
         }
         if(c.y>H+12){
@@ -502,7 +491,7 @@ function update(dt){
           c.vx=rel*CARD_SPD*1.2+(Math.random()-0.5)*50;
           if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#252426','#ffffff','#98999c']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff','#ff2fda']);
           beep(820+Math.random()*140,0.07);
         }
       }
@@ -558,7 +547,7 @@ function draw(){
 
   /* Cards — Figma: bg #f5f5f5, text #252426, Inter 15px Regular, radius 4 */
   for(const c of cards){
-    ctx.fillStyle=c.flash>0?'#e4e40e':'#f5f5f5';
+    ctx.fillStyle=c.flash>0?'#ff2fda':'#f5f5f5';
     roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.fill();
     /* Falling card indicator: gray border */
     if(c.falling&&c.flash<=0){
