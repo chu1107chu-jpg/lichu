@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Li Chu — UX/UI Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --ink: #111110;
+      --ink-2: #6b6a64;
+      --ink-3: #a09f99;
+      --line: rgba(17,17,16,.1);
+      --accent: #ff2fda;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Crect width='12' height='12' fill='%23111110'/%3E%3C/svg%3E") 6 6, auto;
+    }
+
+    a { color: inherit; text-decoration: none; cursor: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--ink-3); }
+
+    /* ─── LAYOUT ─── */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 60px;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 20px;
+      letter-spacing: -.01em;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px; font-weight: 500; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--ink-2);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    .nav-cta {
+      font-size: 13px; font-weight: 500;
+      padding: 8px 20px;
+      border: 1px solid var(--ink);
+      letter-spacing: .03em; text-transform: uppercase;
+      transition: background .2s, color .2s;
+    }
+    .nav-cta:hover { background: var(--ink); color: var(--bg); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding-top: 160px;
+      padding-bottom: 120px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 500; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--ink-2);
+      margin-bottom: 40px;
+    }
+    .hero-label::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--ink-2);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(64px, 8vw, 120px);
+      line-height: 1;
+      letter-spacing: -.03em;
+      max-width: 900px;
+      margin-bottom: 48px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--ink-2);
+    }
+
+    .hero-bottom {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .hero-desc {
+      max-width: 380px;
+      font-size: 16px; line-height: 1.7;
+      color: var(--ink-2);
+    }
+
+    .hero-meta {
+      display: flex; gap: 48px;
+    }
+
+    .hero-stat { text-align: center; }
+    .hero-stat-num {
+      font-family: var(--serif);
+      font-size: 48px; line-height: 1;
+      display: block;
+    }
+    .hero-stat-label {
+      font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--ink-3); margin-top: 4px; display: block;
+    }
+
+    /* ─── TICKER ─── */
+    .ticker-wrap {
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      padding: 20px 0;
+    }
+
+    .ticker {
+      display: flex; gap: 0;
+      animation: ticker 28s linear infinite;
+      width: max-content;
+    }
+
+    .ticker:hover { animation-play-state: paused; }
+
+    .ticker-item {
+      display: flex; align-items: center; gap: 32px;
+      padding: 0 40px;
+      font-size: 13px; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--ink-2); white-space: nowrap;
+    }
+    .ticker-item::before {
+      content: '◆';
+      font-size: 6px;
+      color: var(--accent);
+    }
+
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header {
+      display: flex; align-items: baseline;
+      justify-content: space-between;
+      padding: 64px 0 40px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 0;
+    }
+
+    .section-num {
+      font-size: 12px; color: var(--ink-3);
+      letter-spacing: .1em; text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 52px);
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+
+    .section-link {
+      font-size: 13px; font-weight: 500;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--ink-2);
+      display: flex; align-items: center; gap: 8px;
+      transition: color .2s;
+    }
+    .section-link:hover { color: var(--ink); }
+    .section-link::after { content: '→'; }
+
+    /* ─── PROJECTS GRID ─── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border-top: 1px solid var(--line);
+      margin-top: 0;
+    }
+
+    .proj-card {
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .proj-card:nth-child(1) { grid-column: span 7; }
+    .proj-card:nth-child(2) { grid-column: span 5; }
+    .proj-card:nth-child(3) { grid-column: span 4; }
+    .proj-card:nth-child(4) { grid-column: span 4; }
+    .proj-card:nth-child(5) { grid-column: span 4; }
+
+    .proj-card-media {
+      aspect-ratio: 4/3;
+      background: #e0dfd9;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .proj-card:nth-child(1) .proj-card-media { aspect-ratio: 16/9; }
+    .proj-card:nth-child(2) .proj-card-media { aspect-ratio: 4/3; }
+
+    .proj-card-media img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .6s cubic-bezier(.25,.46,.45,.94), opacity .3s;
+      opacity: .92;
+    }
+
+    .proj-card-media-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .proj-placeholder-num {
+      font-family: var(--serif);
+      font-size: 80px; color: var(--line);
+      letter-spacing: -.04em; line-height: 1;
+      user-select: none;
+    }
+
+    .proj-card:hover .proj-card-media img { transform: scale(1.04); opacity: 1; }
+
+    .proj-card-body {
+      padding: 24px 28px 28px;
+      border-top: 1px solid var(--line);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .proj-card-meta {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .proj-tag {
+      font-size: 11px; font-weight: 500; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--ink-3);
+    }
+
+    .proj-year {
+      font-size: 12px; color: var(--ink-3);
+    }
+
+    .proj-name {
+      font-family: var(--serif);
+      font-size: 22px; letter-spacing: -.01em; line-height: 1.2;
+    }
+
+    .proj-arrow {
+      position: absolute; bottom: 24px; right: 24px;
+      width: 36px; height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity .2s, transform .2s;
+      background: var(--bg);
+    }
+    .proj-card:hover .proj-arrow { opacity: 1; transform: rotate(-45deg); }
+
+    /* ─── PROCESS ─── */
+    .process-section {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .process-item {
+      padding: 48px 40px 48px;
+      border-right: 1px solid var(--line);
+    }
+    .process-item:last-child { border-right: none; }
+
+    .process-num {
+      font-size: 12px; color: var(--ink-3);
+      letter-spacing: .1em; text-transform: uppercase;
+      font-weight: 500; margin-bottom: 24px; display: block;
+    }
+
+    .process-name {
+      font-family: var(--serif);
+      font-size: 26px; letter-spacing: -.01em;
+      line-height: 1.1; margin-bottom: 16px;
+    }
+
+    .process-desc {
+      font-size: 14px; line-height: 1.7;
+      color: var(--ink-2);
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .about-left {
+      padding: 64px 64px 64px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .about-right {
+      padding: 64px 0 64px 64px;
+    }
+
+    .about-big {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 44px);
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      margin-bottom: 32px;
+    }
+
+    .about-big em {
+      font-style: italic;
+      color: var(--ink-2);
+    }
+
+    .about-text {
+      font-size: 15px; line-height: 1.75;
+      color: var(--ink-2);
+      margin-bottom: 16px;
+    }
+
+    .skills-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      margin-top: 32px;
+    }
+
+    .skills-list li {
+      padding: 14px 20px;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: .03em;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .skills-list li:nth-child(even) { border-right: none; }
+    .skills-list li:nth-last-child(-n+2) { border-bottom: none; }
+
+    .skills-list li::before {
+      content: '◆';
+      font-size: 5px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-section {
+      padding: 120px 0;
+      text-align: center;
+    }
+
+    .contact-overline {
+      font-size: 12px; font-weight: 500; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--ink-3);
+      margin-bottom: 24px; display: block;
+    }
+
+    .contact-title {
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 100px);
+      letter-spacing: -.03em; line-height: 1;
+      margin-bottom: 48px;
+    }
+
+    .contact-title em {
+      font-style: italic;
+      color: var(--ink-2);
+    }
+
+    .contact-actions {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: var(--ink); color: var(--bg);
+      font-size: 13px; font-weight: 500;
+      letter-spacing: .06em; text-transform: uppercase;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: #2a2a28; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0)scale(.98); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 36px;
+      border: 1px solid var(--line);
+      font-size: 13px; font-weight: 500;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--ink-2);
+      transition: border-color .2s, color .2s;
+    }
+    .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-size: 13px; color: var(--ink-3);
+    }
+
+    .footer-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .footer-links a {
+      font-size: 13px; color: var(--ink-3);
+      font-weight: 500; letter-spacing: .04em; text-transform: uppercase;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--ink); }
+
+    /* ─── HOVER CURSOR DOT ─── */
+    .cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--ink);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform .1s, width .2s, height .2s, background .2s;
+      mix-blend-mode: multiply;
+    }
+
+    /* ─── FADE IN ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor-dot" id="dot"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="/">Li Chu</a>
+    <ul class="nav-links">
+      <li><a href="#projects">Проекты</a></li>
+      <li><a href="#process">Процесс</a></li>
+      <li><a href="#about">Обо мне</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Связаться</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="hero-label">UX / UI Design · Москва</span>
+      <h1 class="hero-title fade-up">
+        Дизайн,<br>
+        который <em>работает</em>
+      </h1>
+      <div class="hero-bottom">
+        <p class="hero-desc fade-up">
+          Проектирую цифровые продукты — от исследования и стратегии до готового интерфейса. Каждое решение опирается на данные и здравый смысл.
+        </p>
+        <div class="hero-meta fade-up">
+          <div class="hero-stat">
+            <span class="hero-stat-num">5+</span>
+            <span class="hero-stat-label">Проектов</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">3+</span>
+            <span class="hero-stat-label">Года опыта</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">∞</span>
+            <span class="hero-stat-label">Итераций</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-item">UX Research</span>
+      <span class="ticker-item">UI Design</span>
+      <span class="ticker-item">Figma</span>
+      <span class="ticker-item">Прототипирование</span>
+      <span class="ticker-item">Дизайн-система</span>
+      <span class="ticker-item">Usability Testing</span>
+      <span class="ticker-item">Product Thinking</span>
+      <span class="ticker-item">Motion Design</span>
+      <span class="ticker-item">UX Research</span>
+      <span class="ticker-item">UI Design</span>
+      <span class="ticker-item">Figma</span>
+      <span class="ticker-item">Прототипирование</span>
+      <span class="ticker-item">Дизайн-система</span>
+      <span class="ticker-item">Usability Testing</span>
+      <span class="ticker-item">Product Thinking</span>
+      <span class="ticker-item">Motion Design</span>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="wrap">
+    <div class="section-header fade-up">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Избранные<br>работы</h2>
+      <a href="site/game.html" class="section-link">Все проекты</a>
+    </div>
+  </section>
+
+  <div class="projects-grid fade-up">
+
+    <a href="site/project-01.html" class="proj-card">
+      <div class="proj-card-media">
+        <img src="site/img/taxi-sect-hero.jpg" alt="Taxi App" loading="lazy">
+      </div>
+      <div class="proj-card-body">
+        <div class="proj-card-meta">
+          <span class="proj-tag">Mobile App · UX/UI</span>
+          <span class="proj-year">2025</span>
+        </div>
+        <div class="proj-name">Такси — мобильное приложение</div>
+      </div>
+      <span class="proj-arrow">↗</span>
+    </a>
+
+    <a href="site/project-02.html" class="proj-card">
+      <div class="proj-card-media">
+        <div class="proj-card-media-placeholder">
+          <span class="proj-placeholder-num">02</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <div class="proj-card-meta">
+          <span class="proj-tag">Brand · Digital</span>
+          <span class="proj-year">2025</span>
+        </div>
+        <div class="proj-name">Project 2</div>
+      </div>
+      <span class="proj-arrow">↗</span>
+    </a>
+
+    <a href="site/project-03.html" class="proj-card">
+      <div class="proj-card-media">
+        <div class="proj-card-media-placeholder">
+          <span class="proj-placeholder-num">03</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <div class="proj-card-meta">
+          <span class="proj-tag">Web · UX</span>
+          <span class="proj-year">2025</span>
+        </div>
+        <div class="proj-name">Project 3</div>
+      </div>
+      <span class="proj-arrow">↗</span>
+    </a>
+
+    <a href="site/project-04.html" class="proj-card">
+      <div class="proj-card-media">
+        <div class="proj-card-media-placeholder">
+          <span class="proj-placeholder-num">04</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <div class="proj-card-meta">
+          <span class="proj-tag">Dashboard · UI</span>
+          <span class="proj-year">2024</span>
+        </div>
+        <div class="proj-name">Project 4</div>
+      </div>
+      <span class="proj-arrow">↗</span>
+    </a>
+
+    <a href="site/project-05.html" class="proj-card">
+      <div class="proj-card-media">
+        <div class="proj-card-media-placeholder">
+          <span class="proj-placeholder-num">05</span>
+        </div>
+      </div>
+      <div class="proj-card-body">
+        <div class="proj-card-meta">
+          <span class="proj-tag">App · Research</span>
+          <span class="proj-year">2024</span>
+        </div>
+        <div class="proj-name">Project 5</div>
+      </div>
+      <span class="proj-arrow">↗</span>
+    </a>
+
+  </div>
+
+  <!-- PROCESS -->
+  <section id="process" class="process-section wrap">
+    <div class="section-header fade-up">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Как я<br>работаю</h2>
+    </div>
+    <div class="process-grid">
+
+      <div class="process-item fade-up">
+        <span class="process-num">01 / Discover</span>
+        <div class="process-name">Исследование</div>
+        <p class="process-desc">Глубокое погружение в контекст: интервью с пользователями, конкурентный анализ, выявление болей и точек роста.</p>
+      </div>
+
+      <div class="process-item fade-up">
+        <span class="process-num">02 / Define</span>
+        <div class="process-name">Стратегия</div>
+        <p class="process-desc">Формирование гипотез и дизайн-задачи. User flow, информационная архитектура, концепция взаимодействия.</p>
+      </div>
+
+      <div class="process-item fade-up">
+        <span class="process-num">03 / Design</span>
+        <div class="process-name">Проектирование</div>
+        <p class="process-desc">Wireframes → High-fidelity прототипы. Дизайн-система, компоненты, анимации — всё в Figma и готово к передаче разработчикам.</p>
+      </div>
+
+      <div class="process-item fade-up">
+        <span class="process-num">04 / Deliver</span>
+        <div class="process-name">Запуск</div>
+        <p class="process-desc">Поддержка на этапе разработки, A/B-тестирование, замер метрик и итерации после релиза.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about-section wrap">
+    <div class="section-header fade-up">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Обо мне</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-left">
+        <p class="about-big fade-up">
+          UX/UI дизайнер с <em>системным</em> мышлением
+        </p>
+        <p class="about-text">
+          Помогаю командам создавать продукты, которыми хочется пользоваться. Работаю на стыке бизнес-задач, потребностей пользователей и технических ограничений.
+        </p>
+        <p class="about-text">
+          Верю, что хороший дизайн незаметен — он просто работает. Плохой дизайн заставляет думать там, где не нужно.
+        </p>
+        <a href="site/contact.html" class="btn-primary" style="margin-top:32px; display:inline-flex;">
+          Написать мне →
+        </a>
+      </div>
+      <div class="about-right fade-up">
+        <p class="about-text" style="margin-bottom:8px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500;">Инструменты</p>
+        <ul class="skills-list">
+          <li>Figma</li>
+          <li>Miro</li>
+          <li>Notion</li>
+          <li>Principle</li>
+          <li>Maze / Hotjar</li>
+          <li>Lottie / Rive</li>
+          <li>HTML / CSS</li>
+          <li>After Effects</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <div class="wrap">
+      <span class="contact-overline">Открыта к сотрудничеству</span>
+      <h2 class="contact-title fade-up">
+        Давайте<br><em>поговорим</em>
+      </h2>
+      <div class="contact-actions">
+        <a href="site/contact.html" class="btn-primary">Написать →</a>
+        <a href="mailto:lapkazarapka8752@gmail.com" class="btn-secondary">lapkazarapka8752@gmail.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2026 Li Chu. Все права защищены.</span>
+        <ul class="footer-links">
+          <li><a href="site/game.html">Портфолио</a></li>
+          <li><a href="site/contact.html">Контакты</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor dot
+    const dot = document.getElementById('dot');
+    document.addEventListener('mousemove', e => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top  = e.clientY + 'px';
+    });
+
+    // Fade-up on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Project grid fade-up
+    document.querySelectorAll('.proj-card').forEach((card, i) => {
+      card.classList.add('fade-up');
+      card.style.transitionDelay = (i * 60) + 'ms';
+      observer.observe(card);
+    });
+  </script>
+</body>
+</html>
