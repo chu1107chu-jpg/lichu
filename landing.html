@@ -11,14 +11,21 @@
     /* ─────────────────── RESET & BASE ─────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+      font-size: inherit; line-height: 1;
+      display: inline-block; vertical-align: middle;
+      user-select: none;
+    }
+
     :root {
       --bg:    #f7f6f2;
       --bg-2:  #eeecea;
       --ink:   #242424;
       --ink-2: #545250;
       --ink-3: #9c9a95;
-      --line:  rgba(36,36,36,.06);
-      --line-strong: rgba(36,36,36,.11);
+      --line:  #E6E9E7;
+      --line-strong: #CFD3D1;
       --accent: #242424;
       --green: #22c55e;
       --sans:  -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
@@ -351,7 +358,7 @@
       width: 44px; height: 44px;
       border: 1px solid var(--line-strong);
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; flex-shrink: 0;
+      font-size: 22px; flex-shrink: 0; color: var(--ink-2);
     }
 
     .feat-num {
@@ -465,7 +472,8 @@
     .role-card:first-child { background: var(--ink); color: var(--bg); }
 
     .role-icon {
-      font-size: 36px; margin-bottom: 28px; display: block;
+      font-size: 32px; margin-bottom: 28px; display: block;
+      opacity: .7;
     }
 
     .role-title {
@@ -570,7 +578,6 @@
     /* ─────────────────── CTA ─────────────────── */
     .cta-section {
       padding: 120px 0 140px;
-      text-align: center;
       background: var(--ink); color: var(--bg);
       position: relative; overflow: hidden;
     }
@@ -586,7 +593,7 @@
     .cta-inner { position: relative; z-index: 1; }
 
     .cta-label {
-      display: inline-flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 10px;
       font-size: 11px; font-weight: 500; letter-spacing: .14em;
       text-transform: uppercase; color: rgba(255,255,255,.35);
       margin-bottom: 28px;
@@ -608,11 +615,11 @@
 
     .cta-sub {
       font-size: 16px; line-height: 1.7;
-      opacity: .6; max-width: 440px; margin: 0 auto 48px;
+      opacity: .6; max-width: 440px; margin: 0 0 48px;
     }
 
     .cta-actions {
-      display: flex; align-items: center; justify-content: center; gap: 14px;
+      display: flex; align-items: center; gap: 14px;
     }
 
     .cta-btn-main {
@@ -775,7 +782,7 @@
 
   <!-- ─── HERO ─── -->
   <section class="hero">
-    <div class="bg-hero-grid" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(36,36,36,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(36,36,36,.03) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,black 40%,transparent 100%);"></div>
+    <div class="bg-hero-grid" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#E6E9E7 1px,transparent 1px),linear-gradient(90deg,#E6E9E7 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,#242424 40%,transparent 100%);"></div>
     <div class="wrap hero-inner">
       <div class="hero-tag fade">
         <span class="hero-tag-dot"></span>
@@ -1009,7 +1016,7 @@
       <div class="features-grid fade">
 
         <div class="feat">
-          <div class="feat-icon">📋</div>
+          <div class="feat-icon"><span class="material-symbols-outlined">assignment</span></div>
           <span class="feat-num">01</span>
           <div class="feat-title">Управление проектами</div>
           <p class="feat-desc">Создавайте проекты, назначайте статусы от лида до завершения. Дорожная карта с этапами, датами и бюджетами наглядно отражает прогресс для вас и клиента.</p>
@@ -1021,7 +1028,7 @@
         </div>
 
         <div class="feat">
-          <div class="feat-icon">👷</div>
+          <div class="feat-icon"><span class="material-symbols-outlined">engineering</span></div>
           <span class="feat-num">02</span>
           <div class="feat-title">CRM подрядчиков</div>
           <p class="feat-desc">Полная база компаний и мастеров: контакты, паспортные данные, ИНН, ОГРН, банковские реквизиты, виды работ, рейтинг. Всё для договора в два клика.</p>
@@ -1033,7 +1040,7 @@
         </div>
 
         <div class="feat">
-          <div class="feat-icon">📸</div>
+          <div class="feat-icon"><span class="material-symbols-outlined">photo_camera</span></div>
           <span class="feat-num">03</span>
           <div class="feat-title">Фото-отчёты</div>
           <p class="feat-desc">Подрядчик фотографирует и загружает прогресс прямо в задачу через свой портал. Комментарии, согласования и история изменений без мессенджеров.</p>
@@ -1045,7 +1052,7 @@
         </div>
 
         <div class="feat">
-          <div class="feat-icon">🖼️</div>
+          <div class="feat-icon"><span class="material-symbols-outlined">image</span></div>
           <span class="feat-num">04</span>
           <div class="feat-title">Галерея и мудборды</div>
           <p class="feat-desc">Каталоги интерьеров, мебели, материалов и арт-объектов. Формируйте мудборды для клиентских презентаций прямо внутри платформы, не выходя в Pinterest.</p>
@@ -1057,7 +1064,7 @@
         </div>
 
         <div class="feat">
-          <div class="feat-icon">📄</div>
+          <div class="feat-icon"><span class="material-symbols-outlined">description</span></div>
           <span class="feat-num">05</span>
           <div class="feat-title">Документы</div>
           <p class="feat-desc">Все файлы по проекту в одном месте договоры, сметы, технические задания, планировки. Структурированно, быстро находится, не теряется.</p>
@@ -1069,7 +1076,7 @@
         </div>
 
         <div class="feat">
-          <div class="feat-icon">👤</div>
+          <div class="feat-icon"><span class="material-symbols-outlined">person</span></div>
           <span class="feat-num">06</span>
           <div class="feat-title">Клиентский профиль</div>
           <p class="feat-desc">История всех объектов, предпочтения, контакты и переписка в одной карточке клиента. Строите долгосрочные отношения, а не начинаете с нуля каждый раз.</p>
@@ -1180,7 +1187,7 @@
 
         <!-- Designer side (dark) -->
         <div class="role-card">
-          <span class="role-icon">✦</span>
+          <span class="role-icon"><span class="material-symbols-outlined" style="font-size:32px;">diamond</span></span>
           <div class="role-title">Дизайнер интерьера</div>
           <p class="role-desc">Ваш центральный штаб для всех объектов одновременно. Больше никакого хаоса только системная работа.</p>
           <ul class="role-list">
@@ -1194,7 +1201,7 @@
 
         <!-- Contractor side (light) -->
         <div class="role-card">
-          <span class="role-icon" style="filter:invert(0);">◉</span>
+          <span class="role-icon"><span class="material-symbols-outlined" style="font-size:32px;">construction</span></span>
           <div class="role-title">Подрядчик и мастер</div>
           <p class="role-desc">Один портал вместо бесконечных переписок. Видите только своё, делаете быстро, не ошибаетесь.</p>
           <ul class="role-list" style="color:var(--ink-2);">
