@@ -40,26 +40,28 @@
           <div class="ct-card-row">
             <div class="ct-card-info">
               <div class="ct-card-head">
-                <span class="ct-badge ct-badge--company">подрядчик</span>
-                <span class="ct-name">{{ company.name }}</span>
+                <span class="ct-avatar ct-avatar--company">{{ company.name.charAt(0).toUpperCase() }}</span>
+                <div>
+                  <div class="ct-name">{{ company.name }}</div>
+                  <div v-if="company.companyName" class="ct-sub">{{ company.companyName }}</div>
+                </div>
               </div>
-              <div v-if="company.companyName" class="ct-sub">{{ company.companyName }}</div>
               <div class="ct-meta">
-                <span v-if="company.phone" class="ct-meta-item">📞 {{ company.phone }}</span>
-                <span v-if="company.email" class="ct-meta-item">✉ {{ company.email }}</span>
+                <a v-if="company.phone" :href="`tel:${company.phone}`" class="ct-meta-item ct-meta-link" title="Позвонить">📞 {{ company.phone }}</a>
+                <a v-if="company.email" :href="`mailto:${company.email}`" class="ct-meta-item ct-meta-link" title="Написать письмо">✉ {{ company.email }}</a>
               </div>
               <div v-if="company.linkedProjectTitles?.length" class="ct-linked">
                 <span v-for="t in company.linkedProjectTitles" :key="t" class="ct-linked-chip">{{ t }}</span>
               </div>
             </div>
             <div class="ct-actions">
-              <button class="a-btn-sm ct-btn-master" @click="openCreateMaster(company.id)">+ мастер</button>
-              <button class="a-btn-sm ct-btn-cabinet" @click="openContractorCabinet(company.id)">
+              <button class="a-btn-sm ct-btn-master" title="Добавить мастера в эту компанию" @click="openCreateMaster(company.id)">+ мастер</button>
+              <button class="a-btn-sm ct-btn-cabinet" title="Открыть кабинет подрядчика" @click="openContractorCabinet(company.id)">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 15L21 3M21 9v12H3V3h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 кабинет
               </button>
-              <button class="a-btn-sm" @click="openEdit(company)">✎</button>
-              <button class="a-btn-sm a-btn-danger" @click="del(company.id)">×</button>
+              <button class="a-btn-sm" title="Редактировать" @click="openEdit(company)">✎</button>
+              <button class="a-btn-sm a-btn-danger" :title="`Удалить ${company.name}`" @click="del(company.id)">удалить</button>
             </div>
           </div>
         </div>
@@ -72,25 +74,27 @@
           <div class="ct-card-row">
             <div class="ct-card-info">
               <div class="ct-card-head">
-                <span class="ct-badge ct-badge--master">мастер</span>
-                <span class="ct-name ct-name--sm">{{ m.name }}</span>
+                <span class="ct-avatar ct-avatar--master">{{ m.name.charAt(0).toUpperCase() }}</span>
+                <div>
+                  <div class="ct-name ct-name--sm">{{ m.name }}</div>
+                  <div v-if="m.workTypes?.length" class="ct-work-types">{{ m.workTypes.join(' · ') }}</div>
+                </div>
               </div>
               <div class="ct-meta">
-                <span v-if="m.phone" class="ct-meta-item">📞 {{ m.phone }}</span>
-                <span v-if="m.email" class="ct-meta-item">✉ {{ m.email }}</span>
+                <a v-if="m.phone" :href="`tel:${m.phone}`" class="ct-meta-item ct-meta-link" title="Позвонить">📞 {{ m.phone }}</a>
+                <a v-if="m.email" :href="`mailto:${m.email}`" class="ct-meta-item ct-meta-link" title="Написать письмо">✉ {{ m.email }}</a>
               </div>
               <div v-if="m.linkedProjectTitles?.length" class="ct-linked">
                 <span v-for="t in m.linkedProjectTitles" :key="t" class="ct-linked-chip">{{ t }}</span>
               </div>
-              <div v-if="m.workTypes?.length" class="ct-work-types">{{ m.workTypes.join(', ') }}</div>
             </div>
             <div class="ct-actions">
-              <button class="a-btn-sm ct-btn-cabinet" @click="openContractorCabinet(m.id)">
+              <button class="a-btn-sm ct-btn-cabinet" title="Открыть кабинет подрядчика" @click="openContractorCabinet(m.id)">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 15L21 3M21 9v12H3V3h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 кабинет
               </button>
-              <button class="a-btn-sm" @click="openEdit(m)">✎</button>
-              <button class="a-btn-sm a-btn-danger" @click="del(m.id)">×</button>
+              <button class="a-btn-sm" title="Редактировать" @click="openEdit(m)">✎</button>
+              <button class="a-btn-sm a-btn-danger" :title="`Удалить ${m.name}`" @click="del(m.id)">удалить</button>
             </div>
           </div>
         </div>
@@ -106,24 +110,26 @@
           <div class="ct-card-row">
             <div class="ct-card-info">
               <div class="ct-card-head">
-                <span class="ct-badge ct-badge--master">мастер</span>
-                <span class="ct-name">{{ m.name }}</span>
+                <span class="ct-avatar ct-avatar--master">{{ m.name.charAt(0).toUpperCase() }}</span>
+                <div>
+                  <div class="ct-name">{{ m.name }}</div>
+                </div>
               </div>
               <div class="ct-meta">
-                <span v-if="m.phone" class="ct-meta-item">📞 {{ m.phone }}</span>
-                <span v-if="m.email" class="ct-meta-item">✉ {{ m.email }}</span>
+                <a v-if="m.phone" :href="`tel:${m.phone}`" class="ct-meta-item ct-meta-link" title="Позвонить">📞 {{ m.phone }}</a>
+                <a v-if="m.email" :href="`mailto:${m.email}`" class="ct-meta-item ct-meta-link" title="Написать письмо">✉ {{ m.email }}</a>
               </div>
               <div v-if="m.linkedProjectTitles?.length" class="ct-linked">
                 <span v-for="t in m.linkedProjectTitles" :key="t" class="ct-linked-chip">{{ t }}</span>
               </div>
             </div>
             <div class="ct-actions">
-              <button class="a-btn-sm ct-btn-cabinet" @click="openContractorCabinet(m.id)">
+              <button class="a-btn-sm ct-btn-cabinet" title="Открыть кабинет подрядчика" @click="openContractorCabinet(m.id)">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 15L21 3M21 9v12H3V3h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 кабинет
               </button>
-              <button class="a-btn-sm" @click="openEdit(m)">✎</button>
-              <button class="a-btn-sm a-btn-danger" @click="del(m.id)">×</button>
+              <button class="a-btn-sm" title="Редактировать" @click="openEdit(m)">✎</button>
+              <button class="a-btn-sm a-btn-danger" :title="`Удалить ${m.name}`" @click="del(m.id)">удалить</button>
             </div>
           </div>
         </div>
@@ -731,7 +737,8 @@ function openContractorCabinet(id: number) {
   color: var(--glass-text); opacity: .6;
 }
 .ct-topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.ct-search { width: 200px; padding: 7px 12px; font-size: var(--ds-text-sm, .8rem); }
+.ct-search { width: 220px; min-width: 140px; padding: 7px 12px; font-size: var(--ds-text-sm, .8rem); }
+@media (max-width:480px) { .ct-search { width: 100%; } }
 
 /* ── Filter ── */
 .ct-filter {
@@ -755,36 +762,62 @@ function openContractorCabinet(id: number) {
 
 /* ── Cards ── */
 .ct-group { margin-bottom: 10px; }
-.ct-company { padding: 14px 18px; margin-bottom: 4px; }
+.ct-company { padding: 14px 18px; margin-bottom: 4px; transition: box-shadow var(--ds-transition, 180ms ease); }
+.ct-company:hover { box-shadow: var(--ds-shadow-lg, 0 8px 28px rgba(0,0,0,.10)); }
 .ct-master {
   padding: 12px 18px 12px 40px; margin-bottom: 4px;
   margin-left: 16px;
   border-radius: 0 var(--card-radius, 14px) var(--card-radius, 14px) 0 !important;
+  transition: box-shadow var(--ds-transition, 180ms ease);
 }
+.ct-master:hover { box-shadow: var(--ds-shadow-lg, 0 8px 28px rgba(0,0,0,.10)); }
 
 .ct-card-row {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
 }
 .ct-card-info { flex: 1; min-width: 0; }
 .ct-card-head {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 3px;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
 }
+.ct-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .72rem; font-weight: 700; flex-shrink: 0; letter-spacing: 0;
+}
+.ct-avatar--company {
+  background: rgba(160, 110, 30, .12); color: #a06e1e;
+}
+html.dark .ct-avatar--company { background: rgba(200,160,60,.18); color: #d4aa4e; }
+.ct-avatar--master {
+  background: rgba(59, 130, 246, .12); color: #3b82f6;
+}
+html.dark .ct-avatar--master { background: rgba(99,140,255,.18); color: #82a5ff; }
 .ct-name {
   font-size: var(--ds-text-sm, .9rem); font-weight: 500; color: var(--glass-text);
 }
 .ct-name--sm { font-size: .86rem; }
 .ct-sub {
   font-size: var(--ds-text-xs, .78rem); color: var(--glass-text); opacity: .5;
+  margin-top: 1px;
 }
 .ct-meta {
-  display: flex; gap: 12px; margin-top: 3px; flex-wrap: wrap;
+  display: flex; gap: 12px; margin-top: 4px; flex-wrap: wrap;
 }
 .ct-meta-item {
-  font-size: var(--ds-text-xs, .74rem); color: var(--glass-text); opacity: .4;
+  font-size: var(--ds-text-xs, .74rem); color: var(--glass-text); opacity: .45;
+}
+.ct-meta-link {
+  text-decoration: none;
+  transition: opacity var(--ds-transition, 150ms ease);
+  cursor: pointer;
+}
+.ct-meta-link:hover {
+  opacity: .9;
+  text-decoration: underline;
 }
 .ct-work-types {
-  font-size: var(--ds-text-xs, .72rem); color: var(--glass-text); opacity: .35;
-  margin-top: 3px;
+  font-size: var(--ds-text-xs, .72rem); color: var(--glass-text); opacity: .4;
+  margin-top: 2px;
 }
 
 /* ── Linked chips ── */

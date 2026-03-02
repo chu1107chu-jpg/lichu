@@ -192,6 +192,7 @@
       <div class="sidebar-item" data-tab="game">🎮 Игра</div>
       <div class="sidebar-item" data-tab="nav">🔗 Навигация</div>
       <div class="sidebar-item" data-tab="settings">⚙️ Настройки</div>
+      <div class="sidebar-item" data-tab="messages">📨 Сообщения</div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-item" id="deploy-site-btn" style="color:#ff2fda">🚀 Задеплоить сайт</div>
     </nav>
@@ -341,10 +342,36 @@
             <input type="email" id="set-email" value="lapkazarapka8752@gmail.com">
             <div class="form-hint">Используется если Formspree не настроен</div>
           </div>
+
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:16px 20px;margin-bottom:16px;font-size:13px;line-height:1.6;color:#166534">
+            <strong>Для уведомлений в админке (вкладка 📨 Сообщения):</strong><br>
+            1. Открой <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → Fine-grained tokens → Generate new token</a><br>
+            2. Repository access: <em>Only selected → lichu</em><br>
+            3. Permissions: <em>Contents → Read and write</em><br>
+            4. Скопируй токен и вставь ниже. Сообщения будут сохраняться при каждой отправке формы
+          </div>
+
+          <div class="form-group">
+            <label>Write Token (для сохранения сообщений)</label>
+            <input type="password" id="set-write-token" placeholder="github_pat_xxxxxxx">
+            <div class="form-hint">Токен с правами Contents: Read+Write на репозиторий lichu</div>
+          </div>
+
           <button class="btn-primary" id="save-settings-btn">
             <span class="spinner"></span><span class="btn-label">Сохранить настройки</span>
           </button>
         </div>
+      </div>
+
+      <!-- ══ MESSAGES TAB ══ -->
+      <div id="tab-messages" style="display:none">
+        <div class="section-title">📨 Сообщения от посетителей</div>
+        <p class="section-sub">Оставленные через форму в игре (при ударе по фото) и на странице Contact</p>
+        <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center">
+          <button class="btn-ghost btn-sm" id="reload-messages-btn">↻ Обновить</button>
+          <button class="btn-danger btn-sm" id="clear-messages-btn">🗑 Очистить все</button>
+        </div>
+        <div id="messages-list" style="display:flex;flex-direction:column;gap:12px;max-width:680px"></div>
       </div>
 
     </main>
@@ -470,6 +497,7 @@ document.querySelectorAll('.sidebar-item[data-tab]').forEach(item => {
     if (tab === 'nav') loadNav();
     if (tab === 'settings') loadSettings();
     if (tab === 'game') loadGameSettings();
+    if (tab === 'messages') loadMessages();
   });
 });
 
@@ -874,6 +902,7 @@ async function loadSettings() {
       const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
       if (cfg.email) $('set-email').value = cfg.email;
+      if (cfg.write_token) $('set-write-token').value = cfg.write_token;
     }
   } catch {}
 }
@@ -885,10 +914,66 @@ $('save-settings-btn').addEventListener('click', async () => {
     await saveConfig({
       formspree_endpoint: $('set-formspree').value.trim(),
       email: $('set-email').value.trim(),
+      write_token: $('set-write-token').value.trim(),
     });
     toast('Настройки сохранены ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
   setLoading(btn, false);
+});
+
+// ─── MESSAGES ───────────────────────────────────────────────────────────────────────────
+
+async function loadMessages() {
+  const list = $('messages-list');
+  list.innerHTML = '<p style="color:var(--muted);font-size:14px">Загрузка…</p>';
+  try {
+    const f = await ghGet(`/contents/messages.json?ref=${BRANCH_GHP}`).catch(() => null);
+    if (!f || !f.content) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет. Как только посетитель отправит форму — она появится здесь.</p>';
+      return;
+    }
+    let msgs = [];
+    try { msgs = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+    if (!msgs.length) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет.</p>';
+      return;
+    }
+    list.innerHTML = '';
+    msgs.forEach(m => {
+      const d = new Date(m.date);
+      const dateStr = isNaN(d) ? m.date : d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px 22px;display:flex;flex-direction:column;gap:6px';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-weight:600;font-size:15px;color:#242424">${esc(m.name || 'Аноним')}</span>
+          <span style="font-size:12px;color:#98999c">${dateStr}</span>
+        </div>
+        <a href="mailto:${esc(m.email)}" style="font-size:13px;color:#ff2fda;text-decoration:none">${esc(m.email || '')}</a>
+        <p style="font-size:14px;color:#3d3d3d;line-height:1.55;margin-top:4px;white-space:pre-wrap">${esc(m.message || '')}</p>
+      `;
+      list.appendChild(card);
+    });
+  } catch (e) {
+    list.innerHTML = `<p style="color:red;font-size:14px">Ошибка: ${e.message}</p>`;
+  }
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+$('reload-messages-btn').addEventListener('click', loadMessages);
+
+$('clear-messages-btn').addEventListener('click', async () => {
+  if (!confirm('Очистить все сообщения?')) return;
+  try {
+    const f = await ghGet(`/contents/messages.json?ref=${BRANCH_GHP}`).catch(() => null);
+    const b64 = btoa('[]');
+    await ghPut('messages.json', b64, 'admin: clear messages', f?.sha, BRANCH_GHP);
+    toast('Сообщения очищены', 'ok');
+    loadMessages();
+  } catch (e) { toast(e.message, 'error'); }
 });
 
 async function saveConfig(partial) {
