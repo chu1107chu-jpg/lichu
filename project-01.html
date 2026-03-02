@@ -6,22 +6,22 @@
   <title>Project 1 — Taxi | Li Chu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { font-family: 'Inter', sans-serif; background: #fff; }
+    html, body { font-family: 'Inter', sans-serif; height: 100%; overflow: hidden; }
     :root { --px-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, pointer; }
     a, button { cursor: var(--px-cursor); }
-    #root { display: flex; min-height: 100vh; }
+    #root { display: flex; height: 100vh; }
 
     /* SIDEBAR */
     #sidebar {
       width: 260px; min-width: 260px;
       background: #dcdcdc;
-      position: sticky; top: 0; height: 100vh;
+      position: relative;
+      height: 100vh;
       display: flex; flex-direction: column;
       z-index: 20; flex-shrink: 0;
-      overflow: hidden;
     }
     .sb-profile { margin: 44px 0 0 30px; }
     .sb-name { font-weight: 700; font-size: 60px; color: #292626; line-height: 1; }
@@ -33,98 +33,25 @@
       cursor: var(--px-cursor); transition: color 0.18s;
     }
     #nav a:hover { color: #ff2fda; }
-    #nav a.active { color: #292626; font-weight: 600; }
-    .back-link {
-      position: absolute; bottom: 36px; left: 85px;
-      font-size: 14px; font-weight: 500; color: #98999c;
-      text-decoration: none; cursor: var(--px-cursor); transition: color 0.18s;
+    #nav a.active { color: #292626; font-weight: 500; }
+    .sb-back {
+      position: absolute; bottom: 28px; left: 30px;
+      font-size: 14px; color: #98999c; text-decoration: none;
+      transition: color 0.18s;
     }
-    .back-link:hover { color: #ff2fda; }
-    .back-link::before { content: '← '; }
+    .sb-back:hover { color: #ff2fda; }
 
-    /* MAIN */
-    #project-content { flex: 1; overflow-y: auto; background: #fff; }
-    .inner { max-width: 1190px; margin: 0 auto; padding: 0 54px 120px; }
-
-    /* TYPOGRAPHY */
-    .sec-title { font-family: 'Bebas Neue', sans-serif; font-size: 54px; color: #03071e; letter-spacing: -1px; line-height: 1; margin-bottom: 44px; }
-    .sec-sub   { font-weight: 600; font-size: 20px; color: #03071e; margin-bottom: 8px; }
-    .sec-body  { font-weight: 500; font-size: 16px; color: #03071e; line-height: 1.5; }
-
-    /* HERO */
-    .hero { position: relative; padding-top: 42px; margin-bottom: 80px; }
-    .hero-car { display: block; width: 100%; height: 480px; object-fit: cover; border: 5px solid #03071e; }
-    .hero-macbook { display: block; width: 88%; margin: -130px auto 0; position: relative; z-index: 2; }
-    .hero-iphone { position: absolute; right: 4%; bottom: 0; width: 180px; z-index: 3; }
-    .hero-noise { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; opacity: 0.4; width: 100%; height: 100%; object-fit: cover; }
-
-    /* ЗАДАЧА */
-    .zadacha-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 48px; }
-    .zadacha-card { background: #fff; border: 1px solid #ebeaea; border-radius: 16px; padding: 32px; }
-    .zadacha-card p { font-weight: 600; font-size: 20px; color: #03071e; line-height: 1.4; }
-    .arrows-row { display: flex; gap: 60px; justify-content: center; margin-bottom: 16px; }
-    .arrows-row img { width: 220px; }
-
-    /* BENCHMARKING */
-    .bench-label { font-weight: 600; font-size: 22px; color: #03071e; margin-bottom: 16px; }
-    .bench-table-wrap { margin-bottom: 40px; border-radius: 4px; overflow: hidden; border: 1px solid #f0f0f0; }
-    .bench-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .bench-table th, .bench-table td { border-left: 1px solid #b9b9b9; border-top: 1px solid #b9b9b9; padding: 10px 12px; background: rgba(0,0,0,0.06); color: #1a1a1a; font-weight: 600; line-height: 1.3; }
-    .bench-table td.feat { max-width: 120px; min-width: 100px; font-weight: 700; }
-    .bench-table td.yes { text-align: center; color: #0a7a2e; }
-    .bench-table td.no  { text-align: center; color: #b9b9b9; }
-    .bench-table td.mid { text-align: center; color: #c47d0e; }
-    .chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 60px; }
-    .chip { background: #deebeb; border-radius: 16px; padding: 10px 14px; font-size: 14px; color: #03071e; font-weight: 500; white-space: nowrap; }
-
-    /* TAXI BG */
-    .taxi-bg { position: relative; height: 480px; margin-bottom: 80px; overflow: hidden; }
-    .taxi-bg .checkers { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 5px solid #03071e; }
-    .taxi-bg .macbook2 { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 82%; z-index: 2; }
-    .taxi-bg .noise2 { position: absolute; inset: 0; mix-blend-mode: hue; pointer-events: none; width: 100%; height: 100%; object-fit: cover; }
-
-    /* USER FLOW */
-    .userflow-imgs { display: flex; gap: 40px; margin-bottom: 80px; }
-    .userflow-imgs img { flex: 1; max-width: 50%; filter: blur(2px); display: block; }
-
-    /* QUOTES */
-    .quotes-section { display: flex; gap: 60px; align-items: flex-start; margin-bottom: 80px; }
-    .quotes-cloud { width: 340px; flex-shrink: 0; }
-    .quotes-text { flex: 1; display: flex; flex-direction: column; gap: 40px; }
-    .quote-item { font-weight: 500; font-size: 16px; color: #03071e; line-height: 1.6; font-style: italic; border-left: 3px solid #f48c06; padding-left: 20px; }
-    .quote-attr { font-style: normal; font-size: 13px; color: #98999c; margin-top: 8px; display: block; }
-
-    /* CASE STUDY */
-    .case-chain { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 48px 0; }
-    .chain-node { background: #f8f6f2; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-    .chain-node-title { font-weight: 700; font-size: 18px; color: #03071e; text-transform: uppercase; letter-spacing: -0.5px; }
-    .chain-node ul { padding-left: 20px; }
-    .chain-node ul li, .chain-node p { font-weight: 500; font-size: 15px; color: #03071e; line-height: 1.6; }
-    .chain-node ul li { margin-bottom: 6px; }
-
-    /* SCREENS */
-    .screens-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px; }
-    .screens-grid img { width: 100%; height: auto; border: 5px solid #03071e; display: block; }
-
-    /* ИТОГ */
-    .itog-outcomes { margin-bottom: 48px; }
-    .itog-outcomes p { font-weight: 500; font-size: 20px; color: #03071e; line-height: 1.6; }
-    .itog-outcomes p::before { content: '→ '; color: #f48c06; }
-    .itog-wireframes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .itog-wireframes img { width: 100%; border: 5px solid #03071e; display: block; }
-
-    /* FINISH */
-    .finish-section { width: calc(100% + 108px); margin: 80px -54px 0; height: 380px; overflow: hidden; position: relative; }
-    .finish-section img { width: 100%; height: 140%; object-fit: cover; position: absolute; top: -20%; }
+    /* PDF */
+    #pdf-wrap { flex: 1; height: 100vh; overflow: hidden; }
+    #pdf-wrap embed { width: 100%; height: 100%; border: none; display: block; }
   </style>
 </head>
 <body>
 <div id="root">
-
-  <div id="sidebar">
+  <aside id="sidebar">
     <div class="sb-profile">
-      <p class="sb-name">Li Chu</p>
-      <p class="sb-job">UX UI Designer</p>
+      <div class="sb-name">Li<br>Chu</div>
+      <div class="sb-job">UX UI Designer</div>
     </div>
     <nav id="nav">
       <a href="#">About</a>
@@ -135,199 +62,12 @@
       <a href="project-04.html">Project 4</a>
       <a href="project-05.html">Project 5</a>
     </nav>
-    <a href="game.html" class="back-link">Back to game</a>
+    <a class="sb-back" href="game.html">← Back</a>
+  </aside>
+
+  <div id="pdf-wrap">
+    <embed src="Taxi.pdf" type="application/pdf" width="100%" height="100%">
   </div>
-
-  <main id="project-content">
-    <div class="inner">
-
-      <!-- HERO -->
-      <section class="hero">
-        <img class="hero-car" src="https://www.figma.com/api/mcp/asset/be5fab67-4461-4f01-a5d3-65e29ba9596b" alt="Taxi">
-        <img class="hero-macbook" src="https://www.figma.com/api/mcp/asset/b4276fcf-3298-4002-841c-b2bd00965a9f" alt="MacBook">
-        <img class="hero-iphone"  src="https://www.figma.com/api/mcp/asset/d907b45d-5bb9-4d19-9789-040e16f48081" alt="iPhone">
-        <img class="hero-noise"   src="https://www.figma.com/api/mcp/asset/26a97fea-bbca-474e-b8e6-a5712b53f434" alt="">
-      </section>
-
-      <!-- ЗАДАЧА -->
-      <section style="margin-bottom:80px">
-        <h2 class="sec-title">Задача</h2>
-        <div class="zadacha-cards">
-          <div class="zadacha-card"><p>UI/UX-дизайн dashboard'а десктопного веб-приложения для онлайн-заказа такси</p></div>
-          <div class="zadacha-card"><p>Разработать идею уникальной фичи, которая выделит сервис среди конкурентов</p></div>
-        </div>
-        <div class="arrows-row">
-          <img src="https://www.figma.com/api/mcp/asset/814cb275-13ab-4de4-bec5-9f6b2d8561c3" alt="">
-          <img src="https://www.figma.com/api/mcp/asset/814cb275-13ab-4de4-bec5-9f6b2d8561c3" alt="">
-        </div>
-      </section>
-
-      <!-- БЕНЧМАРКИНГ -->
-      <section style="margin-bottom:80px">
-        <h2 class="sec-title">Benchmarking</h2>
-        <p class="bench-label">Уникальные функции</p>
-        <div class="bench-table-wrap">
-          <table class="bench-table">
-            <tbody>
-              <tr>
-                <td class="feat"></td>
-                <td><strong>Яндекс.Такси</strong></td>
-                <td><strong>Uber</strong></td>
-                <td><strong>Maxim</strong></td>
-                <td><strong>inDriver</strong></td>
-                <td><strong>Bolt</strong></td>
-                <td><strong>BlaBlaCar</strong></td>
-                <td><strong>Наш сервис</strong></td>
-              </tr>
-              <tr><td class="feat">Приоритетный водитель</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Кастомный маршрут</td><td class="mid">◑</td><td class="mid">◑</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Оценка водителя</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Плейлист в поездке</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Чат с водителем</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="mid">◑</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Мультизаказ</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">SOS-кнопка</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Трекинг маршрута</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="mid">◑</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Подписка</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="mid">◑</td><td class="no">—</td><td class="yes">✓</td></tr>
-              <tr><td class="feat">Тёмная тема</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="mid">◑</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="bench-label">Базовые функции</p>
-        <div class="chips-row">
-          <span class="chip">Быстрое бронирование</span>
-          <span class="chip">Выбор класса авто</span>
-          <span class="chip">Онлайн-оплата</span>
-          <span class="chip">Отслеживание водителя</span>
-          <span class="chip">История поездок</span>
-          <span class="chip">Оценки и отзывы</span>
-          <span class="chip">Промокоды</span>
-          <span class="chip">Расписание поездок</span>
-        </div>
-      </section>
-
-      <!-- TAXI CHECKERS -->
-      <div class="taxi-bg">
-        <img class="checkers" src="https://www.figma.com/api/mcp/asset/4dc772d6-c9dd-4a33-be02-a6e477b26aec" alt="">
-        <img class="macbook2" src="https://www.figma.com/api/mcp/asset/1695e721-ebc3-4dca-afb3-2fae0fb9683b" alt="MacBook">
-        <img class="noise2"   src="https://www.figma.com/api/mcp/asset/6f2f1afb-1517-4ece-b138-a966669a632f" alt="">
-      </div>
-
-      <!-- USER FLOW -->
-      <section style="margin-bottom:80px">
-        <h2 class="sec-title">User Flow</h2>
-        <div class="userflow-imgs">
-          <img src="https://www.figma.com/api/mcp/asset/98a8f38b-d521-43d4-ae24-5525681f461a" alt="User flow 1">
-          <img src="https://www.figma.com/api/mcp/asset/18ffb3e6-6d53-428d-9dfb-b57956ce8c39" alt="User flow 2">
-        </div>
-      </section>
-
-      <!-- QUOTES -->
-      <section class="quotes-section">
-        <img class="quotes-cloud" src="https://www.figma.com/api/mcp/asset/d7da054c-d2d9-46d9-b5c6-743005c3404e" alt="">
-        <div class="quotes-text">
-          <p class="quote-item">«Я всегда звоню одному и тому же водителю — так надёжнее, чем ждать кого попало.»<span class="quote-attr">— пассажир, 32 года</span></p>
-          <p class="quote-item">«Я всегда езжу с одним и тем же водителем, но через приложение его невозможно найти. Приходится звонить напрямую.»<span class="quote-attr">— пользователь, 27 лет</span></p>
-        </div>
-      </section>
-
-      <!-- 1 UX CASE STUDY -->
-      <section style="margin-bottom:80px">
-        <h2 class="sec-title">1 UX Case Study</h2>
-        <p class="sec-sub">«Мои водители» — превращаем привычку в продукт</p>
-        <p class="sec-body">Как исследование поведенческих сценариев привело к гипотезе, повышающей доверие и доход</p>
-        <div class="case-chain">
-          <div class="chain-node">
-            <span class="chain-node-title">Проблема</span>
-            <ul>
-              <li>Потеря до 30% повторных поездок</li>
-              <li>Нет фиксации транзакций</li>
-              <li>Уход пользователей из продукта</li>
-              <li>Пользователь уходит в «серую зону» — без гарантии качества и поддержки</li>
-            </ul>
-          </div>
-          <div class="chain-node">
-            <span class="chain-node-title">Методы</span>
-            <ul>
-              <li>Интервью с 5 пассажирами</li>
-              <li>Глубинное интервью с водителем (20+ лет стажа)</li>
-              <li>Анализ пользовательских сценариев и контекста поведения</li>
-            </ul>
-          </div>
-          <div class="chain-node">
-            <span class="chain-node-title">Цель</span>
-            <ul>
-              <li>Найти нестандартные пользовательские паттерны, влияющие на пользовательский опыт и бизнес-показатели платформы.</li>
-              <li>Сохранить доверие пользователя, не теряя контроль над поездкой и монетизацией.</li>
-            </ul>
-          </div>
-          <div class="chain-node">
-            <span class="chain-node-title">Решение</span>
-            <p><strong>Функция «Мои водители»</strong><br>Позволяет пассажиру сохранить понравившегося водителя и заказывать поездки с ним в один клик.<br><br>Наша задача — не менять привычки, а встроиться в них безопасным и выгодным способом.</p>
-          </div>
-        </div>
-        <div class="screens-grid">
-          <img src="https://www.figma.com/api/mcp/asset/ce317a35-5128-42d1-978a-ef2ed2338bc8" alt="Добавление в любимые водители">
-          <img src="https://www.figma.com/api/mcp/asset/fd03e15e-3574-47ef-b3c4-a5aa5ef11792" alt="Карточка заказа">
-          <img src="https://www.figma.com/api/mcp/asset/03ddecd3-49ea-4491-8644-1de8874dd8c3" alt="Экран В поездке">
-          <img src="https://www.figma.com/api/mcp/asset/e479e598-80ff-4a03-b565-f5c441ebfd00" alt="Поездка окончена">
-        </div>
-      </section>
-
-      <!-- 2 UX CASE STUDY -->
-      <section style="margin-bottom:80px">
-        <h2 class="sec-title">2 UX Case Study</h2>
-        <p class="sec-sub">Плейлист в дороге — эмоциональный комфорт как часть сервиса</p>
-        <p class="sec-body" style="margin-bottom:0">Как музыка <strong>усиливает</strong> ощущение заботы и персонализации в поездке</p>
-        <div class="case-chain">
-          <div class="chain-node">
-            <span class="chain-node-title">Проблема</span>
-            <ul>
-              <li>Пользователь не чувствует контроля над атмосферой в салоне</li>
-              <li>Музыка водителя может раздражать или вызывать стресс</li>
-              <li>После рабочего дня человеку нужен способ быстро переключиться и расслабиться</li>
-            </ul>
-          </div>
-          <div class="chain-node">
-            <span class="chain-node-title">Методы</span>
-            <ul>
-              <li>Качественный опрос 15 пользователей</li>
-              <li>Эмпатическое интервью</li>
-              <li>Личный пользовательский опыт</li>
-            </ul>
-          </div>
-          <div class="chain-node">
-            <span class="chain-node-title">Цель</span>
-            <p>Выявить эмоциональные триггеры, повышающие уровень удовлетворённости поездкой.</p>
-          </div>
-          <div class="chain-node">
-            <span class="chain-node-title">Решение</span>
-            <p><strong>Функция «Плейлист для поездки»</strong><br>Позволяет пользователю выбрать музыку для поездки — из предложенных жанров</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ИТОГ -->
-      <section style="margin-bottom:80px">
-        <h2 class="sec-title">Итог</h2>
-        <div class="itog-outcomes">
-          <p>Гипотеза подтверждена на опросе</p>
-          <p>Пользователи воспринимают идею как «приятную неожиданность»</p>
-          <p>Функция легко масштабируется технически и усиливает эмоциональную привязку к бренду</p>
-        </div>
-        <div class="itog-wireframes">
-          <img src="https://www.figma.com/api/mcp/asset/244c7479-0472-4f1a-b56f-e6e3c46753f9" alt="Wireframe">
-          <img src="https://www.figma.com/api/mcp/asset/7a3c6013-1bf9-40cc-bc05-0607028fb25c" alt="Выбор плейлиста">
-        </div>
-      </section>
-
-      <!-- FINISH -->
-      <div class="finish-section">
-        <img src="https://www.figma.com/api/mcp/asset/ce1046bf-7aed-403e-87d3-51d9b8c58b4f" alt="Finish">
-      </div>
-
-    </div>
-  </main>
-
 </div>
 </body>
 </html>
