@@ -604,78 +604,117 @@ requestAnimationFrame(loop);
     .catch(function(){ return {}; })
     .then(function(cfg){
       window._LICHU_CFG = cfg;
-      // Load custom card text for flying frames
-      if (cfg.card_texts&&cfg.card_texts.length>=7){window.LICHU_CARD_TEXTS=cfg.card_texts;if(typeof initCards==='function')initCards();}
-      // Close button
-  var closeBtn = document.getElementById('ct-close');
-  if (closeBtn) closeBtn.addEventListener('click', function () {
-    document.getElementById('modal-ct').classList.remove('show');
-  });
 
-  initContactForm();
-    });
-    var formspree = cfg.formspree_endpoint || '';
-    var toEmail   = cfg.email || 'lapkazarapka8752@gmail.com';
-
-    // Clone button to remove obfuscated listeners
-    var oldBtn = document.getElementById('ct-send');
-    if (!oldBtn) return;
-    var newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-
-    newBtn.addEventListener('click', function () {
-      var box      = document.querySelector('.ct-box');
-      var titleEl  = box.querySelector('.ct-title');
-      var nameVal  = box.querySelector('input[type="text"]').value.trim();
-      var emailVal = box.querySelector('input[type="email"]').value.trim();
-      var msgVal   = box.querySelector('textarea').value.trim();
-
-      if (!nameVal || !emailVal || !msgVal) {
-        titleEl.textContent = 'Fill in all fields ✱';
-        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 2000);
-        return;
+      /* ── Card texts ── */
+      if (cfg.card_texts && cfg.card_texts.length >= 7) {
+        window.LICHU_CARD_TEXTS = cfg.card_texts;
+        if (typeof initCards === 'function') initCards();
       }
 
-      newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
-      newBtn.disabled = true;
+      /* ── Close button & backdrop ── */
+      var modal = document.getElementById('modal-ct');
+      var closeBtn = document.getElementById('ct-close');
+      if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('show'); });
+      if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('show'); });
 
-      function onSuccess() {
-        titleEl.textContent = 'Sent ✓';
-        setTimeout(function () {
-          document.getElementById('modal-ct').classList.remove('show');
-          titleEl.textContent = 'Get in touch';
-          box.querySelector('input[type="text"]').value  = '';
-          box.querySelector('input[type="email"]').value = '';
-          box.querySelector('textarea').value            = '';
+      /* ── Save to messages.json on gh-pages via GitHub API ── */
+      function saveMessage(entry) {
+        var token = cfg.write_token;
+        if (!token) return;
+        var API = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
+        var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+        fetch(API + '/contents/messages.json?ref=gh-pages', { headers: headers })
+          .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
+          .then(function(f){
+            var msgs = [];
+            if (f && f.content) {
+              try { msgs = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){}
+            }
+            msgs.unshift(entry);
+            var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(msgs, null, 2))));
+            var body = { message: 'msg: contact form submission', content: b64, branch: 'gh-pages' };
+            if (f && f.sha) body.sha = f.sha;
+            return fetch(API + '/contents/messages.json', { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+          }).catch(function(){});
+      }
+
+      /* ── Send button ── */
+      var formspree = cfg.formspree_endpoint || '';
+      var toEmail   = cfg.email || 'lapkazarapka8752@gmail.com';
+
+      var oldBtn = document.getElementById('ct-send');
+      if (!oldBtn) return;
+      var newBtn = oldBtn.cloneNode(true);
+      oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+      newBtn.addEventListener('click', function() {
+        var box      = document.querySelector('.ct-box');
+        var titleEl  = box.querySelector('.ct-title');
+        var nameVal  = box.querySelector('input[type="text"]').value.trim();
+        var emailVal = box.querySelector('input[type="email"]').value.trim();
+        var msgVal   = box.querySelector('textarea').value.trim();
+
+        if (!nameVal || !emailVal || !msgVal) {
+          titleEl.textContent = 'Fill in all fields';
+          setTimeout(function(){ titleEl.textContent = 'Get in touch'; }, 2000);
+          return;
+        }
+
+        newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
+        newBtn.disabled = true;
+
+        function onSuccess(ip) {
+          var now = new Date();
+          var entry = {
+            name:    nameVal,
+            email:   emailVal,
+            message: msgVal,
+            ip:      ip || '—',
+            date:    now.toLocaleDateString('ru-RU'),
+            time:    now.toLocaleTimeString('ru-RU'),
+            iso:     now.toISOString()
+          };
+          saveMessage(entry);
+
+          titleEl.textContent = 'Sent ✓';
+          setTimeout(function(){
+            modal.classList.remove('show');
+            titleEl.textContent = 'Get in touch';
+            box.querySelector('input[type="text"]').value  = '';
+            box.querySelector('input[type="email"]').value = '';
+            box.querySelector('textarea').value            = '';
+            newBtn.innerHTML = 'Send <span class="arr">→</span>';
+            newBtn.disabled  = false;
+          }, 1800);
+        }
+
+        function onError() {
+          titleEl.textContent = 'Error — try again';
           newBtn.innerHTML = 'Send <span class="arr">→</span>';
-          newBtn.disabled    = false;
-        }, 1800);
-      }
+          newBtn.disabled  = false;
+          setTimeout(function(){ titleEl.textContent = 'Get in touch'; }, 3000);
+        }
 
-      function onError() {
-        titleEl.textContent = 'Error — try again';
-        newBtn.innerHTML  = 'Send <span class="arr">→</span>';
-        newBtn.disabled     = false;
-        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 3000);
-      }
-
-      if (formspree) {
-        fetch(formspree, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
-        }).then(function(r){ return r.ok ? onSuccess() : onError(); }).catch(onError);
-      } else {
-        // Fallback: mailto
-        var sub  = encodeURIComponent('Portfolio contact: ' + nameVal);
-        var body = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
-        window.open('mailto:' + toEmail + '?subject=' + sub + '&body=' + body);
-        onSuccess();
-      }
+        /* Fetch IP, then send */
+        fetch('https://ipapi.co/json/')
+          .then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })
+          .then(function(geo){
+            var ip = (geo.ip || '') + (geo.city ? ', ' + geo.city : '') + (geo.country_name ? ', ' + geo.country_name : '');
+            if (formspree) {
+              fetch(formspree, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal, ip: ip })
+              }).then(function(r){ r.ok ? onSuccess(ip) : onError(); }).catch(onError);
+            } else {
+              var sub = encodeURIComponent('Portfolio contact: ' + nameVal);
+              var bod = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\nIP: ' + ip + '\n\n' + msgVal);
+              window.open('mailto:' + toEmail + '?subject=' + sub + '&body=' + bod);
+              onSuccess(ip);
+            }
+          });
+      });
     });
-  }
-
-  initContactForm();
 })();
 </script>
 </body>
