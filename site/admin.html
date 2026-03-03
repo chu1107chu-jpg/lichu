@@ -294,9 +294,15 @@
           </div>
 
           <div class="form-group">
-            <label>Текст на летающих карточках</label>
-            <input type="text" id="set-card-text" placeholder="Оставьте пустым — будет иконка" maxlength="40">
-            <div class="form-hint">Отображается на карточках, которые летают в игре. Оставьте пустым — покажется иконка по умолчанию.</div>
+            <label>Текст на летающих карточках (7 штук)</label>
+            <div class="form-hint" style="margin-bottom:8px">Каждое поле — отдельная карточка. Оставьте пустым — будет текст по умолчанию.</div>
+            <input type="text" id="set-card-text-0" placeholder="Agile" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-1" placeholder="JTBD" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-2" placeholder="Persona" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-3" placeholder="CJM" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-4" placeholder="User Flow" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-5" placeholder="Use Case" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-6" placeholder="ERD" maxlength="20" style="margin-bottom:6px">
           </div>
 
           <button class="btn-primary" id="save-game-btn">
@@ -864,7 +870,7 @@ async function loadGameSettings() {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
       const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
-      $('set-card-text').value   = cfg.card_text    || '';
+      const ct=cfg.card_texts||[];for(let i=0;i<7;i++){var el=$('set-card-text-'+i);if(el)el.value=ct[i]||'';}
       $('set-start-title').value = cfg.start_title  || '';
       $('set-start-sub').value   = cfg.start_sub    || '';
     }
@@ -876,7 +882,7 @@ $('save-game-btn').addEventListener('click', async () => {
   setLoading(btn, true);
   try {
     await saveConfig({
-      card_text:   $('set-card-text').value,
+      card_texts: [0,1,2,3,4,5,6].map(function(i){return $('set-card-text-'+i).value.trim();}),
       start_title: $('set-start-title').value,
       start_sub:   $('set-start-sub').value,
     });
