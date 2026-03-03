@@ -690,6 +690,22 @@ function setLang(lang) {
         if (typeof initCards === 'function') initCards();
       }
 
+      /* nav from config */
+      if (cfg.nav && cfg.nav.length) {
+        var navLinks = document.querySelectorAll('#nav a');
+        cfg.nav.forEach(function(item, i) {
+          if (navLinks[i]) {
+            navLinks[i].href = item.href || navLinks[i].href;
+            if (item.label) {
+              navLinks[i].setAttribute('data-en', item.label);
+              /* respect current lang */
+              var curLang = window._LICHU_LANG || 'en';
+              if (curLang === 'en') navLinks[i].textContent = item.label;
+            }
+          }
+        });
+      }
+
       /* close modal */
       var modal = document.getElementById('modal-ct');
       document.getElementById('ct-close').addEventListener('click', function(){
@@ -702,7 +718,10 @@ function setLang(lang) {
       /* save to messages.json via GitHub API (token from localStorage) */
       function saveMessage(entry) {
         var token = localStorage.getItem('lichu_write_token');
-        if (!token) return;
+        if (!token) {
+          console.warn('[lichu] write_token not set — message not saved to admin. Set it in admin settings.');
+          return;
+        }
         var API  = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
         var hdrs = {
           'Authorization': 'Bearer ' + token,
