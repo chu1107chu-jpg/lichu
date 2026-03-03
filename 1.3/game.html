@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Li Chu — Portfolio Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; }
+    #root { display: flex; width: 100%; height: 100%; }
+
+    /* ── SIDEBAR — Figma: bg #dcdcdc ── */
+    #sidebar {
+      width: 260px; min-width: 260px; height: 100vh;
+      background: #dcdcdc; overflow: visible;
+      position: relative; z-index: 20;
+      display: flex; flex-direction: column;
+      padding: 40px 30px 40px 30px;
+    }
+    .sb-profile { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0; }
+    .sb-name { font-weight: 700; font-size: 60px; color: #292626; line-height: 1; }
+    .sb-job  { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 18px; color: #98999c; white-space: nowrap; margin-top: 6px; }
+    #nav {
+      display: flex; flex-direction: column; gap: 20px;
+      opacity: 1; pointer-events: auto;
+      margin-top: auto; margin-bottom: auto;
+    }
+    #nav.show { opacity: 1; pointer-events: auto; }
+    #nav a { font-weight: 500; font-size: 18px; color: #242424; text-decoration: none; display: block;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
+      transition: color 0.18s;
+    }
+    #nav a:hover { color: #ff2fda; }
+    .sb-contacts { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+    .sb-contacts-row { display: flex; gap: 8px; align-items: center; }
+    .sb-icon-btn {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(36,36,36,0.22);
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none; color: #242424;
+      transition: border-color 0.18s, color 0.18s;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
+    }
+    .sb-icon-btn:hover { border-color: #242424; color: #000; }
+    .sb-phone {
+      display: flex; align-items: center; gap: 7px;
+      text-decoration: none; color: #242424;
+      font-size: 13px; font-weight: 400; letter-spacing: -.01em;
+      opacity: 0.45; transition: opacity 0.18s;
+    }
+    .sb-phone:hover { opacity: 1; }
+    .sb-phone .material-symbols-outlined { font-size: 15px; font-variation-settings: 'opsz' 20; }
+
+    /* ── GAME AREA — Figma: bg #242424 ── */
+    #game-area { flex: 1; position: relative; background: #242424; overflow: hidden; }
+
+    #photo-el {
+      position: absolute; width: 264px; height: 293px;
+      border-radius: 4px; overflow: hidden;
+      background: rgba(220,220,220,0.2);
+      z-index: 9; pointer-events: none; will-change: left, top;
+    }
+    #photo-el img {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: 359px; height: auto; min-height: 100%;
+      object-fit: cover; filter: grayscale(1); display: block;
+    }
+    #photo-el .ph-ov { position: absolute; inset: 0; background: rgba(0,0,0,0.2); }
+
+    #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
+
+
+
+    /* ── GAME OVER MODAL — Figma: bg #e6e9e7, 475x305, radius 8, white glow ── */
+    #modal-go { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 100; }
+    #modal-go.show { display: flex; }
+    .go-box {
+      width: 475px; height: 305px; background: #e6e9e7;
+      border-radius: 8px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 250px 0 #f7f7f7, 0 0 181px 0 #f7f7f7,
+                  0 0 106px 0 #f7f7f7, 0 0 53px 0 #f7f7f7,
+                  0 0 15px 0 #f7f7f7, 0 0 8px 0 #f7f7f7;
+      animation: popIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .go-inner { width: 353px; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
+    .go-title { font-weight: 600; font-size: 64px; color: #3d3d3d; line-height: normal; white-space: nowrap; }
+    #play-again-btn {
+      width: 353px; background: #292e2a; border-radius: 8px; border: none; padding: 16px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.18s;
+    }
+    #play-again-btn:hover { background: #363d37; }
+    #play-again-btn span { font-weight: 500; font-size: 32px; color: #e6e9e7; white-space: nowrap; font-family: 'Inter', sans-serif; }
+
+    /* ── CONTACT MODAL ── */
+    #modal-ct {
+      position: absolute; inset: 0;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(8,8,8,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 110;
+    }
+    #modal-ct.show { display: flex; }
+    .ct-box {
+      position: relative;
+      width: 480px;
+      background: rgba(18,18,18,0.97);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 52px 52px 44px;
+      display: flex; flex-direction: column; gap: 0;
+      animation: popIn 0.32s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .ct-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 32px; height: 32px;
+      border: none; background: transparent;
+      color: rgba(255,255,255,0.25); font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23f0f0f0' stroke='%23111' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
+      transition: color 0.15s;
+    }
+    .ct-close:hover { color: rgba(255,255,255,0.8); }
+    .ct-label { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
+    .ct-title { font-weight: 600; font-size: 30px; letter-spacing: -.02em; color: #f0f0f0; margin-bottom: 28px; }
+    .ct-box input, .ct-box textarea {
+      padding: 14px 0;
+      border: none; border-bottom: 1px solid rgba(255,255,255,0.10);
+      background: transparent;
+      color: #f0f0f0; font-family: 'Inter',sans-serif; font-size: 15px;
+      outline: none; width: 100%;
+      transition: border-color 0.18s;
+    }
+    .ct-box input:focus, .ct-box textarea:focus { border-color: rgba(255,255,255,0.45); }
+    .ct-box input::placeholder, .ct-box textarea::placeholder { color: rgba(255,255,255,0.22); }
+    .ct-box textarea { height: 80px; resize: none; }
+    .ct-row { display: flex; align-items: center; justify-content: flex-end; padding-top: 28px; gap: 12px; }
+
+    .ct-send {
+      margin-left: auto;
+      padding: 0; border: none; background: transparent;
+      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23f0f0f0' stroke='%23111' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: color 0.18s;
+    }
+    .ct-send:hover { color: #fff; }
+    .ct-send .arr { transition: transform 0.18s; }
+    .ct-send:hover .arr { transform: translateX(4px); }
+
+    /* ── Lives ── */
+    #lives-display { display: none; }
+    .life-dot { width: 12px; height: 12px; border-radius: 50%; background: #f5f5f5; transition: opacity 0.25s, background 0.25s; }
+    .life-dot.lost { opacity: 0.18; }
+  </style>
+</head>
+<body>
+
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="noiseF" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+        <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+        <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
+        <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="root">
+    <div id="sidebar">
+      <div class="sb-profile">
+        <p class="sb-name">Li Chu</p>
+        <p class="sb-job">UX UI Designer</p>
+      </div>
+      <nav id="nav" class="show">
+        <a href="game.html">About</a>
+        <a href="project-01.html">Project 1</a>
+        <a href="project-02.html">Project 2</a>
+        <a href="project-03.html">Project 3</a>
+        <a href="project-04.html">Project 4</a>
+        <a href="project-05.html">Project 5</a>
+      </nav>
+      <div class="sb-contacts">
+        <div class="sb-contacts-row">
+          <a class="sb-icon-btn" href="https://t.me/choowie" target="_blank" title="Telegram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.697l-2.95-.924c-.642-.204-.657-.642.136-.953l11.57-4.461c.532-.194.999.13.826.889z"/></svg>
+          </a>
+          <a class="sb-icon-btn" href="mailto:lapkazarapka8752@gmail.com" title="Gmail">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+          </a>
+        </div>
+        <a class="sb-phone" href="tel:+79613823333">
+          <span class="material-symbols-outlined">call</span>
+          <span>+7&nbsp;961&nbsp;382&#8209;33&#8209;33</span>
+        </a>
+      </div>
+    </div>
+
+    <div id="game-area">
+      <div id="photo-el">
+        <img src="https://www.figma.com/api/mcp/asset/57af1af0-251e-488c-9f81-8cf2bd9dcf69" alt="Li Chu">
+        <div class="ph-ov"></div>
+      </div>
+      <div id="lives-display">
+        <div class="life-dot" id="life0"></div>
+        <div class="life-dot" id="life1"></div>
+        <div class="life-dot" id="life2"></div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+
+      <div id="modal-go">
+        <div class="go-box">
+          <div class="go-inner">
+            <p class="go-title">Game over!</p>
+            <button id="play-again-btn" style="filter:url(#noiseF)"><span>Play again</span></button>
+          </div>
+        </div>
+      </div>
+      <div id="modal-ct">
+        <div class="ct-box">
+          <button class="ct-close" id="ct-close">✕</button>
+          <span class="ct-label">Contact</span>
+          <p class="ct-title">Get in touch</p>
+          <input type="text" placeholder="Name">
+          <input type="email" placeholder="Email">
+          <textarea placeholder="Message…"></textarea>
+          <div class="ct-row">
+            <button class="ct-send" id="ct-send">Send <span class="arr">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ── Flying-cards custom text (set via admin) ── */
+window.LICHU_CARD_TEXTS = null; /* set by config fetch */
+</script>
+<script>
+/* ── Always keep nav visible — patch classList.remove on #nav ── */
+(function () {
+  var nav = document.getElementById('nav');
+  var sb  = document.getElementById('sb-contact');
+  if (!nav) return;
+  var _orig = nav.classList.remove.bind(nav.classList);
+  nav.classList.remove = function () {
+    // block hiding the nav; allow other class removals
+    var args = Array.prototype.filter.call(arguments, function(c){ return c !== 'show'; });
+    if (args.length) _orig.apply(null, args);
+  };
+  // keep sb-contact visible too
+  if (sb) {
+    var _origSb = sb.classList.remove.bind(sb.classList);
+    sb.classList.remove = function () {
+      var args = Array.prototype.filter.call(arguments, function(c){ return c !== 'show'; });
+      if (args.length) _origSb.apply(null, args);
+    };
+  }
+})();
+</script>
+<script>
+/* ── CONSTANTS ── */
+const SIDEBAR_W = 260;
+const CARD_W    = 82,   CARD_H   = 38;   /* Figma: ~82x38, padding 10px, 15px font */
+const PAD_W     = 80,   PAD_H    = 80;   /* Shopping cart icon 80x80 */
+const PHOTO_W   = 264,  PHOTO_H  = 293;
+const CARD_SPD  = 170;   /* chaotic card base speed */
+const FALL_GRAV = 90;    /* gravity for falling card px/s² */
+const FALL_VX   = 55;    /* max horizontal speed for falling card */
+const CARD_DRIFT= 8;     /* gentle drift for chaotic cards */
+const PHOTO_SPD = 115;
+const MAX_LIVES = 3;
+
+/* ── DOM ── */
+const canvas  = document.getElementById('game-canvas');
+const ctx     = canvas.getContext('2d');
+const photoEl = document.getElementById('photo-el');
+const modalGO = document.getElementById('modal-go');
+const modalCT = document.getElementById('modal-ct');
+const navEl   = document.getElementById('nav');
+const lifeEls = [0,1,2].map(i => document.getElementById('life'+i));
+
+/* ── STATE ── */
+let W=0, H=0, mouseX=-9999, gameOver=false, cardsOn=false, photoHit=false, lastTs=0, lives=MAX_LIVES;
+const paddle = { x:0, y:0, w:PAD_W, h:PAD_H };
+let cards=[], photo=null, parts=[];
+
+let iconFontReady = false;
+document.fonts.ready.then(() => { iconFontReady = true; });
+
+/* ── HELPERS ── */
+const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi,v));
+const lerp  = (a,b,t)   => a + (b-a)*t;
+
+function hitTest(a,b) {
+  return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+}
+
+function roundRect(x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.arcTo(x+w,y,  x+w,y+r,  r); ctx.lineTo(x+w,y+h-r);
+  ctx.arcTo(x+w,y+h,x+w-r,y+h,r); ctx.lineTo(x+r,y+h);
+  ctx.arcTo(x,y+h,  x,y+h-r,  r); ctx.lineTo(x,y+r);
+  ctx.arcTo(x,y,    x+r,y,    r); ctx.closePath();
+}
+
+function beep(freq,dur) {
+  try {
+    const ac=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ac.createOscillator(), g=ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.frequency.value=freq||820; osc.type='sine';
+    g.gain.setValueAtTime(0.08,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+(dur||0.09));
+    osc.start(); osc.stop(ac.currentTime+(dur||0.09));
+  } catch(e){}
+}
+
+/* ── PARTICLES ── */
+function burst(cx,cy,colors,n) {
+  n=n||14;
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, s=160+Math.random()*260, life=0.5+Math.random()*0.3;
+    parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s,sz:3+Math.random()*5,col:colors[Math.floor(Math.random()*colors.length)],life,max:life});
+  }
+}
+
+function missExplosion(cx,cy) {
+  const colors=['#ff2200','#ff6600','#ffaa00','#242424','#f5f5f5','#ffffff','#8f8f90'];
+  for(let i=0;i<70;i++){
+    const a=-Math.PI+Math.random()*Math.PI, s=280+Math.random()*560, life=0.55+Math.random()*0.55;
+    parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-80,sz:5+Math.random()*15,col:colors[Math.floor(Math.random()*colors.length)],life,max:life});
+  }
+  const ga=document.getElementById('game-area');
+  ga.style.transition='none';
+  ga.style.transform='translate(8px,5px)';
+  setTimeout(()=>{ga.style.transform='translate(-6px,-4px)';},50);
+  setTimeout(()=>{ga.style.transform='translate(5px,-5px)';},100);
+  setTimeout(()=>{ga.style.transform='translate(-3px,3px)';},150);
+  setTimeout(()=>{ga.style.transform='translate(0,0)';ga.style.transition='';},200);
+}
+
+/* ── LIVES ── */
+function updateLivesUI(){
+  lifeEls.forEach((el,i)=>el.classList.toggle('lost',i>=lives));
+}
+function loseLife(){
+  lives=Math.max(0,lives-1); updateLivesUI();
+  if(lives<=0) setTimeout(endGame,400);
+}
+
+/* ── INIT CARDS ── */
+function initCards(){
+  cards=[];
+  const DEFAULT_TEXTS=['Agile','JTBD','Persona','CJM','User Flow','Use Case','ERD'];
+  const TEXTS=(window.LICHU_CARD_TEXTS&&window.LICHU_CARD_TEXTS.length>=7)?window.LICHU_CARD_TEXTS:DEFAULT_TEXTS;
+  /* Card 0: FALLING — always falls down, respawns from top */
+  cards.push({
+    x: W*0.3+Math.random()*W*0.4-CARD_W/2,
+    y: -CARD_H-20,
+    vx:(Math.random()-0.5)*FALL_VX*2,
+    vy:50+Math.random()*40,
+    w:CARD_W,h:CARD_H,flash:0,falling:true,text:TEXTS[0]
+  });
+  /* Cards 1-6: CHAOTIC — bounce all 4 walls */
+  const xs=[0.12,0.35,0.58,0.72,0.88,0.22];
+  const ys=[0.15,0.60,0.30,0.78,0.48,0.88];
+  for(let i=0;i<6;i++){
+    const sign=(i%2===0)?1:-1;
+    const vx=sign*(CARD_SPD*0.7+Math.random()*CARD_SPD*0.6);
+    const vy=(Math.random()-0.5)*120;
+    cards.push({x:xs[i]*(W-CARD_W),y:ys[i]*(H-CARD_H),vx,vy,w:CARD_W,h:CARD_H,flash:0,falling:false,text:TEXTS[i+1]});
+  }
+}
+
+/* ── INIT PHOTO ── */
+function initPhoto(){
+  const angle=Math.PI/4+(Math.random()-0.5)*0.5;
+  photo={
+    x:0.127*(W-PHOTO_W), y:0.114*(H-PHOTO_H),
+    vx:PHOTO_SPD*Math.cos(angle), vy:Math.abs(PHOTO_SPD*Math.sin(angle)),
+    w:PHOTO_W, h:PHOTO_H
+  };
+  photoEl.style.left=photo.x+'px'; photoEl.style.top=photo.y+'px'; photoEl.style.display='block';
+}
+
+/* ── GAME OVER ── */
+function endGame(){
+  if(gameOver) return;
+  gameOver=true; photoEl.style.display='none';
+  modalGO.classList.add('show');
+  setTimeout(()=>navEl.classList.add('show'),120);
+}
+
+/* ── RESET ── */
+function resetGame(){
+  gameOver=false; cardsOn=false; photoHit=false; parts=[]; lives=MAX_LIVES;
+  updateLivesUI();
+  modalGO.classList.remove('show'); navEl.classList.remove('show');
+  paddle.x=W/2-PAD_W/2; paddle.y=H-PAD_H-16;
+  initCards(); initPhoto();
+  setTimeout(()=>{cardsOn=true;},500);
+}
+
+/* ── UPDATE ── */
+function update(dt){
+  if(gameOver) return;
+
+  const tx=clamp(mouseX-PAD_W/2,0,W-PAD_W);
+  paddle.x=lerp(paddle.x,tx,Math.min(1,dt*16));
+
+  if(cardsOn){
+    for(let i=0;i<cards.length;i++){
+      const c=cards[i];
+
+      if(c.falling){
+        /* Falling card: gravity, gentle horizontal wobble */
+        c.vy+=FALL_GRAV*dt;
+        c.vx+=(Math.random()-0.5)*20*dt;
+        c.vx=clamp(c.vx,-FALL_VX,FALL_VX);
+        c.x+=c.vx*dt; c.y+=c.vy*dt;
+        if(c.flash>0) c.flash-=dt;
+        if(c.x<0)       {c.x=0;       c.vx= Math.abs(c.vx);}
+        if(c.x+c.w>W)   {c.x=W-c.w;   c.vx=-Math.abs(c.vx);}
+        if(hitTest(c,paddle)){
+          c.y=paddle.y-c.h-1;
+          c.vy=-(120+Math.random()*80);
+          const rel=(c.x+c.w/2-(paddle.x+PAD_W/2))/(PAD_W/2);
+          c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
+          c.flash=0.22;
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff']);
+          beep(760+Math.random()*120,0.08);
+        }
+        if(c.y>H+12){
+          missExplosion(c.x+c.w/2,H-20);
+          beep(160,0.4);
+          loseLife();
+          /* Respawn from top */
+          c.x=W*0.2+Math.random()*W*0.6-CARD_W/2;
+          c.y=-CARD_H-10;
+          c.vx=(Math.random()-0.5)*FALL_VX*2;
+          c.vy=40+Math.random()*30;
+        }
+
+      } else {
+        /* Chaotic cards: bounce all 4 walls */
+        c.vy+=CARD_DRIFT*dt;
+        if(c.vy> CARD_SPD*0.7) c.vy= CARD_SPD*0.7;
+        if(c.vy<-CARD_SPD*0.7) c.vy=-CARD_SPD*0.7;
+        if(Math.abs(c.vx)<40)  c.vx+=(c.vx>=0?1:-1)*40;
+        c.x+=c.vx*dt; c.y+=c.vy*dt;
+        if(c.flash>0) c.flash-=dt;
+        if(c.x<0)         {c.x=0;       c.vx= Math.abs(c.vx);}
+        if(c.x+c.w>W)     {c.x=W-c.w;   c.vx=-Math.abs(c.vx);}
+        if(c.y<0)         {c.y=0;        c.vy= Math.abs(c.vy);}
+        if(c.y+c.h>H)     {c.y=H-c.h;   c.vy=-Math.abs(c.vy);}
+        if(hitTest(c,paddle)){
+          c.y=paddle.y-c.h-1;
+          c.vy=-(80+Math.random()*60);
+          const rel=(c.x+c.w/2-(paddle.x+PAD_W/2))/(PAD_W/2);
+          c.vx=rel*CARD_SPD*1.2+(Math.random()-0.5)*50;
+          if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
+          c.flash=0.22;
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff','#ff2fda']);
+          beep(820+Math.random()*140,0.07);
+        }
+      }
+    }
+
+    /* Card vs Card collision */
+    for(let i=0;i<cards.length;i++){
+      for(let j=i+1;j<cards.length;j++){
+        const a=cards[i],b=cards[j];
+        if(!hitTest(a,b)) continue;
+        const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+        const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+        if(ox<oy){
+          const t=a.vx;a.vx=b.vx;b.vx=t;
+          if(a.x<b.x){a.x-=ox/2+1;b.x+=ox/2+1;}else{a.x+=ox/2+1;b.x-=ox/2+1;}
+        }else{
+          const t=a.vy;a.vy=b.vy;b.vy=t;
+          if(a.y<b.y){a.y-=oy/2+1;b.y+=oy/2+1;}else{a.y+=oy/2+1;b.y-=oy/2+1;}
+        }
+        a.flash=0.1;b.flash=0.1;
+      }
+    }
+  }
+
+  /* Photo */
+  if(photo){
+    photo.x+=photo.vx*dt; photo.y+=photo.vy*dt;
+    if(photo.x<0)             {photo.x=0;            photo.vx= Math.abs(photo.vx);}
+    if(photo.x+photo.w>W)     {photo.x=W-photo.w;    photo.vx=-Math.abs(photo.vx);}
+    if(photo.y<0)             {photo.y=0;             photo.vy= Math.abs(photo.vy);}
+    if(photo.y+photo.h>H)     {photo.y=H-photo.h;    photo.vy=-Math.abs(photo.vy);}
+    if(hitTest(photo,paddle)){
+      if(!photoHit){
+        photoHit=true; photo.vy=-Math.abs(photo.vy);
+        burst(photo.x+photo.w/2,photo.y+photo.h/2,['#f5f5f5','#e6e9e7','#98999c','#8f8f90'],22);
+        beep(520,0.18); modalCT.classList.add('show');
+      }
+    }else{ photoHit=false; }
+    photoEl.style.left=photo.x+'px'; photoEl.style.top=photo.y+'px';
+  }
+
+  /* Particles */
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=360*dt; p.life-=dt*1.5;
+    if(p.life<=0) parts.splice(i,1);
+  }
+}
+
+/* ── DRAW ── */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  /* Cards — Figma: bg #f5f5f5, text #252426, Inter 15px Regular, radius 4 */
+  for(const c of cards){
+    ctx.fillStyle=c.flash>0?'#ff2fda':'#f5f5f5';
+    roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.fill();
+    /* Falling card indicator: gray border */
+    if(c.falling&&c.flash<=0){
+      ctx.strokeStyle='#8f8f90'; ctx.lineWidth=1.5;
+      roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.stroke();
+    }
+    ctx.fillStyle=c.flash>0?'#1a1a1a':'#252426';
+    ctx.font='400 15px Inter,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(c.text||'',c.x+CARD_W/2,c.y+CARD_H/2);
+  }
+
+  /* Particles */
+  for(const p of parts){
+    ctx.save(); ctx.globalAlpha=Math.max(0,p.life/p.max);
+    ctx.fillStyle=p.col; ctx.fillRect(p.x-p.sz/2,p.y-p.sz/2,p.sz,p.sz);
+    ctx.restore();
+  }
+
+  /* Paddle: shopping_cart icon from Material Symbols Outlined */
+  if(!gameOver){
+    if(iconFontReady){
+      ctx.font='80px "Material Symbols Outlined"';
+      ctx.fillStyle='#f5f5f5';
+      ctx.textAlign='left'; ctx.textBaseline='top';
+      ctx.fillText('\ue8cc',paddle.x,paddle.y);
+    }else{
+      /* Fallback until font loads */
+      ctx.fillStyle='#8f8f90';
+      roundRect(paddle.x,paddle.y+55,PAD_W,10,4); ctx.fill();
+    }
+  }
+}
+
+/* ── LOOP ── */
+function loop(ts){
+  if(!lastTs) lastTs=ts;
+  const dt=Math.min((ts-lastTs)/1000,0.025);
+  lastTs=ts; update(dt); draw();
+  requestAnimationFrame(loop);
+}
+
+/* ── RESIZE ── */
+function resize(){
+  W=window.innerWidth-SIDEBAR_W; H=window.innerHeight;
+  canvas.width=W; canvas.height=H;
+  paddle.y=H-PAD_H-16;
+  paddle.x=clamp(paddle.x||(W/2-PAD_W/2),0,W-PAD_W);
+}
+
+/* ── EVENTS ── */
+document.addEventListener('mousemove',e=>{ mouseX=e.clientX-SIDEBAR_W; });
+window.addEventListener('resize',()=>{ resize(); paddle.y=H-PAD_H-16; });
+document.getElementById('play-again-btn').addEventListener('click',resetGame);
+var ctCloseEl = document.getElementById('ct-close');
+if (ctCloseEl) ctCloseEl.addEventListener('click',()=>modalCT.classList.remove('show'));
+modalCT.addEventListener('click',e=>{ if(e.target===modalCT) modalCT.classList.remove('show'); });
+
+/* ── START ── */
+resize();
+paddle.x=W/2-PAD_W/2;
+updateLivesUI();
+initCards(); initPhoto();
+setTimeout(()=>{cardsOn=true;},500);
+requestAnimationFrame(loop);
+</script>
+
+<!-- ── Contact form + config loader ─────────────────────────────── -->
+<script>
+(function () {
+  fetch('site-config.json?_=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : {}; })
+    .catch(function(){ return {}; })
+    .then(function(cfg){
+      window._LICHU_CFG = cfg;
+      // Load custom card text for flying frames
+      if (cfg.card_texts&&cfg.card_texts.length>=7){window.LICHU_CARD_TEXTS=cfg.card_texts;if(typeof initCards==='function')initCards();}
+      // Close button
+  var closeBtn = document.getElementById('ct-close');
+  if (closeBtn) closeBtn.addEventListener('click', function () {
+    document.getElementById('modal-ct').classList.remove('show');
+  });
+
+  initContactForm();
+    });
+    var formspree = cfg.formspree_endpoint || '';
+    var toEmail   = cfg.email || 'lapkazarapka8752@gmail.com';
+
+    // Clone button to remove obfuscated listeners
+    var oldBtn = document.getElementById('ct-send');
+    if (!oldBtn) return;
+    var newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+    newBtn.addEventListener('click', function () {
+      var box      = document.querySelector('.ct-box');
+      var titleEl  = box.querySelector('.ct-title');
+      var nameVal  = box.querySelector('input[type="text"]').value.trim();
+      var emailVal = box.querySelector('input[type="email"]').value.trim();
+      var msgVal   = box.querySelector('textarea').value.trim();
+
+      if (!nameVal || !emailVal || !msgVal) {
+        titleEl.textContent = 'Fill in all fields ✱';
+        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 2000);
+        return;
+      }
+
+      newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
+      newBtn.disabled = true;
+
+      function onSuccess() {
+        titleEl.textContent = 'Sent ✓';
+        setTimeout(function () {
+          document.getElementById('modal-ct').classList.remove('show');
+          titleEl.textContent = 'Get in touch';
+          box.querySelector('input[type="text"]').value  = '';
+          box.querySelector('input[type="email"]').value = '';
+          box.querySelector('textarea').value            = '';
+          newBtn.innerHTML = 'Send <span class="arr">→</span>';
+          newBtn.disabled    = false;
+        }, 1800);
+      }
+
+      function onError() {
+        titleEl.textContent = 'Error — try again';
+        newBtn.innerHTML  = 'Send <span class="arr">→</span>';
+        newBtn.disabled     = false;
+        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 3000);
+      }
+
+      if (formspree) {
+        fetch(formspree, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
+        }).then(function(r){ return r.ok ? onSuccess() : onError(); }).catch(onError);
+      } else {
+        // Fallback: mailto
+        var sub  = encodeURIComponent('Portfolio contact: ' + nameVal);
+        var body = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
+        window.open('mailto:' + toEmail + '?subject=' + sub + '&body=' + body);
+        onSuccess();
+      }
+    });
+  }
+
+  initContactForm();
+})();
+</script>
+</body>
+</html>
