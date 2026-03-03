@@ -184,6 +184,17 @@
     }
     #lang-toggle button.active { background: #242424; color: #f5f5f5; }
     #lang-toggle button:hover:not(.active) { background: rgba(0,0,0,0.07); }
+
+    /* ── EMAIL ERROR ── */
+    @keyframes ct-shake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-5px); }
+      40%,80% { transform: translateX(5px); }
+    }
+    .ct-input-err {
+      border-color: #ff3b3b !important;
+      animation: ct-shake 0.35s ease;
+    }
   </style>
 </head>
 <body>
@@ -718,15 +729,32 @@ function setLang(lang) {
         var lang = window._LICHU_LANG || 'en';
         var T = {
           empty:   { en: 'Fill in all fields',  ru: 'Заполните все поля'    },
+          bademail:{ en: 'Enter a valid e-mail',   ru: 'Введите корректный e-mail' },
           title:   { en: 'Get in touch',         ru: 'Написать мне'          },
           sending: { en: 'Sending…',        ru: 'Отправляем…'      },
           sent:    { en: 'Sent ✓',          ru: 'Отправлено ✓'     },
           error:   { en: 'Error — try again', ru: 'Ошибка — попробуйте ещё' },
           send:    { en: 'Send',                 ru: 'Отправить'             }
         };
+        var emailInput = box.querySelector('input[type="email"]');
+        function markErr(el) {
+          el.classList.remove('ct-input-err');
+          void el.offsetWidth; /* reflow to restart animation */
+          el.classList.add('ct-input-err');
+          setTimeout(function(){ el.classList.remove('ct-input-err'); }, 1500);
+        }
         if (!nameVal || !emailVal || !msgVal) {
           titleEl.textContent = T.empty[lang];
+          if (!emailVal) markErr(emailInput);
           setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 2000);
+          return;
+        }
+        /* Validate e-mail: must contain @ with non-empty local and domain parts */
+        var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+        if (!emailOk) {
+          markErr(emailInput);
+          titleEl.textContent = T.bademail[lang];
+          setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 2500);
           return;
         }
 
