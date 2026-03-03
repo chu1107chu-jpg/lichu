@@ -900,10 +900,10 @@ async function loadSettings() {
     if (f) {
       const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
-      // write_token stored in localStorage only
-      const lsToken = localStorage.getItem('lichu_write_token');
-      if (lsToken) $('set-write-token').value = lsToken;
       if (cfg.email) $('set-email').value = cfg.email;
+      // write_token: prefer cfg (shared), fallback to localStorage
+      const savedToken = cfg.write_token || localStorage.getItem('lichu_write_token') || '';
+      if (savedToken) $('set-write-token').value = savedToken;
     }
   } catch {}
 }
@@ -912,13 +912,14 @@ $('save-settings-btn').addEventListener('click', async () => {
   const btn = $('save-settings-btn');
   setLoading(btn, true);
   try {
-    // save write_token to localStorage only (never to public site-config.json)
     const wt = $('set-write-token').value.trim();
+    // Also keep in localStorage for backward compat
     if (wt) localStorage.setItem('lichu_write_token', wt);
     else    localStorage.removeItem('lichu_write_token');
     await saveConfig({
       formspree_endpoint: $('set-formspree').value.trim(),
       email: $('set-email').value.trim(),
+      write_token: wt,   // stored in site-config.json so ALL visitors can save messages
     });
     toast('Настройки сохранены ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
