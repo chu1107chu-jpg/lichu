@@ -465,7 +465,6 @@ $('login-btn').addEventListener('click', async () => {
     ghLogin = user.login;
     sessionStorage.setItem('lichu_admin_pat', pat);
     sessionStorage.setItem('lichu_admin_user', ghLogin);
-    localStorage.setItem('lichu_write_token', pat);  // auto-save for game.html saveMessage
     $('gh-user').textContent = ghLogin;
     showApp();
   } catch (e) {
@@ -820,7 +819,7 @@ async function loadNav() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
       if (cfg.nav) navItems = cfg.nav;
     }
   } catch {}
@@ -870,7 +869,7 @@ async function loadGameSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
       const ct=cfg.card_texts||[];for(let i=0;i<7;i++){var el=$('set-card-text-'+i);if(el)el.value=ct[i]||'';}
       $('set-start-title').value = cfg.start_title  || '';
       $('set-start-sub').value   = cfg.start_sub    || '';
@@ -898,12 +897,12 @@ async function loadSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
+      // write_token stored in localStorage only
+      const lsToken = localStorage.getItem('lichu_write_token');
+      if (lsToken) $('set-write-token').value = lsToken;
       if (cfg.email) $('set-email').value = cfg.email;
-      // write_token: prefer cfg (shared), fallback to localStorage
-      const savedToken = cfg.write_token || localStorage.getItem('lichu_write_token') || '';
-      if (savedToken) $('set-write-token').value = savedToken;
     }
   } catch {}
 }
@@ -912,14 +911,13 @@ $('save-settings-btn').addEventListener('click', async () => {
   const btn = $('save-settings-btn');
   setLoading(btn, true);
   try {
+    // save write_token to localStorage only (never to public site-config.json)
     const wt = $('set-write-token').value.trim();
-    // Also keep in localStorage for backward compat
     if (wt) localStorage.setItem('lichu_write_token', wt);
     else    localStorage.removeItem('lichu_write_token');
     await saveConfig({
       formspree_endpoint: $('set-formspree').value.trim(),
       email: $('set-email').value.trim(),
-      write_token: wt,   // stored in site-config.json so ALL visitors can save messages
     });
     toast('Настройки сохранены ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
@@ -938,19 +936,17 @@ async function loadMessages() {
       return;
     }
     let msgs = [];
-    try { msgs = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, ''))))); } catch {}
+    try { msgs = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
     if (!msgs.length) {
       list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет.</p>';
       return;
     }
     list.innerHTML = '';
     msgs.forEach(m => {
-      const d = m.iso ? new Date(m.iso) : null;
-      const dateStr = (d && !isNaN(d))
-        ? d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
-        : (m.date ? m.date + (m.time ? ' ' + m.time : '') : '—');
+      const d = new Date(m.date);
+      const dateStr = isNaN(d) ? m.date : d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
       const card = document.createElement('div');
-      card.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:18px 22px;display:flex;flex-direction:column;gap:6px';
+      card.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px 22px;display:flex;flex-direction:column;gap:6px';
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
           <span style="font-weight:600;font-size:15px;color:#242424">${esc(m.name || 'Аноним')}</span>
@@ -987,7 +983,7 @@ async function saveConfig(partial) {
   const f = await ghGetContents('site/site-config.json');
   let existing = {};
   if (f) {
-    try { existing = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, ''))))); } catch {}
+    try { existing = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
   }
   const merged = { ...existing, ...partial };
   const b64 = strToB64(JSON.stringify(merged, null, 2));
@@ -1074,7 +1070,6 @@ function setupDropZone(zone, fileInput, onFiles) {
       if (!r.ok) throw new Error('token_invalid');
       PAT = storedPat;
       ghLogin = storedUser || '';
-      localStorage.setItem('lichu_write_token', storedPat);  // keep write_token fresh
       $('gh-user').textContent = ghLogin;
       showApp();
     } catch {
