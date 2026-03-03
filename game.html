@@ -131,7 +131,9 @@
     .ct-label { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
     .ct-title { font-weight: 600; font-size: 30px; letter-spacing: -.02em; color: #f0f0f0; margin-bottom: 28px; }
     .ct-box input, .ct-box textarea {
-      padding: 10px 0 4px;
+      height: 48px;
+      padding: 26px 0 3px;
+      box-sizing: border-box;
       border: none; border-bottom: 1px solid rgba(255,255,255,0.10);
       background: transparent;
       color: #f0f0f0; font-family: 'Inter',sans-serif; font-size: 15px;
@@ -140,7 +142,7 @@
     }
     .ct-box input:focus, .ct-box textarea:focus { border-color: rgba(255,255,255,0.45); }
     .ct-box input::placeholder, .ct-box textarea::placeholder { color: rgba(255,255,255,0.22); }
-    .ct-box textarea { height: 80px; resize: none; }
+    .ct-box textarea { resize: none; }
     .ct-box input:-webkit-autofill,
     .ct-box input:-webkit-autofill:focus {
       caret-color: #f0f0f0;
