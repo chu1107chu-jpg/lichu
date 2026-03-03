@@ -444,7 +444,7 @@ function burst(cx,cy,colors,n) {
 }
 
 function missExplosion(cx,cy) {
-  const colors=['#ff2200','#ff6600','#ffaa00','#242424','#f5f5f5','#ffffff','#8f8f90'];
+  const colors=['#ff2fda','#ff80ee','#c4009a','#e61fd2','#ff00cc','#ff40e0','#9900aa','#ff66f0','#ffffff','#f5f5f5'];
   for(let i=0;i<70;i++){
     const a=-Math.PI+Math.random()*Math.PI, s=280+Math.random()*560, life=0.55+Math.random()*0.55;
     parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-80,sz:5+Math.random()*15,col:colors[Math.floor(Math.random()*colors.length)],life,max:life});
@@ -575,6 +575,7 @@ function update(dt){
         if(c.y<0)         {c.y=0;        c.vy= Math.abs(c.vy);}
         if(c.y+c.h>H){
           missExplosion(c.x+c.w/2,H-20);
+          explode();
           beep(220+Math.random()*80,0.18);
           loseLife();
           c.x=W*0.1+Math.random()*W*0.8-c.w/2;
