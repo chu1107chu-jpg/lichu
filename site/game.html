@@ -39,7 +39,6 @@
     .sb-contacts-row { display: flex; gap: 8px; align-items: center; }
     .sb-icon-btn {
       width: 36px; height: 36px;
-      border-radius: 6px;
       border: 1px solid rgba(36,36,36,0.22);
       display: inline-flex; align-items: center; justify-content: center;
       text-decoration: none; color: #242424;
@@ -361,60 +360,15 @@ function roundRect(x,y,w,h,r) {
   ctx.arcTo(x,y,    x+r,y,    r); ctx.closePath();
 }
 
-/* ── AUDIO — shared context ── */
-let _ac=null;
-function _getAC(){
-  if(!_ac) _ac=new(window.AudioContext||window.webkitAudioContext)();
-  if(_ac.state==='suspended') _ac.resume();
-  return _ac;
-}
-/* Unlock audio on first pointer interaction */
-document.addEventListener('pointerdown',_getAC,{once:true});
-
 function beep(freq,dur) {
   try {
-    const ac=_getAC(), t=ac.currentTime;
+    const ac=new(window.AudioContext||window.webkitAudioContext)();
     const osc=ac.createOscillator(), g=ac.createGain();
     osc.connect(g); g.connect(ac.destination);
-    osc.frequency.value=freq||820; osc.type='square';
-    g.gain.setValueAtTime(0.07,t);
-    g.gain.exponentialRampToValueAtTime(0.001,t+(dur||0.09));
-    osc.start(t); osc.stop(t+(dur||0.09));
-  } catch(e){}
-}
-
-function explode() {
-  try {
-    const ac=_getAC(), t=ac.currentTime;
-    const SR=ac.sampleRate, dur=1.1;
-    const buf=ac.createBuffer(1,SR*dur,SR);
-    const d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1);
-    const noise=ac.createBufferSource(); noise.buffer=buf;
-
-    /* Low-pass — body of explosion */
-    const lp=ac.createBiquadFilter();
-    lp.type='lowpass'; lp.frequency.setValueAtTime(600,t);
-    lp.frequency.exponentialRampToValueAtTime(60,t+dur);
-
-    /* Gain envelope: sharp attack, long rumble decay */
-    const g=ac.createGain();
-    g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(1.2,t+0.01);
-    g.gain.exponentialRampToValueAtTime(0.3,t+0.15);
-    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-
-    /* Sub-bass rumble oscillator */
-    const sub=ac.createOscillator(), sg=ac.createGain();
-    sub.type='sine'; sub.frequency.setValueAtTime(90,t);
-    sub.frequency.exponentialRampToValueAtTime(25,t+0.5);
-    sg.gain.setValueAtTime(0.5,t);
-    sg.gain.exponentialRampToValueAtTime(0.001,t+0.55);
-    sub.connect(sg); sg.connect(ac.destination);
-    sub.start(t); sub.stop(t+0.55);
-
-    noise.connect(lp); lp.connect(g); g.connect(ac.destination);
-    noise.start(t); noise.stop(t+dur);
+    osc.frequency.value=freq||820; osc.type='sine';
+    g.gain.setValueAtTime(0.08,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+(dur||0.09));
+    osc.start(); osc.stop(ac.currentTime+(dur||0.09));
   } catch(e){}
 }
 
@@ -535,7 +489,7 @@ function update(dt){
         }
         if(c.y>H+12){
           missExplosion(c.x+c.w/2,H-20);
-          explode();
+          beep(160,0.4);
           loseLife();
           /* Respawn from top */
           c.x=W*0.2+Math.random()*W*0.6-CARD_W/2;
@@ -557,7 +511,7 @@ function update(dt){
         if(c.y<0)         {c.y=0;        c.vy= Math.abs(c.vy);}
         if(c.y+c.h>H){
           missExplosion(c.x+c.w/2,H-20);
-          explode();
+          beep(220+Math.random()*80,0.18);
           loseLife();
           c.x=W*0.1+Math.random()*W*0.8-c.w/2;
           c.y=-c.h-10;
@@ -629,11 +583,11 @@ function draw(){
   /* Cards — Figma: bg #f5f5f5, text #252426, Inter 15px Regular, radius 4 */
   for(const c of cards){
     ctx.fillStyle=c.flash>0?'#ff2fda':'#f5f5f5';
-    roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.fill();
+    roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.fill();
     /* Falling card indicator: gray border */
     if(c.falling&&c.flash<=0){
       ctx.strokeStyle='#8f8f90'; ctx.lineWidth=1.5;
-      roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.stroke();
+      roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.stroke();
     }
     ctx.fillStyle=c.flash>0?'#1a1a1a':'#252426';
     ctx.font='400 15px Inter,sans-serif';
@@ -658,7 +612,7 @@ function draw(){
     }else{
       /* Fallback until font loads */
       ctx.fillStyle='#8f8f90';
-      roundRect(paddle.x,paddle.y+55,PAD_W,10,6); ctx.fill();
+      roundRect(paddle.x,paddle.y+55,PAD_W,10,4); ctx.fill();
     }
   }
 }
@@ -762,9 +716,9 @@ function setLang(lang) {
         if (e.target === modal) modal.classList.remove('show');
       });
 
-      /* save to messages.json via GitHub API (token from site-config.json) */
+      /* save to messages.json via GitHub API (token from localStorage) */
       function saveMessage(entry) {
-        var token = (cfg && cfg.write_token) || localStorage.getItem('lichu_write_token');
+        var token = localStorage.getItem('lichu_write_token');
         if (!token) {
           console.warn('[lichu] write_token not set — message not saved to admin. Set it in admin settings.');
           return;
@@ -782,7 +736,7 @@ function setLang(lang) {
             if (f && f.content) {
               try {
                 var clean = f.content.split('').filter(function(c){ return c !== '\r' && c !== '\n' && c !== ' '; }).join('');
-                msgs = JSON.parse(decodeURIComponent(escape(atob(clean))));
+                msgs = JSON.parse(atob(clean));
               } catch(e){}
             }
             msgs.unshift(entry);
