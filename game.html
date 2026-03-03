@@ -762,9 +762,9 @@ function setLang(lang) {
         if (e.target === modal) modal.classList.remove('show');
       });
 
-      /* save to messages.json via GitHub API (token from localStorage) */
+      /* save to messages.json via GitHub API (token from site-config.json) */
       function saveMessage(entry) {
-        var token = localStorage.getItem('lichu_write_token');
+        var token = (cfg && cfg.write_token) || localStorage.getItem('lichu_write_token');
         if (!token) {
           console.warn('[lichu] write_token not set — message not saved to admin. Set it in admin settings.');
           return;
