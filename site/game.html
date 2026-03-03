@@ -167,6 +167,23 @@
       transition: opacity 0.3s, transform 0.3s;
     }
     .life-dot.lost { opacity: 0.15; transform: scale(0.7); }
+
+    /* ── LANG TOGGLE ── */
+    #lang-toggle {
+      position: absolute; bottom: 40px; left: 30px;
+      display: flex; align-items: center; gap: 0;
+      border: 1px solid rgba(36,36,36,0.22);
+      border-radius: 4px; overflow: hidden;
+      font-family: 'Inter', sans-serif; z-index: 30;
+    }
+    #lang-toggle button {
+      background: none; border: none; padding: 5px 10px;
+      font-size: 13px; font-weight: 500; color: #98999c;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+    #lang-toggle button.active { background: #242424; color: #f5f5f5; }
+    #lang-toggle button:hover:not(.active) { background: rgba(0,0,0,0.07); }
   </style>
 </head>
 <body>
@@ -186,16 +203,21 @@
     <div id="sidebar">
       <div class="sb-profile">
         <p class="sb-name">Li Chu</p>
-        <p class="sb-job">UX UI Designer</p>
+        <p class="sb-job" data-en="UX UI Designer" data-ru="UX UI Дизайнер">UX UI Designer</p>
       </div>
       <nav id="nav" class="show">
-        <a href="game.html">About</a>
-        <a href="project-01.html">Project 1</a>
-        <a href="project-02.html">Project 2</a>
-        <a href="project-03.html">Project 3</a>
-        <a href="project-04.html">Project 4</a>
-        <a href="project-05.html">Project 5</a>
+        <a href="game.html" data-en="About" data-ru="Обо мне">About</a>
+        <a href="project-01.html" data-en="Project 1" data-ru="Проект 1">Project 1</a>
+        <a href="project-02.html" data-en="Project 2" data-ru="Проект 2">Project 2</a>
+        <a href="project-03.html" data-en="Project 3" data-ru="Проект 3">Project 3</a>
+        <a href="project-04.html" data-en="Project 4" data-ru="Проект 4">Project 4</a>
+        <a href="project-05.html" data-en="Project 5" data-ru="Проект 5">Project 5</a>
       </nav>
+      <!-- Lang toggle -->
+      <div id="lang-toggle">
+        <button id="lang-en" class="active" onclick="setLang('en')">EN</button>
+        <button id="lang-ru" onclick="setLang('ru')">RU</button>
+      </div>
       <div class="sb-contacts">
         <div class="sb-contacts-row">
           <a class="sb-icon-btn" href="https://t.me/choowie" target="_blank" title="Telegram">
@@ -227,21 +249,21 @@
       <div id="modal-go">
         <div class="go-box">
           <div class="go-inner">
-            <p class="go-title">Game over!</p>
-            <button id="play-again-btn" style="filter:url(#noiseF)"><span>Play again</span></button>
+            <p class="go-title" data-en="Game over!" data-ru="Игра окончена!">Game over!</p>
+            <button id="play-again-btn" style="filter:url(#noiseF)"><span data-en="Play again" data-ru="Ещё раз">Play again</span></button>
           </div>
         </div>
       </div>
       <div id="modal-ct">
         <div class="ct-box">
           <button class="ct-close" id="ct-close">✕</button>
-          <span class="ct-label">Contact</span>
-          <p class="ct-title">Get in touch</p>
-          <input type="text" placeholder="Name">
-          <input type="email" placeholder="Email">
-          <textarea placeholder="Message…"></textarea>
+          <span class="ct-label" data-en="Contact" data-ru="Контакт">Contact</span>
+          <p class="ct-title" data-en="Get in touch" data-ru="Написать мне">Get in touch</p>
+          <input type="text" id="ct-name" placeholder="Name" data-ph-en="Name" data-ph-ru="Имя">
+          <input type="email" id="ct-email" placeholder="Email">
+          <textarea id="ct-msg" placeholder="Message…" data-ph-en="Message…" data-ph-ru="Сообщение…"></textarea>
           <div class="ct-row">
-            <button class="ct-send" id="ct-send">Send <span class="arr">→</span></button>
+            <button class="ct-send" id="ct-send" data-en="Send" data-ru="Отправить"><span class="btn-text">Send</span> <span class="arr">→</span></button>
           </div>
         </div>
       </div>
@@ -609,6 +631,32 @@ updateLivesUI();
 initCards(); initPhoto();
 setTimeout(()=>{cardsOn=true;},500);
 requestAnimationFrame(loop);
+/* ── LANG ── */
+function setLang(lang) {
+  localStorage.setItem('lichu_lang', lang);
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
+  /* text nodes */
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    var t = el.getAttribute('data-' + lang);
+    if (!t) return;
+    /* for send button keep the arrow span */
+    var btn = el.querySelector('.btn-text');
+    if (btn) { btn.textContent = t; }
+    else { el.textContent = t; }
+  });
+  /* placeholders */
+  document.querySelectorAll('[data-ph-en]').forEach(function(el) {
+    el.placeholder = el.getAttribute('data-ph-' + lang) || el.placeholder;
+  });
+  /* update send success/error messages for current lang */
+  window._LICHU_LANG = lang;
+}
+(function(){
+  var saved = localStorage.getItem('lichu_lang') || 'en';
+  setLang(saved);
+})();
+
 </script>
 
 <!-- ── Contact form + config loader ─────────────────────────────── -->
@@ -667,37 +715,46 @@ requestAnimationFrame(loop);
         var emailVal = box.querySelector('input[type="email"]').value.trim();
         var msgVal   = box.querySelector('textarea').value.trim();
 
+        var lang = window._LICHU_LANG || 'en';
+        var T = {
+          empty:   { en: 'Fill in all fields',  ru: 'Заполните все поля'    },
+          title:   { en: 'Get in touch',         ru: 'Написать мне'          },
+          sending: { en: 'Sending…',        ru: 'Отправляем…'      },
+          sent:    { en: 'Sent ✓',          ru: 'Отправлено ✓'     },
+          error:   { en: 'Error — try again', ru: 'Ошибка — попробуйте ещё' },
+          send:    { en: 'Send',                 ru: 'Отправить'             }
+        };
         if (!nameVal || !emailVal || !msgVal) {
-          titleEl.textContent = 'Fill in all fields';
-          setTimeout(function(){ titleEl.textContent = 'Get in touch'; }, 2000);
+          titleEl.textContent = T.empty[lang];
+          setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 2000);
           return;
         }
 
-        newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
+        newBtn.innerHTML = T.sending[lang] + ' <span class="arr">→</span>';
         newBtn.disabled = true;
 
         function onSuccess() {
           var now = new Date();
           saveMessage({ name: nameVal, email: emailVal, message: msgVal,
             date: now.toLocaleDateString('ru-RU'), time: now.toLocaleTimeString('ru-RU'), iso: now.toISOString() });
-          titleEl.textContent = 'Sent ✓';
+          titleEl.textContent = T.sent[lang];
           setTimeout(function(){
             modal.classList.remove('show');
-            titleEl.textContent = 'Get in touch';
+            titleEl.textContent = T.title[lang];
             box.querySelector('input[type="text"]').value  = '';
             box.querySelector('input[type="email"]').value = '';
             box.querySelector('textarea').value            = '';
-            newBtn.innerHTML = 'Send <span class="arr">→</span>';
+            newBtn.innerHTML = '<span class="btn-text">' + T.send[lang] + '</span> <span class="arr">→</span>';
             newBtn.disabled  = false;
           }, 1800);
         }
 
         function onError(err) {
           console.error('Send error:', err);
-          titleEl.textContent = 'Error — try again';
-          newBtn.innerHTML = 'Send <span class="arr">→</span>';
+          titleEl.textContent = T.error[lang];
+          newBtn.innerHTML = '<span class="btn-text">' + T.send[lang] + '</span> <span class="arr">→</span>';
           newBtn.disabled  = false;
-          setTimeout(function(){ titleEl.textContent = 'Get in touch'; }, 3000);
+          setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 3000);
         }
 
         if (formspree) {
