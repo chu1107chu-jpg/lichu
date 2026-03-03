@@ -72,7 +72,7 @@
     }
     #photo-el .ph-ov { position: absolute; inset: 0; background: rgba(0,0,0,0.2); }
 
-    #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: none; }
+    #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
 
 
 
@@ -243,7 +243,32 @@
   </div>
 
 <script>
-
+/* ── Flying-cards custom text (set via admin) ── */
+window.LICHU_CARD_TEXTS = null; /* set by config fetch */
+</script>
+<script>
+/* ── Always keep nav visible — patch classList.remove on #nav ── */
+(function () {
+  var nav = document.getElementById('nav');
+  var sb  = document.getElementById('sb-contact');
+  if (!nav) return;
+  var _orig = nav.classList.remove.bind(nav.classList);
+  nav.classList.remove = function () {
+    // block hiding the nav; allow other class removals
+    var args = Array.prototype.filter.call(arguments, function(c){ return c !== 'show'; });
+    if (args.length) _orig.apply(null, args);
+  };
+  // keep sb-contact visible too
+  if (sb) {
+    var _origSb = sb.classList.remove.bind(sb.classList);
+    sb.classList.remove = function () {
+      var args = Array.prototype.filter.call(arguments, function(c){ return c !== 'show'; });
+      if (args.length) _origSb.apply(null, args);
+    };
+  }
+})();
+</script>
+<script>
 /* ── CONSTANTS ── */
 const SIDEBAR_W = 260;
 const CARD_W    = 82,   CARD_H   = 38;   /* Figma: ~82x38, padding 10px, 15px font */
@@ -338,16 +363,17 @@ function loseLife(){
 /* ── INIT CARDS ── */
 function initCards(){
   cards=[];
-  const DEFAULT_TEXTS=['Agile','JTBD','Persona','CJM','UserFlow','UseCase','ERD'];
-  const TEXTS=(window.LICHU_CARD_TEXTS&&window.LICHU_CARD_TEXTS.length>=7)
-    ?window.LICHU_CARD_TEXTS:DEFAULT_TEXTS;
+  const DEFAULT_TEXTS=['Agile','JTBD','Persona','CJM','User Flow','Use Case','ERD'];
+  const TEXTS=(window.LICHU_CARD_TEXTS&&window.LICHU_CARD_TEXTS.length>=7)?window.LICHU_CARD_TEXTS:DEFAULT_TEXTS;
+  /* Card 0: FALLING — always falls down, respawns from top */
   cards.push({
-    x:W*0.3+Math.random()*W*0.4-CARD_W/2,
-    y:-CARD_H-20,
+    x: W*0.3+Math.random()*W*0.4-CARD_W/2,
+    y: -CARD_H-20,
     vx:(Math.random()-0.5)*FALL_VX*2,
     vy:50+Math.random()*40,
     w:CARD_W,h:CARD_H,flash:0,falling:true,text:TEXTS[0]
   });
+  /* Cards 1-6: CHAOTIC — bounce all 4 walls */
   const xs=[0.12,0.35,0.58,0.72,0.88,0.22];
   const ys=[0.15,0.60,0.30,0.78,0.48,0.88];
   for(let i=0;i<6;i++){
@@ -413,7 +439,7 @@ function update(dt){
           const rel=(c.x+c.w/2-(paddle.x+PAD_W/2))/(PAD_W/2);
           c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#252426','#ffffff']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff']);
           beep(760+Math.random()*120,0.08);
         }
         if(c.y>H+12){
@@ -446,7 +472,7 @@ function update(dt){
           c.vx=rel*CARD_SPD*1.2+(Math.random()-0.5)*50;
           if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#252426','#ffffff','#98999c']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff','#ff2fda']);
           beep(820+Math.random()*140,0.07);
         }
       }
@@ -557,8 +583,8 @@ function resize(){
 document.addEventListener('mousemove',e=>{ mouseX=e.clientX-SIDEBAR_W; });
 window.addEventListener('resize',()=>{ resize(); paddle.y=H-PAD_H-16; });
 document.getElementById('play-again-btn').addEventListener('click',resetGame);
-document.getElementById('ct-cancel').addEventListener('click',()=>modalCT.classList.remove('show'));
-document.getElementById('ct-send').addEventListener('click',()=>modalCT.classList.remove('show'));
+var ctCloseEl = document.getElementById('ct-close');
+if (ctCloseEl) ctCloseEl.addEventListener('click',()=>modalCT.classList.remove('show'));
 modalCT.addEventListener('click',e=>{ if(e.target===modalCT) modalCT.classList.remove('show'); });
 
 /* ── START ── */
@@ -568,10 +594,9 @@ updateLivesUI();
 initCards(); initPhoto();
 setTimeout(()=>{cardsOn=true;},500);
 requestAnimationFrame(loop);
-
 </script>
 
-<!-- Config + Contact form -->
+<!-- ── Contact form + config loader ─────────────────────────────── -->
 <script>
 (function () {
   fetch('site-config.json?_=' + Date.now())
@@ -579,103 +604,78 @@ requestAnimationFrame(loop);
     .catch(function(){ return {}; })
     .then(function(cfg){
       window._LICHU_CFG = cfg;
+      // Load custom card text for flying frames
+      if (cfg.card_texts&&cfg.card_texts.length>=7){window.LICHU_CARD_TEXTS=cfg.card_texts;if(typeof initCards==='function')initCards();}
+      // Close button
+  var closeBtn = document.getElementById('ct-close');
+  if (closeBtn) closeBtn.addEventListener('click', function () {
+    document.getElementById('modal-ct').classList.remove('show');
+  });
 
-      // Apply card texts and reload cards
-      if (cfg.card_texts && cfg.card_texts.length >= 7) {
-        window.LICHU_CARD_TEXTS = cfg.card_texts;
-        if (typeof initCards === 'function') initCards();
+  initContactForm();
+    });
+    var formspree = cfg.formspree_endpoint || '';
+    var toEmail   = cfg.email || 'lapkazarapka8752@gmail.com';
+
+    // Clone button to remove obfuscated listeners
+    var oldBtn = document.getElementById('ct-send');
+    if (!oldBtn) return;
+    var newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+    newBtn.addEventListener('click', function () {
+      var box      = document.querySelector('.ct-box');
+      var titleEl  = box.querySelector('.ct-title');
+      var nameVal  = box.querySelector('input[type="text"]').value.trim();
+      var emailVal = box.querySelector('input[type="email"]').value.trim();
+      var msgVal   = box.querySelector('textarea').value.trim();
+
+      if (!nameVal || !emailVal || !msgVal) {
+        titleEl.textContent = 'Fill in all fields ✱';
+        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 2000);
+        return;
       }
 
-      // Close button
-      var closeBtn = document.getElementById('ct-close');
-      if (closeBtn) closeBtn.addEventListener('click', function () {
-        document.getElementById('modal-ct').classList.remove('show');
-      });
+      newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
+      newBtn.disabled = true;
 
-      // Contact form
-      var formspree  = cfg.formspree_endpoint || '';
-      var toEmail    = cfg.email || 'lapkazarapka8752@gmail.com';
-      var writeToken = cfg.write_token || '';
-
-      var oldBtn = document.getElementById('ct-send');
-      if (!oldBtn) return;
-      var newBtn = oldBtn.cloneNode(true);
-      oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-
-      newBtn.addEventListener('click', function () {
-        var box      = document.querySelector('.ct-box');
-        var titleEl  = box.querySelector('.ct-title');
-        var nameVal  = box.querySelector('input[type="text"]').value.trim();
-        var emailVal = box.querySelector('input[type="email"]').value.trim();
-        var msgVal   = box.querySelector('textarea').value.trim();
-
-        if (!nameVal || !emailVal || !msgVal) {
-          titleEl.textContent = 'Fill in all fields';
-          setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 2000);
-          return;
-        }
-
-        newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
-        newBtn.disabled = true;
-
-        function saveMessage(name, email, message) {
-          if (!writeToken) return;
-          var API = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
-          var headers = { 'Authorization': 'Bearer ' + writeToken, 'Content-Type': 'application/json' };
-          fetch(API + '/contents/messages.json?ref=gh-pages', { headers: headers })
-            .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
-            .then(function(f){
-              var msgs = [];
-              if (f && f.content) { try { msgs = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){} }
-              msgs.push({ name: name, email: email, message: message, date: new Date().toISOString() });
-              var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(msgs, null, 2))));
-              var body = { message: 'msg: contact form submission', content: b64, branch: 'gh-pages' };
-              if (f && f.sha) body.sha = f.sha;
-              return fetch(API + '/contents/messages.json', { method: 'PUT', headers: headers, body: JSON.stringify(body) });
-            }).catch(function(){});
-        }
-
-        function onSuccess() {
-          saveMessage(nameVal, emailVal, msgVal);
-          titleEl.textContent = 'Sent ✓';
-          setTimeout(function () {
-            document.getElementById('modal-ct').classList.remove('show');
-            titleEl.textContent = 'Get in touch';
-            box.querySelector('input[type="text"]').value  = '';
-            box.querySelector('input[type="email"]').value = '';
-            box.querySelector('textarea').value            = '';
-            newBtn.innerHTML = 'Send <span class="arr">→</span>';
-            newBtn.disabled  = false;
-          }, 1800);
-        }
-
-        function onError() {
-          titleEl.textContent = 'Error — try again';
-          newBtn.innerHTML = 'Send <span class="arr">→</span>';
-          newBtn.disabled  = false;
-          setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 3000);
-        }
-
-        if (formspree) {
-          fetch(formspree, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
-          }).then(function(r){ return r.ok ? onSuccess() : onError(); }).catch(onError);
-        } else {
-          var sub  = encodeURIComponent('Portfolio contact: ' + nameVal);
-          var bod  = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
-          window.open('mailto:' + toEmail + '?subject=' + sub + '&body=' + bod);
-          onSuccess();
-        }
-      });
-
-      // Close popup on backdrop click
-      document.getElementById('modal-ct').addEventListener('click', function(e){
-        if (e.target === document.getElementById('modal-ct'))
+      function onSuccess() {
+        titleEl.textContent = 'Sent ✓';
+        setTimeout(function () {
           document.getElementById('modal-ct').classList.remove('show');
-      });
+          titleEl.textContent = 'Get in touch';
+          box.querySelector('input[type="text"]').value  = '';
+          box.querySelector('input[type="email"]').value = '';
+          box.querySelector('textarea').value            = '';
+          newBtn.innerHTML = 'Send <span class="arr">→</span>';
+          newBtn.disabled    = false;
+        }, 1800);
+      }
+
+      function onError() {
+        titleEl.textContent = 'Error — try again';
+        newBtn.innerHTML  = 'Send <span class="arr">→</span>';
+        newBtn.disabled     = false;
+        setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 3000);
+      }
+
+      if (formspree) {
+        fetch(formspree, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
+        }).then(function(r){ return r.ok ? onSuccess() : onError(); }).catch(onError);
+      } else {
+        // Fallback: mailto
+        var sub  = encodeURIComponent('Portfolio contact: ' + nameVal);
+        var body = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
+        window.open('mailto:' + toEmail + '?subject=' + sub + '&body=' + body);
+        onSuccess();
+      }
     });
+  }
+
+  initContactForm();
 })();
 </script>
 </body>
