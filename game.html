@@ -165,7 +165,7 @@
 
     /* ── Lives ── */
     #lives-display {
-      position: absolute; top: 18px; right: 18px;
+      position: absolute; top: 18px; left: 18px;
       display: flex; gap: 8px; z-index: 20; pointer-events: none;
     }
     .life-dot {
@@ -176,20 +176,20 @@
 
     /* ── LANG TOGGLE ── */
     #lang-toggle {
-      position: absolute; bottom: 40px; left: 30px;
+      position: absolute; top: 18px; right: 18px;
       display: flex; align-items: center; gap: 0;
-      border: 1px solid rgba(36,36,36,0.22);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 4px; overflow: hidden;
       font-family: 'Inter', sans-serif; z-index: 30;
     }
     #lang-toggle button {
       background: none; border: none; padding: 5px 10px;
-      font-size: 13px; font-weight: 500; color: #98999c;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45);
       cursor: pointer; transition: background 0.15s, color 0.15s;
       font-family: inherit;
     }
-    #lang-toggle button.active { background: #242424; color: #f5f5f5; }
-    #lang-toggle button:hover:not(.active) { background: rgba(0,0,0,0.07); }
+    #lang-toggle button.active { background: rgba(255,255,255,0.15); color: #fff; }
+    #lang-toggle button:hover:not(.active) { background: rgba(255,255,255,0.08); }
 
     /* ── EMAIL ERROR ── */
     @keyframes ct-shake {
@@ -230,11 +230,6 @@
         <a href="project-04.html" data-en="Project 4" data-ru="Проект 4">Project 4</a>
         <a href="project-05.html" data-en="Project 5" data-ru="Проект 5">Project 5</a>
       </nav>
-      <!-- Lang toggle -->
-      <div id="lang-toggle">
-        <button id="lang-en" class="active" onclick="setLang('en')">EN</button>
-        <button id="lang-ru" onclick="setLang('ru')">RU</button>
-      </div>
       <div class="sb-contacts">
         <div class="sb-contacts-row">
           <a class="sb-icon-btn" href="https://t.me/choowie" target="_blank" title="Telegram">
@@ -255,6 +250,10 @@
       <div id="photo-el">
         <img src="https://www.figma.com/api/mcp/asset/57af1af0-251e-488c-9f81-8cf2bd9dcf69" alt="Li Chu">
         <div class="ph-ov"></div>
+      </div>
+      <div id="lang-toggle">
+        <button id="lang-en" class="active" onclick="setLang('en')">EN</button>
+        <button id="lang-ru" onclick="setLang('ru')">RU</button>
       </div>
       <div id="lives-display">
         <span class="life-dot" id="life0">♥</span>
