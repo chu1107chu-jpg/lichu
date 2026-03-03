@@ -1,0 +1,41 @@
+{
+  "formspree_endpoint": "https://formspree.io/f/xnjbkpro",
+  "email": "lapkazarapka8752@gmail.com",
+  "card_texts": [
+    "Agile",
+    "JTBD",
+    "Person",
+    "CJM",
+    "UserFlow",
+    "UseCase",
+    "ERD"
+  ],
+  "start_title": "",
+  "start_sub": "",
+  "nav": [
+    {
+      "label": "About",
+      "href": "game.html"
+    },
+    {
+      "label": "Project 1",
+      "href": "project-01.html"
+    },
+    {
+      "label": "Project 2",
+      "href": "project-02.html"
+    },
+    {
+      "label": "Project 3",
+      "href": "project-03.html"
+    },
+    {
+      "label": "Project 4",
+      "href": "project-04.html"
+    },
+    {
+      "label": "Project 5",
+      "href": "project-05.html"
+    }
+  ]
+}
