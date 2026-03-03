@@ -819,7 +819,7 @@ async function loadNav() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
       if (cfg.nav) navItems = cfg.nav;
     }
   } catch {}
@@ -869,7 +869,7 @@ async function loadGameSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
       const ct=cfg.card_texts||[];for(let i=0;i<7;i++){var el=$('set-card-text-'+i);if(el)el.value=ct[i]||'';}
       $('set-start-title').value = cfg.start_title  || '';
       $('set-start-sub').value   = cfg.start_sub    || '';
@@ -897,7 +897,7 @@ async function loadSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, '')))));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
       // write_token stored in localStorage only
       const lsToken = localStorage.getItem('lichu_write_token');
@@ -936,7 +936,7 @@ async function loadMessages() {
       return;
     }
     let msgs = [];
-    try { msgs = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+    try { msgs = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, ''))))); } catch {}
     if (!msgs.length) {
       list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет.</p>';
       return;
@@ -983,7 +983,7 @@ async function saveConfig(partial) {
   const f = await ghGetContents('site/site-config.json');
   let existing = {};
   if (f) {
-    try { existing = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+    try { existing = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g, ''))))); } catch {}
   }
   const merged = { ...existing, ...partial };
   const b64 = strToB64(JSON.stringify(merged, null, 2));
