@@ -352,7 +352,7 @@
           <div class="form-group">
             <label>Messages Write Token (GitHub fine-grained token)</label>
             <input type="password" id="set-write-token" placeholder="github_pat_..." autocomplete="off">
-            <div class="form-hint">Токен с правом <code>contents: write</code> для репозитория lichu. Нужен чтобы сообщения из формы сохранялись в Messages. Создай на <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a> (Fine-grained, только этот repo, Contents: Read &amp; Write).</div>
+            <div class="form-hint">Хранится только в браузере (localStorage), в репо не сохраняется. Создай на <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a> → Fine-grained → репо lichu → Contents: Read &amp; Write.</div>
           </div>
 
           <button class="btn-primary" id="save-settings-btn">
@@ -899,7 +899,9 @@ async function loadSettings() {
     if (f) {
       const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
-      if (cfg.write_token) $('set-write-token').value = cfg.write_token;
+      // write_token stored in localStorage only
+      const lsToken = localStorage.getItem('lichu_write_token');
+      if (lsToken) $('set-write-token').value = lsToken;
       if (cfg.email) $('set-email').value = cfg.email;
     }
   } catch {}
@@ -909,10 +911,13 @@ $('save-settings-btn').addEventListener('click', async () => {
   const btn = $('save-settings-btn');
   setLoading(btn, true);
   try {
+    // save write_token to localStorage only (never to public site-config.json)
+    const wt = $('set-write-token').value.trim();
+    if (wt) localStorage.setItem('lichu_write_token', wt);
+    else    localStorage.removeItem('lichu_write_token');
     await saveConfig({
       formspree_endpoint: $('set-formspree').value.trim(),
       email: $('set-email').value.trim(),
-      write_token: $('set-write-token').value.trim(),
     });
     toast('Настройки сохранены ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
