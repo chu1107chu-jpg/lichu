@@ -141,6 +141,10 @@
     .ct-box input:focus, .ct-box textarea:focus { border-color: rgba(255,255,255,0.45); }
     .ct-box input::placeholder, .ct-box textarea::placeholder { color: rgba(255,255,255,0.22); }
     .ct-box textarea { height: 80px; resize: none; }
+    .ct-box input:-webkit-autofill,
+    .ct-box input:-webkit-autofill:focus {
+      caret-color: #f0f0f0;
+    }
     .ct-row { display: flex; align-items: center; justify-content: flex-end; padding-top: 28px; gap: 12px; }
 
     .ct-send {
