@@ -632,24 +632,22 @@ requestAnimationFrame(loop);
       if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('show'); });
       if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('show'); });
 
-      /* ── Save to messages.json on gh-pages via GitHub API ── */
+      /* ── Save to messages.json via GitHub API using localStorage token ── */
       function saveMessage(entry) {
-        var token = cfg.write_token;
-        if (!token) return;
+        var token = localStorage.getItem('lichu_write_token');
+        if (!token) return; /* no token = skip silently */
         var API = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
-        var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-        fetch(API + '/contents/messages.json?ref=gh-pages', { headers: headers })
+        var hdrs = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+        fetch(API + '/contents/messages.json?ref=gh-pages', { headers: hdrs })
           .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
           .then(function(f){
             var msgs = [];
-            if (f && f.content) {
-              try { msgs = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){}
-            }
+            if (f && f.content) { try { msgs = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){} }
             msgs.unshift(entry);
             var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(msgs, null, 2))));
-            var body = { message: 'msg: contact form submission', content: b64, branch: 'gh-pages' };
+            var body = { message: 'msg: contact form', content: b64, branch: 'gh-pages' };
             if (f && f.sha) body.sha = f.sha;
-            return fetch(API + '/contents/messages.json', { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+            return fetch(API + '/contents/messages.json', { method: 'PUT', headers: hdrs, body: JSON.stringify(body) });
           }).catch(function(){});
       }
 

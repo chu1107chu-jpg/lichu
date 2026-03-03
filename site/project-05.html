@@ -3,46 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1280">
-  <title>Project 5 | Li Chu</title>
+  <title>SatelliteSoft Dashboard | Li Chu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, auto;
+      --pink: #ff2fda;
+      --ink: #242424;
+      --ink2: #5c5c5c;
+      --ink3: #9c9c9c;
+      --bg: #fff;
+      --bg2: #f7f7f7;
+      --line: #e8e8e8;
     }
     html, body { height: 100%; cursor: var(--cursor); font-family: 'Inter', sans-serif; }
-    body { display: flex; background: #fff; }
-    a { cursor: var(--cursor); }
+    body { display: flex; background: var(--bg); color: var(--ink); }
+    a { cursor: var(--cursor); color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
     .sidebar {
-      width: 260px; min-width: 260px;
-      background: #dcdcdc;
+      width: 260px; min-width: 260px; background: #dcdcdc;
       height: 100vh; position: sticky; top: 0;
       display: flex; flex-direction: column;
-      padding: 40px 32px; gap: 8px;
-      overflow-y: auto; z-index: 10;
+      padding: 40px 32px; gap: 8px; overflow-y: auto; z-index: 10;
     }
     .nav-link {
       font-size: 18px; font-weight: 500;
       color: #242424; text-decoration: none; padding: 4px 0;
       transition: color .15s; line-height: 1.4;
     }
-    .nav-link:hover, .nav-link.active { color: #ff2fda; }
+    .nav-link:hover, .nav-link.active { color: var(--pink); }
     .nav-divider { height: 1px; background: #c4c4c4; margin: 8px 0; }
 
-    .main { flex: 1; overflow-x: hidden; overflow-y: auto; background: #fff; }
-    .sections { width: 1280px; display: flex; flex-direction: column; }
-    .section-img { display: block; width: 1280px; }
+    .main { flex: 1; overflow-x: hidden; overflow-y: auto; }
+    .page { width: 1280px; }
 
-    .placeholder {
-      width: 1280px; height: 640px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 16px;
-      background: #f7f7f7;
+    .sect { padding: 80px 120px; border-bottom: 1px solid var(--line); }
+    .sect-alt { background: var(--bg2); }
+    .sect-dark { background: var(--ink); color: #fff; }
+    .sect-dark .sect-label { color: rgba(255,255,255,.4); }
+
+    .sect-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--ink3); margin-bottom: 24px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .placeholder-title { font-size: 32px; font-weight: 700; color: #c8c8c8; }
-    .placeholder-sub   { font-size: 16px; font-weight: 400; color: #c0c0c0; }
+    .sect-label::before { content:''; display:block; width:20px; height:1px; background:currentColor; }
+
+    .sect-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 44px; font-weight: 700; line-height: 1.1;
+      letter-spacing: -.02em; margin-bottom: 32px;
+    }
+    .sect-title-sm {
+      font-family: 'Space Mono', monospace;
+      font-size: 28px; font-weight: 700; line-height: 1.2;
+      letter-spacing: -.01em; margin-bottom: 20px;
+    }
+    .body-lg { font-size: 18px; line-height: 1.7; color: var(--ink2); max-width: 680px; }
+    .body-md { font-size: 16px; line-height: 1.7; color: var(--ink2); }
+
+    /* HERO */
+    .hero { padding: 100px 120px 80px; border-bottom: 1px solid var(--line); }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 11px; font-weight: 500; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--ink3); margin-bottom: 32px;
+    }
+    .hero-eyebrow-dot { width: 6px; height: 6px; background: var(--ink3); }
+    .hero-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 80px; font-weight: 700; line-height: 1;
+      letter-spacing: -.02em; margin-bottom: 40px;
+    }
+    .hero-meta {
+      display: grid; grid-template-columns: repeat(4, auto) 1fr;
+      border-top: 1px solid var(--line); padding-top: 32px;
+    }
+    .hero-meta-item { padding-right: 48px; border-right: 1px solid var(--line); margin-right: 48px; }
+    .hero-meta-item:last-child { border-right: none; margin-right: 0; }
+    .hero-meta-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--ink3); margin-bottom: 6px;
+    }
+    .hero-meta-value { font-size: 15px; font-weight: 500; }
+
+    /* METRICS */
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); }
+    .metric { padding: 48px 40px; border-right: 1px solid var(--line); }
+    .metric:last-child { border-right: none; }
+    .metric-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 52px; font-weight: 700; line-height: 1;
+      letter-spacing: -.03em; margin-bottom: 12px;
+    }
+    .metric-num span { color: var(--pink); }
+    .metric-desc { font-size: 14px; line-height: 1.6; color: var(--ink2); }
+
+    /* TWO / THREE COLS */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+
+    /* PROBLEM GRID */
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
+    .problem-card { background: var(--bg); padding: 36px 32px; }
+    .problem-card-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--pink); margin-bottom: 12px; }
+    .problem-card-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .problem-card p { font-size: 14px; line-height: 1.65; color: var(--ink2); }
+
+    /* RESEARCH */
+    .research-card { border-top: 2px solid var(--ink); padding-top: 24px; }
+    .research-card-num { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--ink3); margin-bottom: 12px; }
+    .research-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+    .research-card p { font-size: 14px; line-height: 1.65; color: var(--ink2); }
+
+    /* QUOTE */
+    .quote-block { border-left: 3px solid var(--pink); padding: 24px 32px; background: var(--bg2); margin: 40px 0; }
+    .quote-text { font-size: 20px; font-weight: 500; line-height: 1.5; font-style: italic; margin-bottom: 12px; }
+    .quote-author { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
+
+    /* INSIGHTS */
+    .insight-list { list-style: none; }
+    .insight-item { display: flex; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+    .insight-item:first-child { border-top: 1px solid var(--line); }
+    .insight-num { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--ink3); min-width: 40px; margin-top: 2px; }
+    .insight-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .insight-body p { font-size: 14px; line-height: 1.65; color: var(--ink2); }
+
+    /* PROCESS */
+    .process-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 48px; }
+    .process-step { background: var(--bg); padding: 32px 28px; }
+    .step-num { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--ink3); margin-bottom: 16px; }
+    .step-name { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .step-desc { font-size: 13px; line-height: 1.6; color: var(--ink2); }
+
+    /* DECISIONS */
+    .decision-item { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 2px; }
+    .decision-before, .decision-after { background: var(--bg); padding: 28px 32px; }
+    .decision-tag { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; margin-bottom: 12px; }
+    .tag-before { background: #f0f0f0; color: var(--ink3); }
+    .tag-after { background: var(--ink); color: #fff; }
+    .decision-before p, .decision-after p { font-size: 14px; line-height: 1.65; color: var(--ink2); }
+    .decision-after p strong { color: var(--ink); }
+
+    /* OUTCOME */
+    .outcome-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
+    .outcome-card { padding: 28px; background: #2a2a2a; border-top: 3px solid var(--ink); }
+    .outcome-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #fff; }
+    .outcome-card p { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.45); }
+
+    /* MOCKUP */
+    .mockup-wrap { background: #1a1a1a; border: 1px solid #333; overflow: hidden; margin-top: 32px; }
+    .mockup-bar { background: #111; padding: 12px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #2a2a2a; }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-url { flex: 1; background: #2a2a2a; border-radius: 4px; padding: 5px 12px; font-size: 11px; color: #666; font-family: 'Space Mono', monospace; }
+    .mockup-body { display: grid; grid-template-columns: 180px 1fr 240px; height: 420px; font-size: 11px; }
+    .mockup-sidebar { background: #111; border-right: 1px solid #2a2a2a; padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .mkb { font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #2a2a2a; }
+    .mksat { padding: 6px 8px; border-radius: 3px; font-size: 11px; color: #888; }
+    .mksat.on { background: #242424; color: #fff; }
+    .mockup-center { padding: 20px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+    .mkpanel { background: #111; border: 1px solid #2a2a2a; border-radius: 4px; padding: 14px 16px; }
+    .mkptitle { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #666; margin-bottom: 10px; }
+    .mksrow { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .mksl { color: #888; width: 50px; }
+    .mkst { flex: 1; height: 2px; background: #333; }
+    .mkstf { height: 100%; background: #fff; }
+    .mksv { color: #fff; width: 50px; text-align: right; font-family: 'Space Mono', monospace; }
+    .mksbrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    .mksb { padding: 5px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; text-align: center; }
+    .ok { background: #0d2d1c; color: #22c55e; }
+    .wn { background: #2d1a0d; color: #f59e0b; }
+    .er { background: #2d0d0d; color: #ef4444; }
+    .inf { background: #0d1a2d; color: #60a5fa; }
+    .mkchart { height: 55px; display: flex; align-items: flex-end; gap: 3px; }
+    .mkbar { flex: 1; background: #333; border-radius: 1px; }
+    .mkbar.pk { background: #ff2fda; }
+    .mkcrow { display: grid; grid-template-columns: 1fr 48px 72px 64px; gap: 6px; font-size: 10px; color: #aaa; margin-bottom: 6px; align-items: center; }
+    .mkcrow.hd { color: #555; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+    .mockup-right { background: #111; border-left: 1px solid #2a2a2a; padding: 14px 12px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
+    .mkrh { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #555; margin-bottom: 4px; }
+    .mkevt { padding: 9px 12px; background: #1a1a1a; border-radius: 3px; border-left: 2px solid #333; }
+    .mkevt.er { border-left-color: #ef4444; }
+    .mkevt.wn { border-left-color: #f59e0b; }
+    .mkevt.ok { border-left-color: #22c55e; }
+    .mkevt-t { font-size: 9px; color: #555; margin-bottom: 3px; font-family: 'Space Mono', monospace; }
+    .mkevt-m { font-size: 10px; color: #aaa; line-height: 1.4; }
+
+    /* FOOTER */
+    .case-footer { padding: 60px 120px; background: var(--bg2); display: flex; justify-content: space-between; align-items: center; }
+    .case-footer-l { font-size: 14px; color: var(--ink3); }
+    .next-link { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; padding: 14px 24px; background: var(--ink); color: #fff; transition: background .15s; }
+    .next-link:hover { background: var(--pink); }
   </style>
 </head>
 <body>
@@ -57,13 +211,295 @@
     <a href="contact.html" class="nav-link">Contact</a>
   </aside>
 
-  <main class="main">
-    <div class="sections">
-      <div class="placeholder">
-        <div class="placeholder-title">Project 5</div>
-        <div class="placeholder-sub">Coming soon — добавьте изображения через Admin</div>
+  <main class="main"><div class="page">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>Web Dashboard · B2B · Desktop</div>
+      <h1 class="hero-title">SatelliteSoft<br>Dashboard</h1>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><div class="hero-meta-label">Роль</div><div class="hero-meta-value">UX/UI Designer<br>Solo project</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">Период</div><div class="hero-meta-value">3 месяца<br>2024</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">Платформа</div><div class="hero-meta-value">Web · Desktop<br>1920px+</div></div>
+        <div class="hero-meta-item"><div class="hero-meta-label">Инструменты</div><div class="hero-meta-value">Figma · FigJam<br>Miro · Notion</div></div>
       </div>
+    </section>
+
+    <!-- INTRO -->
+    <section class="sect">
+      <div class="two-col">
+        <div>
+          <div class="sect-label">О проекте</div>
+          <h2 class="sect-title">Реальное время.<br>Жёсткие условия.</h2>
+          <p class="body-lg">Веб-дашборд для операторов Центра Управления Полётами (ЦУП). Операторы управляют наземными антенными станциями, проводят сеансы связи с космическими аппаратами и отправляют телеметрические команды.</p>
+        </div>
+        <div style="padding-top:60px">
+          <p class="body-md" style="margin-bottom:20px">Специалисты ЦУП — это как диспетчеры в аэропорту, но для спутников. Они работают 24/7 в сменах, отслеживают от 3 до 20 аппаратов одновременно и несут ответственность за целостность орбитальных манёвров.</p>
+          <p class="body-md">До проекта вся работа велась через разрозненные инструменты: Excel для планирования, Telegram для уведомлений, отдельные программы для видео с камер антенн. Ни единой картины, ни истории действий.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <section class="sect" style="padding:0">
+      <div class="metrics">
+        <div class="metric"><div class="metric-num"><span>9</span>/10</div><div class="metric-desc">NPS по итогам 3 месяцев эксплуатации<br>(было ~5/10)</div></div>
+        <div class="metric"><div class="metric-num">−<span>55</span>%</div><div class="metric-desc">Снижение ошибок операторов<br>при выдаче команд КА</div></div>
+        <div class="metric"><div class="metric-num">−<span>40</span>%</div><div class="metric-desc">Сокращение времени на сеанс связи<br>25 → 15 минут</div></div>
+      </div>
+    </section>
+
+    <!-- MOCKUP -->
+    <section class="sect sect-alt">
+      <div class="sect-label">Интерфейс</div>
+      <h2 class="sect-title-sm">Главный экран оператора</h2>
+      <div class="mockup-wrap">
+        <div class="mockup-bar">
+          <div class="mockup-dot" style="background:#ef4444"></div>
+          <div class="mockup-dot" style="background:#f59e0b"></div>
+          <div class="mockup-dot" style="background:#22c55e"></div>
+          <div class="mockup-url">satellitesoft.ru/dashboard — Сеанс активен: КА «Орёл-3»</div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mkb">SatelliteSoft</div>
+            <div class="mksat" style="font-size:10px;color:#555">↳ Все сканеры</div>
+            <div class="mksat">Сканер-1</div>
+            <div class="mksat">Капитания</div>
+            <div class="mksat on">Орёл-3 ●</div>
+            <div class="mksat">Восточный Центр</div>
+            <div class="mksat">Атлас</div>
+            <div class="mksat">Таргет-4(k)</div>
+            <div class="mksat">Небо-3</div>
+            <div class="mksat">Полярная Зима</div>
+            <div class="mksat">Галилео</div>
+            <div style="margin-top:auto;padding-top:12px;border-top:1px solid #2a2a2a;color:#555;font-size:10px">+ Добавить</div>
+          </div>
+          <div class="mockup-center">
+            <div class="mkpanel">
+              <div class="mkptitle">Ориентация антенны</div>
+              <div class="mksrow"><div class="mksl">Азимут</div><div class="mkst"><div class="mkstf" style="width:52%"></div></div><div class="mksv">160°</div></div>
+              <div class="mksrow"><div class="mksl">Угол</div><div class="mkst"><div class="mkstf" style="width:61%"></div></div><div class="mksv">185°</div></div>
+              <div style="display:flex;gap:10px;margin-top:6px;font-size:10px"><span style="color:#888">Мощность сигнала:</span><span style="color:#fff;font-family:'Space Mono',monospace">182 дБм</span></div>
+            </div>
+            <div class="mkpanel">
+              <div class="mkptitle">Телеметрия · принято от КА</div>
+              <div class="mksbrow">
+                <div class="mksb inf">RSSI −62 дБм</div>
+                <div class="mksb wn">SNR 3×10⁻⁶</div>
+                <div class="mksb er">Tx Power 59</div>
+                <div class="mksb ok">Track 0.04°</div>
+              </div>
+              <div class="mkchart">
+                <div class="mkbar" style="height:35%"></div><div class="mkbar" style="height:55%"></div>
+                <div class="mkbar" style="height:40%"></div><div class="mkbar pk" style="height:80%"></div>
+                <div class="mkbar" style="height:60%"></div><div class="mkbar" style="height:45%"></div>
+                <div class="mkbar" style="height:70%"></div><div class="mkbar pk" style="height:90%"></div>
+                <div class="mkbar" style="height:50%"></div><div class="mkbar" style="height:65%"></div>
+                <div class="mkbar" style="height:42%"></div><div class="mkbar pk" style="height:75%"></div>
+              </div>
+            </div>
+            <div class="mkpanel">
+              <div class="mkptitle">Выдача команд КА — Ручной режим</div>
+              <div class="mkcrow hd"><span>Команда</span><span>Тип</span><span>Время</span><span>Статус</span></div>
+              <div class="mkcrow"><span>Включить двигатель</span><span style="color:#666">TC</span><span style="color:#666;font-family:'Space Mono',monospace;font-size:9px">10:10:00</span><span style="color:#22c55e;font-size:9px;font-weight:700">СТАРТ</span></div>
+              <div class="mkcrow"><span>Изменить конфиг. сенсора</span><span style="color:#666">PK</span><span style="color:#666;font-family:'Space Mono',monospace;font-size:9px">10:10:00</span><span style="color:#ef4444;font-size:9px;font-weight:700">ОШИБКА</span></div>
+              <div class="mkcrow"><span>Сдать тип. операцию</span><span style="color:#666">KV</span><span style="color:#666;font-family:'Space Mono',monospace;font-size:9px">10:10:00</span><span style="color:#f59e0b;font-size:9px;font-weight:700">ОЖИДАНИЕ</span></div>
+            </div>
+          </div>
+          <div class="mockup-right">
+            <div class="mkrh">Лог событий</div>
+            <div class="mkevt er"><div class="mkevt-t">25 мая 12:09:02</div><div class="mkevt-m">Ошибка передачи данных.</div></div>
+            <div class="mkevt wn"><div class="mkevt-t">25 мая 12:18:30</div><div class="mkevt-m">Переключение на антенну №2 не завершено.</div></div>
+            <div class="mkevt wn"><div class="mkevt-t">25 мая 12:27:01</div><div class="mkevt-m">Неудачная попытка коррекции орбиты.</div></div>
+            <div class="mkevt ok"><div class="mkevt-t">25 мая 12:36:05</div><div class="mkevt-m">Задержка в получении команд.</div></div>
+            <div class="mkevt ok"><div class="mkevt-t">25 мая 12:45:08</div><div class="mkevt-m">Приём команды подтверждён.</div></div>
+            <div class="mkevt wn"><div class="mkevt-t">25 мая 12:54:00</div><div class="mkevt-m">Нестандартное поведение гироскопов.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="sect">
+      <div class="sect-label">Проблема</div>
+      <h2 class="sect-title">Без единого дашборда<br>операторы тонули в хаосе</h2>
+      <p class="body-lg">Это не был «устаревший дизайн» — это было отсутствие системы. Опытные инженеры тратили до 60% времени сеанса на поиск и агрегацию данных, а не на принятие решений.</p>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-card-label">Фрагментация</div>
+          <div class="problem-card-title">5–7 окон одновременно</div>
+          <p>Excel с расписанием, Telegram для оповещений, отдельный софт для телеметрии, браузер с картой орбит — всё переключалось вручную. Каждое переключение — шанс потерять нить.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-label">Пропускаемые сигналы</div>
+          <div class="problem-card-title">Критические алерты теряются</div>
+          <p>Уведомления об ошибках КА приходили в общий чат вместе с рабочим общением. При нескольких аппаратах параллельно оператор мог не заметить сбой вовремя.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-label">Нет истории</div>
+          <div class="problem-card-title">Нулевой аудит-трейл</div>
+          <p>После каждого сеанса журнал команд существовал только в памяти оператора или в разрозненных заметках. При смене смены критическая информация терялась.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-label">Ручной труд</div>
+          <div class="problem-card-title">Планирование в таблицах</div>
+          <p>Расписание сеансов, расчёт окон связи, назначение антенн — всё вручную в Excel. Обновлялось перед каждой сменой. Ошибки при переносе данных воспринимались как норма.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="sect sect-alt">
+      <div class="sect-label">Исследование</div>
+      <h2 class="sect-title">Поговорила с реальными<br>людьми, чтобы понять их мир</h2>
+      <div class="three-col" style="margin-bottom:56px">
+        <div class="research-card">
+          <div class="research-card-num">01 — Контекстуальные интервью</div>
+          <h4>5 операторов ЦУП, 60–90 мин каждое</h4>
+          <p>Серия глубинных интервью с действующими операторами. Ключевой вопрос: «Покажи, как ты работаешь во время сеанса прямо сейчас». Записывала экран, спрашивала про каждое переключение.</p>
+        </div>
+        <div class="research-card">
+          <div class="research-card-num">02 — Полевое наблюдение</div>
+          <h4>2 реальных сеанса связи, присутствие на месте</h4>
+          <p>Присутствовала в ЦУП во время штатных сеансов. Наблюдала за паттернами работы, фиксировала моменты «застревания» — когда операторы переспрашивали коллег или лезли в чат.</p>
+        </div>
+        <div class="research-card">
+          <div class="research-card-num">03 — Аудит инструментов</div>
+          <h4>Инвентаризация текущего стека</h4>
+          <p>Составила карту всех программ, файлов и каналов коммуникации. Итог: 11 отдельных точек для ввода и получения информации в течение одного сеанса связи.</p>
+        </div>
+      </div>
+      <div class="quote-block">
+        <div class="quote-text">«Когда идёт сеанс, у меня открыто семь окон. Я знаю, где что — но только потому что уже три года так работаю. Новый оператор тратит полгода, чтобы просто не паниковать.»</div>
+        <div class="quote-author">Старший оператор смены · 8 лет опыта</div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS -->
+    <section class="sect">
+      <div class="sect-label">Инсайты</div>
+      <h2 class="sect-title">Что на самом деле<br>происходит во время сеанса</h2>
+      <ul class="insight-list">
+        <li class="insight-item">
+          <div class="insight-num">01</div>
+          <div class="insight-body">
+            <h4>Сеанс связи — это спринт с жёстким таймаутом</h4>
+            <p>Окно связи с КА длится 10–25 минут. За это время нужно отправить все плановые команды, получить подтверждения, зафиксировать телеметрию. Нет времени искать информацию — нужна готовая картина с первой секунды.</p>
+          </div>
+        </li>
+        <li class="insight-item">
+          <div class="insight-num">02</div>
+          <div class="insight-body">
+            <h4>Ошибки случаются не от незнания, а от переключения контекста</h4>
+            <p>Большинство сбоев — «отправил команду не тому аппарату» или «перепутал тип». Причина: постоянные переключения между окнами перегружают рабочую память. Ошибка на 10-й минуте сеанса — типичный сценарий.</p>
+          </div>
+        </li>
+        <li class="insight-item">
+          <div class="insight-num">03</div>
+          <div class="insight-body">
+            <h4>Передача смены — самое уязвимое место в процессе</h4>
+            <p>При смене оператора критическая информация передаётся устно или через чат. Нет структурированного журнала. Новый оператор начинает вслепую и тратит 15–20 минут на «обнюхивание» текущей ситуации.</p>
+          </div>
+        </li>
+        <li class="insight-item">
+          <div class="insight-num">04</div>
+          <div class="insight-body">
+            <h4>Опытный оператор несёт знание в голове, а не в системе</h4>
+            <p>В компании было 2–3 «живые энциклопедии» с расписанием и историей инцидентов в памяти. Это узкое место: болезнь или увольнение такого человека — потеря критических знаний компании.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="sect sect-alt">
+      <div class="sect-label">Процесс</div>
+      <h2 class="sect-title">От данных к дизайну</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-name">Карта сервиса</div>
+          <div class="step-desc">Составила Service Blueprint: все роли, действия, данные и инструменты по ходу одного сеанса. Выявила 14 точек ручной передачи данных между системами.</div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-name">Jobs-to-be-Done</div>
+          <div class="step-desc">Для каждой роли сформулировала ключевые JTBD. Главный джоб оператора: «Провести сеанс без ошибок и с полным логом — чтобы следующая смена знала всё».</div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-name">Вайрфреймы × 4</div>
+          <div class="step-desc">4 итерации low-fi: начала с бумаги, перешла в Figma. Каждая итерация проверялась с 1–2 операторами по сценарию реального сеанса связи.</div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-name">Юзабилити × 2</div>
+          <div class="step-desc">2 раунда на кликабельном прототипе. 1-й раунд: 3 оператора, 8 критических проблем. 2-й раунд после правок: 4 оператора, 1 проблема средней критичности.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DECISIONS -->
+    <section class="sect">
+      <div class="sect-label">Ключевые решения</div>
+      <h2 class="sect-title">Было → Стало</h2>
+      <div class="decision-item">
+        <div class="decision-before"><div class="decision-tag tag-before">Было</div><p>Метрики аппарата разбросаны по 4 разным программам. Оператор вынужден держать их открытыми и постоянно перекладывать взгляд между мониторами.</p></div>
+        <div class="decision-after"><div class="decision-tag tag-after">Стало</div><p><strong>Единый контекстный лист аппарата:</strong> все ключевые метрики, статус, телеметрия и лог команд в одном скролле. При переключении на другой КА весь контекст обновляется мгновенно.</p></div>
+      </div>
+      <div class="decision-item">
+        <div class="decision-before"><div class="decision-tag tag-before">Было</div><p>Алерты приходили в общий Telegram-чат вместе с рабочим общением. Операторы пропускали критические сообщения или не понимали, к какому аппарату они относятся.</p></div>
+        <div class="decision-after"><div class="decision-tag tag-after">Стало</div><p><strong>Структурированный лог событий</strong> с цветовым кодированием по критичности (INFO / WARN / ERROR), привязкой к КА и временной меткой. Все алерты в одной панели, фильтр — один клик.</p></div>
+      </div>
+      <div class="decision-item">
+        <div class="decision-before"><div class="decision-tag tag-before">Было</div><p>Список команд существовал только в Excel. Перед сеансом оператор переносил их вручную в консоль. Ошибки при переносе — 3–4 раза в неделю.</p></div>
+        <div class="decision-after"><div class="decision-tag tag-after">Стало</div><p><strong>Интегрированная панель команд</strong> с подтверждением перед отправкой. Плановые команды подтягиваются автоматически. Ручной режим требует явного переключения — снизило случайные отправки на 55%.</p></div>
+      </div>
+      <div class="decision-item">
+        <div class="decision-before"><div class="decision-tag tag-before">Было</div><p>После сеанса оператор заполнял отчёт вручную в Word. 20–30 минут допработы, всё равно неполный — данные вносились по памяти.</p></div>
+        <div class="decision-after"><div class="decision-tag tag-after">Стало</div><p><strong>Автоматический лог сеанса:</strong> все команды, подтверждения, аномалии и временны́е метки фиксируются в реальном времени. Экспорт — один клик. Передача смены: 2 минуты вместо 20.</p></div>
+      </div>
+    </section>
+
+    <!-- OUTCOMES -->
+    <section class="sect sect-dark">
+      <div class="sect-label">Итоги</div>
+      <h2 class="sect-title">Что изменилось<br>через 3 месяца</h2>
+      <div class="outcome-grid">
+        <div class="outcome-card" style="border-top-color:#ff2fda"><h4>NPS вырос с 5 до 9</h4><p>Операторы перестали жаловаться на инструмент. Главный комментарий: «наконец-то всё в одном месте».</p></div>
+        <div class="outcome-card" style="border-top-color:#22c55e"><h4>−55% ошибок при выдаче команд</h4><p>Подтверждение перед отправкой и контекстный лист убрали большинство случайных ошибок и путаницы между аппаратами.</p></div>
+        <div class="outcome-card" style="border-top-color:#60a5fa"><h4>Сеанс: 25 → 15 минут</h4><p>Убрали потери на переключение контекста. Оператор с первой секунды видит всё нужное — фокус остаётся на КА.</p></div>
+        <div class="outcome-card" style="border-top-color:#f59e0b"><h4>Онбординг: 6 недель → 2 недели</h4><p>Система стала обучающим инструментом: лог прошлых сеансов и видимая логика интерфейса помогают новичку войти в работу быстро.</p></div>
+        <div class="outcome-card" style="border-top-color:#a78bfa"><h4>Знание вышло из голов в систему</h4><p>Полный аудит-трейл каждого сеанса снял зависимость от «незаменимых» сотрудников и упростил разборы инцидентов.</p></div>
+        <div class="outcome-card" style="border-top-color:#e879f9"><h4>«Думаю про спутник, а не про интерфейс»</h4><p>Финальный комментарий на юзабилити-тесте. Это лучший результат, которого можно добиться в B2B-продукте.</p></div>
+      </div>
+    </section>
+
+    <!-- REFLECTION -->
+    <section class="sect">
+      <div class="two-col">
+        <div>
+          <div class="sect-label">Что я узнала</div>
+          <h2 class="sect-title-sm">Рефлексия</h2>
+          <p class="body-md" style="margin-bottom:20px">Этот проект научил меня, что в высококритичных B2B-системах дизайн — это не про визуал. Это про снижение когнитивной нагрузки в условиях стресса и жёстких временных ограничений.</p>
+          <p class="body-md">Самым ценным оказалось полевое наблюдение: интервью дают инсайты, но только присутствие во время реального сеанса показало, где система подводит операторов по-настоящему.</p>
+        </div>
+        <div>
+          <div class="sect-label">Что сделала бы иначе</div>
+          <h2 class="sect-title-sm">Next iteration</h2>
+          <p class="body-md" style="margin-bottom:20px">Включила бы разработчиков раньше — на этапе вайрфреймов, а не финального дизайна. Часть технических ограничений изменила решения уже на позднем этапе.</p>
+          <p class="body-md">Глубже исследовала бы сценарий нештатных ситуаций: что делает оператор, когда что-то идёт критически не так. Аварийный режим был недопроектирован в первой версии.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="case-footer">
+      <div class="case-footer-l">SatelliteSoft Dashboard · B2B · 2024</div>
+      <a href="contact.html" class="next-link">Связаться со мной →</a>
     </div>
-  </main>
+
+  </div></main>
 </body>
 </html>
