@@ -60,7 +60,7 @@
 
     #photo-el {
       position: absolute; width: 264px; height: 293px;
-      border-radius: 4px; overflow: hidden;
+      border-radius: 6px; overflow: hidden;
       background: rgba(220,220,220,0.2);
       z-index: 9; pointer-events: none; will-change: left, top;
     }
@@ -72,7 +72,7 @@
     }
     #photo-el .ph-ov { position: absolute; inset: 0; background: rgba(0,0,0,0.2); }
 
-    #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: none; }
+    #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
 
 
 
@@ -81,7 +81,7 @@
     #modal-go.show { display: flex; }
     .go-box {
       width: 475px; height: 305px; background: #e6e9e7;
-      border-radius: 8px; overflow: hidden;
+      border-radius: 6px; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 250px 0 #f7f7f7, 0 0 181px 0 #f7f7f7,
                   0 0 106px 0 #f7f7f7, 0 0 53px 0 #f7f7f7,
@@ -92,7 +92,7 @@
     .go-inner { width: 353px; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
     .go-title { font-weight: 600; font-size: 64px; color: #3d3d3d; line-height: normal; white-space: nowrap; }
     #play-again-btn {
-      width: 353px; background: #292e2a; border-radius: 8px; border: none; padding: 16px;
+      width: 353px; background: #292e2a; border-radius: 6px; border: none; padding: 16px;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: background 0.18s;
     }
@@ -114,6 +114,7 @@
       width: 480px;
       background: rgba(18,18,18,0.97);
       border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 6px;
       padding: 52px 52px 44px;
       display: flex; flex-direction: column; gap: 0;
       animation: popIn 0.32s cubic-bezier(0.22,1,0.36,1) forwards;
@@ -131,7 +132,9 @@
     .ct-label { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
     .ct-title { font-weight: 600; font-size: 30px; letter-spacing: -.02em; color: #f0f0f0; margin-bottom: 28px; }
     .ct-box input, .ct-box textarea {
-      padding: 14px 0;
+      height: 48px;
+      padding: 26px 0 3px;
+      box-sizing: border-box;
       border: none; border-bottom: 1px solid rgba(255,255,255,0.10);
       background: transparent;
       color: #f0f0f0; font-family: 'Inter',sans-serif; font-size: 15px;
@@ -140,7 +143,11 @@
     }
     .ct-box input:focus, .ct-box textarea:focus { border-color: rgba(255,255,255,0.45); }
     .ct-box input::placeholder, .ct-box textarea::placeholder { color: rgba(255,255,255,0.22); }
-    .ct-box textarea { height: 80px; resize: none; }
+    .ct-box textarea { resize: none; }
+    .ct-box input:-webkit-autofill,
+    .ct-box input:-webkit-autofill:focus {
+      caret-color: #f0f0f0;
+    }
     .ct-row { display: flex; align-items: center; justify-content: flex-end; padding-top: 28px; gap: 12px; }
 
     .ct-send {
@@ -158,9 +165,43 @@
     .ct-send:hover .arr { transform: translateX(4px); }
 
     /* ── Lives ── */
-    #lives-display { display: none; }
-    .life-dot { width: 12px; height: 12px; border-radius: 50%; background: #f5f5f5; transition: opacity 0.25s, background 0.25s; }
-    .life-dot.lost { opacity: 0.18; }
+    #lives-display {
+      position: absolute; top: 18px; left: 18px;
+      display: flex; gap: 8px; z-index: 20; pointer-events: none;
+    }
+    .life-dot {
+      font-size: 24px; line-height: 1; color: #ff2fda;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .life-dot.lost { opacity: 0.15; transform: scale(0.7); }
+
+    /* ── LANG TOGGLE ── */
+    #lang-toggle {
+      position: absolute; top: 18px; right: 18px;
+      display: flex; align-items: center; gap: 0;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px; overflow: hidden;
+      font-family: 'Inter', sans-serif; z-index: 30;
+    }
+    #lang-toggle button {
+      background: none; border: none; padding: 5px 10px;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45);
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+    #lang-toggle button.active { background: rgba(255,255,255,0.15); color: #fff; }
+    #lang-toggle button:hover:not(.active) { background: rgba(255,255,255,0.08); }
+
+    /* ── EMAIL ERROR ── */
+    @keyframes ct-shake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-5px); }
+      40%,80% { transform: translateX(5px); }
+    }
+    .ct-input-err {
+      border-color: #ff3b3b !important;
+      animation: ct-shake 0.35s ease;
+    }
   </style>
 </head>
 <body>
@@ -180,15 +221,15 @@
     <div id="sidebar">
       <div class="sb-profile">
         <p class="sb-name">Li Chu</p>
-        <p class="sb-job">UX UI Designer</p>
+        <p class="sb-job" data-en="UX UI Designer" data-ru="UX UI Дизайнер">UX UI Designer</p>
       </div>
       <nav id="nav" class="show">
-        <a href="game.html">About</a>
-        <a href="project-01.html">Project 1</a>
-        <a href="project-02.html">Project 2</a>
-        <a href="project-03.html">Project 3</a>
-        <a href="project-04.html">Project 4</a>
-        <a href="project-05.html">Project 5</a>
+        <a href="game.html" data-en="About" data-ru="Обо мне">About</a>
+        <a href="project-01.html" data-en="Project 1" data-ru="Проект 1">Project 1</a>
+        <a href="project-02.html" data-en="Project 2" data-ru="Проект 2">Project 2</a>
+        <a href="project-03.html" data-en="Project 3" data-ru="Проект 3">Project 3</a>
+        <a href="project-04.html" data-en="Project 4" data-ru="Проект 4">Project 4</a>
+        <a href="project-05.html" data-en="Project 5" data-ru="Проект 5">Project 5</a>
       </nav>
       <div class="sb-contacts">
         <div class="sb-contacts-row">
@@ -211,31 +252,35 @@
         <img src="https://www.figma.com/api/mcp/asset/57af1af0-251e-488c-9f81-8cf2bd9dcf69" alt="Li Chu">
         <div class="ph-ov"></div>
       </div>
+      <div id="lang-toggle">
+        <button id="lang-en" class="active" onclick="setLang('en')">EN</button>
+        <button id="lang-ru" onclick="setLang('ru')">RU</button>
+      </div>
       <div id="lives-display">
-        <div class="life-dot" id="life0"></div>
-        <div class="life-dot" id="life1"></div>
-        <div class="life-dot" id="life2"></div>
+        <span class="life-dot" id="life0">♥</span>
+        <span class="life-dot" id="life1">♥</span>
+        <span class="life-dot" id="life2">♥</span>
       </div>
       <canvas id="game-canvas"></canvas>
 
       <div id="modal-go">
         <div class="go-box">
           <div class="go-inner">
-            <p class="go-title">Game over!</p>
-            <button id="play-again-btn" style="filter:url(#noiseF)"><span>Play again</span></button>
+            <p class="go-title" data-en="Game over!" data-ru="Игра окончена!">Game over!</p>
+            <button id="play-again-btn" style="filter:url(#noiseF)"><span data-en="Play again" data-ru="Ещё раз">Play again</span></button>
           </div>
         </div>
       </div>
       <div id="modal-ct">
         <div class="ct-box">
           <button class="ct-close" id="ct-close">✕</button>
-          <span class="ct-label">Contact</span>
-          <p class="ct-title">Get in touch</p>
-          <input type="text" placeholder="Name">
-          <input type="email" placeholder="Email">
-          <textarea placeholder="Message…"></textarea>
+          <span class="ct-label" data-en="Contact" data-ru="Контакт">Contact</span>
+          <p class="ct-title" data-en="Get in touch" data-ru="Написать мне">Get in touch</p>
+          <input type="text" id="ct-name" placeholder="Name" data-ph-en="Name" data-ph-ru="Имя">
+          <input type="email" id="ct-email" placeholder="Email">
+          <textarea id="ct-msg" placeholder="Message…" data-ph-en="Message…" data-ph-ru="Сообщение…"></textarea>
           <div class="ct-row">
-            <button class="ct-send" id="ct-send">Send <span class="arr">→</span></button>
+            <button class="ct-send" id="ct-send" data-en="Send" data-ru="Отправить"><span class="btn-text">Send</span> <span class="arr">→</span></button>
           </div>
         </div>
       </div>
@@ -243,7 +288,32 @@
   </div>
 
 <script>
-
+/* ── Flying-cards custom text (set via admin) ── */
+window.LICHU_CARD_TEXTS = null; /* set by config fetch */
+</script>
+<script>
+/* ── Always keep nav visible — patch classList.remove on #nav ── */
+(function () {
+  var nav = document.getElementById('nav');
+  var sb  = document.getElementById('sb-contact');
+  if (!nav) return;
+  var _orig = nav.classList.remove.bind(nav.classList);
+  nav.classList.remove = function () {
+    // block hiding the nav; allow other class removals
+    var args = Array.prototype.filter.call(arguments, function(c){ return c !== 'show'; });
+    if (args.length) _orig.apply(null, args);
+  };
+  // keep sb-contact visible too
+  if (sb) {
+    var _origSb = sb.classList.remove.bind(sb.classList);
+    sb.classList.remove = function () {
+      var args = Array.prototype.filter.call(arguments, function(c){ return c !== 'show'; });
+      if (args.length) _origSb.apply(null, args);
+    };
+  }
+})();
+</script>
+<script>
 /* ── CONSTANTS ── */
 const SIDEBAR_W = 260;
 const CARD_W    = 82,   CARD_H   = 38;   /* Figma: ~82x38, padding 10px, 15px font */
@@ -338,16 +408,17 @@ function loseLife(){
 /* ── INIT CARDS ── */
 function initCards(){
   cards=[];
-  const DEFAULT_TEXTS=['Agile','JTBD','Persona','CJM','UserFlow','UseCase','ERD'];
-  const TEXTS=(window.LICHU_CARD_TEXTS&&window.LICHU_CARD_TEXTS.length>=7)
-    ?window.LICHU_CARD_TEXTS:DEFAULT_TEXTS;
+  const DEFAULT_TEXTS=['Agile','JTBD','Persona','CJM','User Flow','Use Case','ERD'];
+  const TEXTS=(window.LICHU_CARD_TEXTS&&window.LICHU_CARD_TEXTS.length>=7)?window.LICHU_CARD_TEXTS:DEFAULT_TEXTS;
+  /* Card 0: FALLING — always falls down, respawns from top */
   cards.push({
-    x:W*0.3+Math.random()*W*0.4-CARD_W/2,
-    y:-CARD_H-20,
+    x: W*0.3+Math.random()*W*0.4-CARD_W/2,
+    y: -CARD_H-20,
     vx:(Math.random()-0.5)*FALL_VX*2,
     vy:50+Math.random()*40,
     w:CARD_W,h:CARD_H,flash:0,falling:true,text:TEXTS[0]
   });
+  /* Cards 1-6: CHAOTIC — bounce all 4 walls */
   const xs=[0.12,0.35,0.58,0.72,0.88,0.22];
   const ys=[0.15,0.60,0.30,0.78,0.48,0.88];
   for(let i=0;i<6;i++){
@@ -413,7 +484,7 @@ function update(dt){
           const rel=(c.x+c.w/2-(paddle.x+PAD_W/2))/(PAD_W/2);
           c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#252426','#ffffff']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff']);
           beep(760+Math.random()*120,0.08);
         }
         if(c.y>H+12){
@@ -438,7 +509,16 @@ function update(dt){
         if(c.x<0)         {c.x=0;       c.vx= Math.abs(c.vx);}
         if(c.x+c.w>W)     {c.x=W-c.w;   c.vx=-Math.abs(c.vx);}
         if(c.y<0)         {c.y=0;        c.vy= Math.abs(c.vy);}
-        if(c.y+c.h>H)     {c.y=H-c.h;   c.vy=-Math.abs(c.vy);}
+        if(c.y+c.h>H){
+          missExplosion(c.x+c.w/2,H-20);
+          beep(220+Math.random()*80,0.18);
+          loseLife();
+          c.x=W*0.1+Math.random()*W*0.8-c.w/2;
+          c.y=-c.h-10;
+          c.vx=(Math.random()-0.5)*CARD_SPD*0.8;
+          c.vy=CARD_SPD*0.4+Math.random()*CARD_SPD*0.3;
+          c.flash=0;
+        }
         if(hitTest(c,paddle)){
           c.y=paddle.y-c.h-1;
           c.vy=-(80+Math.random()*60);
@@ -446,7 +526,7 @@ function update(dt){
           c.vx=rel*CARD_SPD*1.2+(Math.random()-0.5)*50;
           if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
           c.flash=0.22;
-          burst(c.x+c.w/2,c.y+c.h/2,['#f5f5f5','#8f8f90','#252426','#ffffff','#98999c']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff','#ff2fda']);
           beep(820+Math.random()*140,0.07);
         }
       }
@@ -557,8 +637,8 @@ function resize(){
 document.addEventListener('mousemove',e=>{ mouseX=e.clientX-SIDEBAR_W; });
 window.addEventListener('resize',()=>{ resize(); paddle.y=H-PAD_H-16; });
 document.getElementById('play-again-btn').addEventListener('click',resetGame);
-document.getElementById('ct-cancel').addEventListener('click',()=>modalCT.classList.remove('show'));
-document.getElementById('ct-send').addEventListener('click',()=>modalCT.classList.remove('show'));
+var ctCloseEl = document.getElementById('ct-close');
+if (ctCloseEl) ctCloseEl.addEventListener('click',()=>modalCT.classList.remove('show'));
 modalCT.addEventListener('click',e=>{ if(e.target===modalCT) modalCT.classList.remove('show'); });
 
 /* ── START ── */
@@ -568,10 +648,35 @@ updateLivesUI();
 initCards(); initPhoto();
 setTimeout(()=>{cardsOn=true;},500);
 requestAnimationFrame(loop);
+/* ── LANG ── */
+function setLang(lang) {
+  localStorage.setItem('lichu_lang', lang);
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
+  /* text nodes */
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    var t = el.getAttribute('data-' + lang);
+    if (!t) return;
+    /* for send button keep the arrow span */
+    var btn = el.querySelector('.btn-text');
+    if (btn) { btn.textContent = t; }
+    else { el.textContent = t; }
+  });
+  /* placeholders */
+  document.querySelectorAll('[data-ph-en]').forEach(function(el) {
+    el.placeholder = el.getAttribute('data-ph-' + lang) || el.placeholder;
+  });
+  /* update send success/error messages for current lang */
+  window._LICHU_LANG = lang;
+}
+(function(){
+  var saved = localStorage.getItem('lichu_lang') || 'en';
+  setLang(saved);
+})();
 
 </script>
 
-<!-- Config + Contact form -->
+<!-- ── Contact form + config loader ─────────────────────────────── -->
 <script>
 (function () {
   fetch('site-config.json?_=' + Date.now())
@@ -580,80 +685,151 @@ requestAnimationFrame(loop);
     .then(function(cfg){
       window._LICHU_CFG = cfg;
 
-      // Apply card texts and reload cards
+      /* card texts */
       if (cfg.card_texts && cfg.card_texts.length >= 7) {
         window.LICHU_CARD_TEXTS = cfg.card_texts;
         if (typeof initCards === 'function') initCards();
       }
 
-      // Close button
-      var closeBtn = document.getElementById('ct-close');
-      if (closeBtn) closeBtn.addEventListener('click', function () {
-        document.getElementById('modal-ct').classList.remove('show');
+      /* nav from config */
+      if (cfg.nav && cfg.nav.length) {
+        var navLinks = document.querySelectorAll('#nav a');
+        cfg.nav.forEach(function(item, i) {
+          if (navLinks[i]) {
+            navLinks[i].href = item.href || navLinks[i].href;
+            if (item.label) {
+              navLinks[i].setAttribute('data-en', item.label);
+              /* respect current lang */
+              var curLang = window._LICHU_LANG || 'en';
+              if (curLang === 'en') navLinks[i].textContent = item.label;
+            }
+          }
+        });
+      }
+
+      /* close modal */
+      var modal = document.getElementById('modal-ct');
+      document.getElementById('ct-close').addEventListener('click', function(){
+        modal.classList.remove('show');
+      });
+      modal.addEventListener('click', function(e){
+        if (e.target === modal) modal.classList.remove('show');
       });
 
-      // Contact form
-      var formspree  = cfg.formspree_endpoint || '';
-      var toEmail    = cfg.email || 'lapkazarapka8752@gmail.com';
-      var writeToken = cfg.write_token || '';
+      /* save to messages.json via GitHub API (token from localStorage) */
+      function saveMessage(entry) {
+        var token = localStorage.getItem('lichu_write_token');
+        if (!token) {
+          console.warn('[lichu] write_token not set — message not saved to admin. Set it in admin settings.');
+          return;
+        }
+        var API  = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
+        var hdrs = {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        };
+        fetch(API + '/contents/messages.json?ref=gh-pages', { headers: hdrs })
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .catch(function(){ return null; })
+          .then(function(f){
+            var msgs = [];
+            if (f && f.content) {
+              try {
+                var clean = f.content.split('').filter(function(c){ return c !== '\r' && c !== '\n' && c !== ' '; }).join('');
+                msgs = JSON.parse(atob(clean));
+              } catch(e){}
+            }
+            msgs.unshift(entry);
+            var b64  = btoa(unescape(encodeURIComponent(JSON.stringify(msgs, null, 2))));
+            var body = { message: 'msg: contact form', content: b64, branch: 'gh-pages' };
+            if (f && f.sha) body.sha = f.sha;
+            fetch(API + '/contents/messages.json', {
+              method: 'PUT', headers: hdrs, body: JSON.stringify(body)
+            });
+          }).catch(function(){});
+      }
+
+      /* send button */
+      var formspree = (cfg.formspree_endpoint || '').trim();
+      var toEmail   = (cfg.email || 'lapkazarapka8752@gmail.com').trim();
 
       var oldBtn = document.getElementById('ct-send');
       if (!oldBtn) return;
       var newBtn = oldBtn.cloneNode(true);
       oldBtn.parentNode.replaceChild(newBtn, oldBtn);
 
-      newBtn.addEventListener('click', function () {
+      newBtn.addEventListener('click', function() {
         var box      = document.querySelector('.ct-box');
         var titleEl  = box.querySelector('.ct-title');
-        var nameVal  = box.querySelector('input[type="text"]').value.trim();
-        var emailVal = box.querySelector('input[type="email"]').value.trim();
-        var msgVal   = box.querySelector('textarea').value.trim();
+        var nameVal  = box.querySelector('#ct-name').value.trim();
+        var emailVal = box.querySelector('#ct-email').value.trim();
+        var msgVal   = box.querySelector('#ct-msg').value.trim();
+
+        var lang = window._LICHU_LANG || 'en';
+        var T = {
+          empty:    { en: 'Fill in all fields',    ru: 'Заполните все поля'            },
+          bademail: { en: 'Enter a valid e-mail',  ru: 'Введите корректный e-mail'     },
+          title:    { en: 'Get in touch',           ru: 'Написать мне'                  },
+          sending:  { en: 'Sending…',               ru: 'Отправляем…'                   },
+          sent:     { en: 'Sent ✓',                 ru: 'Отправлено ✓'                  },
+          error:    { en: 'Error — try again',      ru: 'Ошибка — попробуйте ещё'       },
+          send:     { en: 'Send',                   ru: 'Отправить'                     }
+        };
+
+        function markErr(el) {
+          el.classList.remove('ct-input-err');
+          void el.offsetWidth;
+          el.classList.add('ct-input-err');
+          setTimeout(function(){ el.classList.remove('ct-input-err'); }, 1500);
+        }
+
+        var emailInput = box.querySelector('#ct-email');
 
         if (!nameVal || !emailVal || !msgVal) {
-          titleEl.textContent = 'Fill in all fields';
-          setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 2000);
+          titleEl.textContent = T.empty[lang];
+          if (!emailVal) markErr(emailInput);
+          setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 2000);
           return;
         }
 
-        newBtn.innerHTML = 'Sending… <span class="arr">→</span>';
-        newBtn.disabled = true;
-
-        function saveMessage(name, email, message) {
-          if (!writeToken) return;
-          var API = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
-          var headers = { 'Authorization': 'Bearer ' + writeToken, 'Content-Type': 'application/json' };
-          fetch(API + '/contents/messages.json?ref=gh-pages', { headers: headers })
-            .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
-            .then(function(f){
-              var msgs = [];
-              if (f && f.content) { try { msgs = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){} }
-              msgs.push({ name: name, email: email, message: message, date: new Date().toISOString() });
-              var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(msgs, null, 2))));
-              var body = { message: 'msg: contact form submission', content: b64, branch: 'gh-pages' };
-              if (f && f.sha) body.sha = f.sha;
-              return fetch(API + '/contents/messages.json', { method: 'PUT', headers: headers, body: JSON.stringify(body) });
-            }).catch(function(){});
+        var atPos = emailVal.indexOf('@');
+        var emailOk = atPos > 0 && emailVal.indexOf('.', atPos) > atPos + 1;
+        if (!emailOk) {
+          markErr(emailInput);
+          titleEl.textContent = T.bademail[lang];
+          setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 2500);
+          return;
         }
 
+        newBtn.innerHTML = T.sending[lang] + ' <span class="arr">→</span>';
+        newBtn.disabled = true;
+
         function onSuccess() {
-          saveMessage(nameVal, emailVal, msgVal);
-          titleEl.textContent = 'Sent ✓';
-          setTimeout(function () {
-            document.getElementById('modal-ct').classList.remove('show');
-            titleEl.textContent = 'Get in touch';
-            box.querySelector('input[type="text"]').value  = '';
-            box.querySelector('input[type="email"]').value = '';
-            box.querySelector('textarea').value            = '';
-            newBtn.innerHTML = 'Send <span class="arr">→</span>';
+          var now = new Date();
+          saveMessage({
+            name: nameVal, email: emailVal, message: msgVal,
+            date: now.toLocaleDateString('ru-RU'),
+            time: now.toLocaleTimeString('ru-RU'),
+            iso:  now.toISOString()
+          });
+          titleEl.textContent = T.sent[lang];
+          setTimeout(function(){
+            modal.classList.remove('show');
+            titleEl.textContent = T.title[lang];
+            box.querySelector('#ct-name').value  = '';
+            box.querySelector('#ct-email').value = '';
+            box.querySelector('#ct-msg').value   = '';
+            newBtn.innerHTML = '<span class="btn-text">' + T.send[lang] + '</span> <span class="arr">→</span>';
             newBtn.disabled  = false;
           }, 1800);
         }
 
-        function onError() {
-          titleEl.textContent = 'Error — try again';
-          newBtn.innerHTML = 'Send <span class="arr">→</span>';
+        function onError(err) {
+          console.error('Send error:', err);
+          titleEl.textContent = T.error[lang];
+          newBtn.innerHTML = '<span class="btn-text">' + T.send[lang] + '</span> <span class="arr">→</span>';
           newBtn.disabled  = false;
-          setTimeout(function () { titleEl.textContent = 'Get in touch'; }, 3000);
+          setTimeout(function(){ titleEl.textContent = T.title[lang]; }, 3000);
         }
 
         if (formspree) {
@@ -661,19 +837,14 @@ requestAnimationFrame(loop);
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
-          }).then(function(r){ return r.ok ? onSuccess() : onError(); }).catch(onError);
+          }).then(function(r){
+            if (r.ok) { onSuccess(); }
+            else { r.text().then(function(t){ onError(r.status + ' ' + t); }); }
+          }).catch(onError);
         } else {
-          var sub  = encodeURIComponent('Portfolio contact: ' + nameVal);
-          var bod  = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
-          window.open('mailto:' + toEmail + '?subject=' + sub + '&body=' + bod);
+          window.open('mailto:' + toEmail + '?subject=' + encodeURIComponent('Portfolio contact: ' + nameVal));
           onSuccess();
         }
-      });
-
-      // Close popup on backdrop click
-      document.getElementById('modal-ct').addEventListener('click', function(e){
-        if (e.target === document.getElementById('modal-ct'))
-          document.getElementById('modal-ct').classList.remove('show');
       });
     });
 })();
