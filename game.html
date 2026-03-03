@@ -620,40 +620,40 @@ requestAnimationFrame(loop);
     .then(function(cfg){
       window._LICHU_CFG = cfg;
 
-      /* ── Card texts ── */
+      /* card texts */
       if (cfg.card_texts && cfg.card_texts.length >= 7) {
         window.LICHU_CARD_TEXTS = cfg.card_texts;
         if (typeof initCards === 'function') initCards();
       }
 
-      /* ── Close button & backdrop ── */
+      /* close modal */
       var modal = document.getElementById('modal-ct');
-      var closeBtn = document.getElementById('ct-close');
-      if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('show'); });
-      if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('show'); });
+      document.getElementById('ct-close').addEventListener('click', function(){ modal.classList.remove('show'); });
+      modal.addEventListener('click', function(e){ if (e.target === modal) modal.classList.remove('show'); });
 
-      /* ── Save to messages.json via GitHub API using localStorage token ── */
+      /* save to messages.json using localStorage token (set in admin) */
       function saveMessage(entry) {
         var token = localStorage.getItem('lichu_write_token');
-        if (!token) return; /* no token = skip silently */
+        if (!token) return;
         var API = 'https://api.github.com/repos/chu1107chu-jpg/lichu';
         var hdrs = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
         fetch(API + '/contents/messages.json?ref=gh-pages', { headers: hdrs })
           .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
           .then(function(f){
             var msgs = [];
-            if (f && f.content) { try { msgs = JSON.parse(atob(f.content.replace(/\n/g,''))); } catch(e){} }
+            if (f && f.content) { try { msgs = JSON.parse(atob(f.content.replace(/
+/g,''))); } catch(e){} }
             msgs.unshift(entry);
             var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(msgs, null, 2))));
             var body = { message: 'msg: contact form', content: b64, branch: 'gh-pages' };
             if (f && f.sha) body.sha = f.sha;
-            return fetch(API + '/contents/messages.json', { method: 'PUT', headers: hdrs, body: JSON.stringify(body) });
+            fetch(API + '/contents/messages.json', { method: 'PUT', headers: hdrs, body: JSON.stringify(body) });
           }).catch(function(){});
       }
 
-      /* ── Send button ── */
-      var formspree = cfg.formspree_endpoint || '';
-      var toEmail   = cfg.email || 'lapkazarapka8752@gmail.com';
+      /* send button */
+      var formspree = (cfg.formspree_endpoint || '').trim();
+      var toEmail   = (cfg.email || 'lapkazarapka8752@gmail.com').trim();
 
       var oldBtn = document.getElementById('ct-send');
       if (!oldBtn) return;
@@ -678,16 +678,8 @@ requestAnimationFrame(loop);
 
         function onSuccess() {
           var now = new Date();
-          var entry = {
-            name:    nameVal,
-            email:   emailVal,
-            message: msgVal,
-            date:    now.toLocaleDateString('ru-RU'),
-            time:    now.toLocaleTimeString('ru-RU'),
-            iso:     now.toISOString()
-          };
-          saveMessage(entry);
-
+          saveMessage({ name: nameVal, email: emailVal, message: msgVal,
+            date: now.toLocaleDateString('ru-RU'), time: now.toLocaleTimeString('ru-RU'), iso: now.toISOString() });
           titleEl.textContent = 'Sent ✓';
           setTimeout(function(){
             modal.classList.remove('show');
@@ -700,19 +692,22 @@ requestAnimationFrame(loop);
           }, 1800);
         }
 
-        function onError() {
+        function onError(err) {
+          console.error('Send error:', err);
           titleEl.textContent = 'Error — try again';
           newBtn.innerHTML = 'Send <span class="arr">→</span>';
           newBtn.disabled  = false;
           setTimeout(function(){ titleEl.textContent = 'Get in touch'; }, 3000);
         }
 
-                if (formspree) {
+        if (formspree) {
           fetch(formspree, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal })
-          }).then(function(r){ r.ok ? onSuccess() : onError(); }).catch(onError);
+          }).then(function(r){
+            if (r.ok) { onSuccess(); } else { r.text().then(function(t){ onError(r.status + ' ' + t); }); }
+          }).catch(onError);
         } else {
           var sub = encodeURIComponent('Portfolio contact: ' + nameVal);
           var bod = encodeURIComponent('From: ' + nameVal + '\nEmail: ' + emailVal + '\n\n' + msgVal);
