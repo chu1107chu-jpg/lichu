@@ -14,7 +14,7 @@
   "start_sub": "",
   "nav": [
     {
-      "label": "Главная",
+      "label": "About",
       "href": "game.html"
     },
     {
@@ -22,7 +22,7 @@
       "href": "project-01.html"
     },
     {
-      "label": "Project ывперпурыпва",
+      "label": "Project 2",
       "href": "project-02.html"
     },
     {
@@ -36,10 +36,6 @@
     {
       "label": "Project 5",
       "href": "project-05.html"
-    },
-    {
-      "label": "Contact",
-      "href": "contact.html"
     }
   ]
 }
