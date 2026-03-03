@@ -465,6 +465,7 @@ $('login-btn').addEventListener('click', async () => {
     ghLogin = user.login;
     sessionStorage.setItem('lichu_admin_pat', pat);
     sessionStorage.setItem('lichu_admin_user', ghLogin);
+    localStorage.setItem('lichu_write_token', pat);  // auto-save for game.html saveMessage
     $('gh-user').textContent = ghLogin;
     showApp();
   } catch (e) {
@@ -1070,6 +1071,7 @@ function setupDropZone(zone, fileInput, onFiles) {
       if (!r.ok) throw new Error('token_invalid');
       PAT = storedPat;
       ghLogin = storedUser || '';
+      localStorage.setItem('lichu_write_token', storedPat);  // keep write_token fresh
       $('gh-user').textContent = ghLogin;
       showApp();
     } catch {
