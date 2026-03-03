@@ -180,7 +180,7 @@
     <span class="logo">Li Chu — Admin</span>
     <div class="header-right">
       <span id="gh-user"></span>
-      <a href="/" target="_blank"><button class="btn-ghost btn-sm">Открыть сайт</button></a>
+      <a href="https://chu1107chu-jpg.github.io/lichu/game.html" target="_blank"><button class="btn-ghost btn-sm">Открыть сайт</button></a>
       <button class="btn-ghost btn-sm" id="logout-btn">Выйти</button>
     </div>
   </header>
@@ -189,8 +189,12 @@
       <div class="sidebar-item active" data-tab="projects">📁 Проекты</div>
       <div class="sidebar-item" data-tab="new">➕ Новый проект</div>
       <div class="sidebar-divider"></div>
+      <div class="sidebar-item" data-tab="game">🎮 Игра</div>
       <div class="sidebar-item" data-tab="nav">🔗 Навигация</div>
       <div class="sidebar-item" data-tab="settings">⚙️ Настройки</div>
+      <div class="sidebar-item" data-tab="messages">📨 Сообщения</div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-item" id="deploy-site-btn" style="color:#ff2fda">🚀 Задеплоить сайт</div>
     </nav>
 
     <main class="content" id="main-content">
@@ -268,6 +272,45 @@
         </div>
       </div>
 
+      <!-- ══ GAME TAB ══ -->
+      <div id="tab-game" style="display:none">
+        <div class="section-title">Игра</div>
+        <div style="max-width:520px">
+
+          <p style="font-size:14px;color:var(--muted);margin-bottom:24px;margin-top:-16px">
+            Настройки стартового экрана и летающих карточек на главной странице.
+          </p>
+
+          <div class="form-group">
+            <label>Заголовок стартового экрана</label>
+            <input type="text" id="set-start-title" placeholder="Portfolio!" maxlength="30">
+            <div class="form-hint">Крупный текст в окне перед началом игры. По умолчанию: <strong>Portfolio!</strong></div>
+          </div>
+
+          <div class="form-group">
+            <label>Подпись стартового экрана</label>
+            <input type="text" id="set-start-sub" placeholder="UX/UI Designer" maxlength="50">
+            <div class="form-hint">Мелкий текст под заголовком. По умолчанию: <strong>UX/UI Designer</strong></div>
+          </div>
+
+          <div class="form-group">
+            <label>Текст на летающих карточках (7 штук)</label>
+            <div class="form-hint" style="margin-bottom:8px">Каждое поле — отдельная карточка. Оставьте пустым — будет текст по умолчанию.</div>
+            <input type="text" id="set-card-text-0" placeholder="Agile" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-1" placeholder="JTBD" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-2" placeholder="Persona" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-3" placeholder="CJM" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-4" placeholder="User Flow" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-5" placeholder="Use Case" maxlength="20" style="margin-bottom:6px">
+            <input type="text" id="set-card-text-6" placeholder="ERD" maxlength="20" style="margin-bottom:6px">
+          </div>
+
+          <button class="btn-primary" id="save-game-btn">
+            <span class="spinner"></span><span class="btn-label">Сохранить</span>
+          </button>
+        </div>
+      </div>
+
       <!-- ══ NAV TAB ══ -->
       <div id="tab-nav" style="display:none">
         <div class="section-title">Навигация</div>
@@ -285,31 +328,48 @@
       <div id="tab-settings" style="display:none">
         <div class="section-title">Настройки</div>
         <div style="max-width:520px">
+
+          <div style="background:#fff7ed;border:1px solid #fbbf24;border-radius:8px;padding:16px 20px;margin-bottom:24px;font-size:13px;line-height:1.6;color:#92400e">
+            <strong>Как настроить получение писем за 1 минуту:</strong><br>
+            1. Зайди на <a href="https://formspree.io/register" target="_blank" rel="noopener">formspree.io/register</a> и зарегистрируйся на <strong>lapkazarapka8752@gmail.com</strong><br>
+            2. Нажми <em>«+ New Form»</em>, введи любое имя, нажми <em>Create Form</em><br>
+            3. Скопируй эндпоинт вида <code>https://formspree.io/f/abcdefgh</code><br>
+            4. Вставь его в поле ниже и нажми «Сохранить»<br>
+            5. Нажми <strong>🚀 Задеплоить сайт</strong> — готово, письма придут на Gmail
+          </div>
+
           <div class="form-group">
-            <label>Email для формы обратной связи</label>
+            <label>Formspree Endpoint</label>
+            <input type="text" id="set-formspree" placeholder="https://formspree.io/f/xxxxxxxx">
+            <div class="form-hint">Письма с контактной формы будут приходить на твой Gmail. Бесплатно до 50 писем/месяц.</div>
+          </div>
+          <div class="form-group">
+            <label>Email (запасной адрес для mailto-ссылки)</label>
             <input type="email" id="set-email" value="lapkazarapka8752@gmail.com">
-            <div class="form-hint">Куда приходят сообщения из игры</div>
+            <div class="form-hint">Используется если Formspree не настроен</div>
           </div>
+
           <div class="form-group">
-            <label>EmailJS Public Key</label>
-            <input type="text" id="set-ejs-key" placeholder="xxxxxxxxxxxxxxxx">
-            <div class="form-hint">
-              <a href="https://www.emailjs.com/" target="_blank" rel="noopener">EmailJS</a> → Account → API Keys
-            </div>
+            <label>Messages Write Token (GitHub fine-grained token)</label>
+            <input type="password" id="set-write-token" placeholder="github_pat_..." autocomplete="off">
+            <div class="form-hint">Токен с правом <code>contents: write</code> для репозитория lichu. Нужен чтобы сообщения из формы сохранялись в Messages. Создай на <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a> (Fine-grained, только этот repo, Contents: Read &amp; Write).</div>
           </div>
-          <div class="form-group">
-            <label>EmailJS Service ID</label>
-            <input type="text" id="set-ejs-service" placeholder="service_xxxxxxx">
-          </div>
-          <div class="form-group">
-            <label>EmailJS Template ID</label>
-            <input type="text" id="set-ejs-template" placeholder="template_xxxxxxx">
-            <div class="form-hint">Шаблон должен иметь переменные: from_name, from_email, message</div>
-          </div>
+
           <button class="btn-primary" id="save-settings-btn">
             <span class="spinner"></span><span class="btn-label">Сохранить настройки</span>
           </button>
         </div>
+      </div>
+
+      <!-- ══ MESSAGES TAB ══ -->
+      <div id="tab-messages" style="display:none">
+        <div class="section-title">📨 Сообщения от посетителей</div>
+        <p class="section-sub">Оставленные через форму в игре (при ударе по фото) и на странице Contact</p>
+        <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center">
+          <button class="btn-ghost btn-sm" id="reload-messages-btn">↻ Обновить</button>
+          <button class="btn-danger btn-sm" id="clear-messages-btn">🗑 Очистить все</button>
+        </div>
+        <div id="messages-list" style="display:flex;flex-direction:column;gap:12px;max-width:680px"></div>
       </div>
 
     </main>
@@ -424,7 +484,7 @@ $('logout-btn').addEventListener('click', () => {
 
 // ─── TABS ───────────────────────────────────────────────────────────────────
 
-document.querySelectorAll('.sidebar-item').forEach(item => {
+document.querySelectorAll('.sidebar-item[data-tab]').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
     item.classList.add('active');
@@ -434,7 +494,40 @@ document.querySelectorAll('.sidebar-item').forEach(item => {
     if (tab === 'projects') loadProjects();
     if (tab === 'nav') loadNav();
     if (tab === 'settings') loadSettings();
+    if (tab === 'game') loadGameSettings();
+    if (tab === 'messages') loadMessages();
   });
+});
+
+document.getElementById('deploy-site-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('deploy-site-btn');
+  if (btn._deploying) return;
+  btn._deploying = true;
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Деплой…';
+  try {
+    const SITE_FILES = [
+      { main: 'site/game.html',    ghp: 'game.html',    also: 'index.html' },
+      { main: 'site/contact.html', ghp: 'contact.html' },
+      { main: 'site/admin.html',   ghp: 'admin.html'   },
+    ];
+    for (const f of SITE_FILES) {
+      const src = await ghGetContents(f.main);
+      if (!src) continue;
+      const b64 = src.content.replace(/\n/g, '');
+      const dst = await ghGet(`/contents/${f.ghp}?ref=${BRANCH_GHP}`).catch(() => null);
+      await ghPut(f.ghp, b64, `deploy: ${f.ghp}`, dst?.sha, BRANCH_GHP);
+      if (f.also) {
+        const dstA = await ghGet(`/contents/${f.also}?ref=${BRANCH_GHP}`).catch(() => null);
+        await ghPut(f.also, b64, `deploy: ${f.also}`, dstA?.sha, BRANCH_GHP);
+      }
+    }
+    toast('Сайт задеплоен ✓  (~30 сек до обновления)', 'ok');
+  } catch (e) {
+    toast('Ошибка деплоя: ' + e.message, 'error');
+  }
+  btn.textContent = orig;
+  btn._deploying = false;
 });
 
 $('add-project-btn').addEventListener('click', () => {
@@ -711,12 +804,13 @@ $('create-project-btn').addEventListener('click', async () => {
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────
 
 const DEFAULT_NAV = [
-  { label: 'Главная', href: 'index.html' },
+  { label: 'Главная',   href: 'game.html' },
   { label: 'Project 1', href: 'project-01.html' },
   { label: 'Project 2', href: 'project-02.html' },
   { label: 'Project 3', href: 'project-03.html' },
   { label: 'Project 4', href: 'project-04.html' },
   { label: 'Project 5', href: 'project-05.html' },
+  { label: 'Contact',   href: 'contact.html' },
 ];
 
 let navItems = [...DEFAULT_NAV];
@@ -769,6 +863,34 @@ $('save-nav-btn').addEventListener('click', async () => {
   setLoading(btn, false);
 });
 
+// ─── GAME SETTINGS ────────────────────────────────────────────────────────────
+
+async function loadGameSettings() {
+  try {
+    const f = await ghGetContents('site/site-config.json');
+    if (f) {
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const ct=cfg.card_texts||[];for(let i=0;i<7;i++){var el=$('set-card-text-'+i);if(el)el.value=ct[i]||'';}
+      $('set-start-title').value = cfg.start_title  || '';
+      $('set-start-sub').value   = cfg.start_sub    || '';
+    }
+  } catch {}
+}
+
+$('save-game-btn').addEventListener('click', async () => {
+  const btn = $('save-game-btn');
+  setLoading(btn, true);
+  try {
+    await saveConfig({
+      card_texts: [0,1,2,3,4,5,6].map(function(i){return $('set-card-text-'+i).value.trim();}),
+      start_title: $('set-start-title').value,
+      start_sub:   $('set-start-sub').value,
+    });
+    toast('Настройки игры сохранены ✓', 'ok');
+  } catch (e) { toast(e.message, 'error'); }
+  setLoading(btn, false);
+});
+
 // ─── SETTINGS ────────────────────────────────────────────────────────────────
 
 async function loadSettings() {
@@ -776,10 +898,9 @@ async function loadSettings() {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
       const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
+      if (cfg.write_token) $('set-write-token').value = cfg.write_token;
       if (cfg.email) $('set-email').value = cfg.email;
-      if (cfg.emailjs_key) $('set-ejs-key').value = cfg.emailjs_key;
-      if (cfg.emailjs_service) $('set-ejs-service').value = cfg.emailjs_service;
-      if (cfg.emailjs_template) $('set-ejs-template').value = cfg.emailjs_template;
     }
   } catch {}
 }
@@ -788,16 +909,69 @@ $('save-settings-btn').addEventListener('click', async () => {
   const btn = $('save-settings-btn');
   setLoading(btn, true);
   try {
-    const cfg = {
-      email: $('set-email').value,
-      emailjs_key: $('set-ejs-key').value,
-      emailjs_service: $('set-ejs-service').value,
-      emailjs_template: $('set-ejs-template').value,
-    };
-    await saveConfig(cfg);
+    await saveConfig({
+      formspree_endpoint: $('set-formspree').value.trim(),
+      email: $('set-email').value.trim(),
+      write_token: $('set-write-token').value.trim(),
+    });
     toast('Настройки сохранены ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
   setLoading(btn, false);
+});
+
+// ─── MESSAGES ───────────────────────────────────────────────────────────────────────────
+
+async function loadMessages() {
+  const list = $('messages-list');
+  list.innerHTML = '<p style="color:var(--muted);font-size:14px">Загрузка…</p>';
+  try {
+    const f = await ghGet(`/contents/messages.json?ref=${BRANCH_GHP}`).catch(() => null);
+    if (!f || !f.content) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет. Как только посетитель отправит форму — она появится здесь.</p>';
+      return;
+    }
+    let msgs = [];
+    try { msgs = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+    if (!msgs.length) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет.</p>';
+      return;
+    }
+    list.innerHTML = '';
+    msgs.forEach(m => {
+      const d = new Date(m.date);
+      const dateStr = isNaN(d) ? m.date : d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px 22px;display:flex;flex-direction:column;gap:6px';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-weight:600;font-size:15px;color:#242424">${esc(m.name || 'Аноним')}</span>
+          <span style="font-size:12px;color:#98999c">${dateStr}</span>
+        </div>
+        <a href="mailto:${esc(m.email)}" style="font-size:13px;color:#ff2fda;text-decoration:none">${esc(m.email || '')}</a>
+        <p style="font-size:14px;color:#3d3d3d;line-height:1.55;margin-top:4px;white-space:pre-wrap">${esc(m.message || '')}</p>
+      `;
+      list.appendChild(card);
+    });
+  } catch (e) {
+    list.innerHTML = `<p style="color:red;font-size:14px">Ошибка: ${e.message}</p>`;
+  }
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+$('reload-messages-btn').addEventListener('click', loadMessages);
+
+$('clear-messages-btn').addEventListener('click', async () => {
+  if (!confirm('Очистить все сообщения?')) return;
+  try {
+    const f = await ghGet(`/contents/messages.json?ref=${BRANCH_GHP}`).catch(() => null);
+    const b64 = btoa('[]');
+    await ghPut('messages.json', b64, 'admin: clear messages', f?.sha, BRANCH_GHP);
+    toast('Сообщения очищены', 'ok');
+    loadMessages();
+  } catch (e) { toast(e.message, 'error'); }
 });
 
 async function saveConfig(partial) {
@@ -818,9 +992,13 @@ async function saveConfig(partial) {
 // ─── HTML GENERATOR ──────────────────────────────────────────────────────────
 
 function generateProjectHTML(id, title, images) {
-  const navLinks = navItems.map(n =>
-    `    <a href="${n.href}" class="nav-link${n.href.includes(id) ? ' active' : ''}">${n.label}</a>`
-  ).join('\n');
+  const navLinks = navItems.map(n => {
+    const divider = n.href === 'contact.html'
+      ? '\n    <div style="height:1px;background:#c4c4c4;margin:8px 0"></div>'
+      : '';
+    const isActive = n.href.includes(id) ? ' active' : '';
+    return `${divider}\n    <a href="${n.href}" class="nav-link${isActive}">${n.label}</a>`;
+  }).join('');
 
   const imgTags = images.map(src =>
     `      <img class="section-img" src="${src}" alt="" loading="lazy">`
