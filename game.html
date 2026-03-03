@@ -470,7 +470,16 @@ function update(dt){
         if(c.x<0)         {c.x=0;       c.vx= Math.abs(c.vx);}
         if(c.x+c.w>W)     {c.x=W-c.w;   c.vx=-Math.abs(c.vx);}
         if(c.y<0)         {c.y=0;        c.vy= Math.abs(c.vy);}
-        if(c.y+c.h>H)     {c.y=H-c.h;   c.vy=-Math.abs(c.vy);}
+        if(c.y+c.h>H){
+          missExplosion(c.x+c.w/2,H-20);
+          beep(220+Math.random()*80,0.18);
+          loseLife();
+          c.x=W*0.1+Math.random()*W*0.8-c.w/2;
+          c.y=-c.h-10;
+          c.vx=(Math.random()-0.5)*CARD_SPD*0.8;
+          c.vy=CARD_SPD*0.4+Math.random()*CARD_SPD*0.3;
+          c.flash=0;
+        }
         if(hitTest(c,paddle)){
           c.y=paddle.y-c.h-1;
           c.vy=-(80+Math.random()*60);
