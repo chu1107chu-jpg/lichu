@@ -39,6 +39,7 @@
     .sb-contacts-row { display: flex; gap: 8px; align-items: center; }
     .sb-icon-btn {
       width: 36px; height: 36px;
+      border-radius: 6px;
       border: 1px solid rgba(36,36,36,0.22);
       display: inline-flex; align-items: center; justify-content: center;
       text-decoration: none; color: #242424;
@@ -583,11 +584,11 @@ function draw(){
   /* Cards — Figma: bg #f5f5f5, text #252426, Inter 15px Regular, radius 4 */
   for(const c of cards){
     ctx.fillStyle=c.flash>0?'#ff2fda':'#f5f5f5';
-    roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.fill();
+    roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.fill();
     /* Falling card indicator: gray border */
     if(c.falling&&c.flash<=0){
       ctx.strokeStyle='#8f8f90'; ctx.lineWidth=1.5;
-      roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.stroke();
+      roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.stroke();
     }
     ctx.fillStyle=c.flash>0?'#1a1a1a':'#252426';
     ctx.font='400 15px Inter,sans-serif';
@@ -612,7 +613,7 @@ function draw(){
     }else{
       /* Fallback until font loads */
       ctx.fillStyle='#8f8f90';
-      roundRect(paddle.x,paddle.y+55,PAD_W,10,4); ctx.fill();
+      roundRect(paddle.x,paddle.y+55,PAD_W,10,6); ctx.fill();
     }
   }
 }
