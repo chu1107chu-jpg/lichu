@@ -40,6 +40,7 @@
     .sb-icon-btn {
       width: 36px; height: 36px;
       border: 1px solid rgba(36,36,36,0.22);
+      border-radius: 6px;
       display: inline-flex; align-items: center; justify-content: center;
       text-decoration: none; color: #242424;
       transition: border-color 0.18s, color 0.18s;
@@ -360,16 +361,56 @@ function roundRect(x,y,w,h,r) {
   ctx.arcTo(x,y,    x+r,y,    r); ctx.closePath();
 }
 
-function beep(freq,dur) {
+/* ── AUDIO: shared context, unlocked on first gesture ── */
+let _ac = null;
+function _getAC() {
+  if (!_ac) _ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ac.state === 'suspended') _ac.resume();
+  return _ac;
+}
+document.addEventListener('pointerdown', _getAC, { once: true });
+
+function beep(freq, dur) {
   try {
-    const ac=new(window.AudioContext||window.webkitAudioContext)();
-    const osc=ac.createOscillator(), g=ac.createGain();
+    const ac = _getAC(), t = ac.currentTime;
+    const osc = ac.createOscillator(), g = ac.createGain();
     osc.connect(g); g.connect(ac.destination);
-    osc.frequency.value=freq||820; osc.type='sine';
-    g.gain.setValueAtTime(0.08,ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+(dur||0.09));
-    osc.start(); osc.stop(ac.currentTime+(dur||0.09));
-  } catch(e){}
+    osc.frequency.value = freq || 820; osc.type = 'sine';
+    g.gain.setValueAtTime(0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + (dur || 0.09));
+    osc.start(t); osc.stop(t + (dur || 0.09));
+  } catch(e) {}
+}
+
+/* boom — for miss / explosion */
+function explode() {
+  try {
+    const ac = _getAC(), t = ac.currentTime;
+    /* white noise burst */
+    const bufLen = ac.sampleRate * 1.1;
+    const buf = ac.createBuffer(1, bufLen, ac.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+    const noise = ac.createBufferSource();
+    noise.buffer = buf;
+    const lpf = ac.createBiquadFilter();
+    lpf.type = 'lowpass';
+    lpf.frequency.setValueAtTime(600, t);
+    lpf.frequency.exponentialRampToValueAtTime(60, t + 1.1);
+    const ng = ac.createGain();
+    ng.gain.setValueAtTime(0.9, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+    noise.connect(lpf); lpf.connect(ng); ng.connect(ac.destination);
+    noise.start(t); noise.stop(t + 1.1);
+    /* sub-bass thud */
+    const sub = ac.createOscillator(), sg = ac.createGain();
+    sub.frequency.setValueAtTime(90, t);
+    sub.frequency.exponentialRampToValueAtTime(25, t + 0.55);
+    sg.gain.setValueAtTime(0.7, t);
+    sg.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+    sub.connect(sg); sg.connect(ac.destination);
+    sub.start(t); sub.stop(t + 0.55);
+  } catch(e) {}
 }
 
 /* ── PARTICLES ── */
@@ -489,7 +530,7 @@ function update(dt){
         }
         if(c.y>H+12){
           missExplosion(c.x+c.w/2,H-20);
-          beep(160,0.4);
+          explode();
           loseLife();
           /* Respawn from top */
           c.x=W*0.2+Math.random()*W*0.6-CARD_W/2;
@@ -583,11 +624,11 @@ function draw(){
   /* Cards — Figma: bg #f5f5f5, text #252426, Inter 15px Regular, radius 4 */
   for(const c of cards){
     ctx.fillStyle=c.flash>0?'#ff2fda':'#f5f5f5';
-    roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.fill();
+    roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.fill();
     /* Falling card indicator: gray border */
     if(c.falling&&c.flash<=0){
       ctx.strokeStyle='#8f8f90'; ctx.lineWidth=1.5;
-      roundRect(c.x,c.y,CARD_W,CARD_H,4); ctx.stroke();
+      roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.stroke();
     }
     ctx.fillStyle=c.flash>0?'#1a1a1a':'#252426';
     ctx.font='400 15px Inter,sans-serif';
@@ -612,7 +653,7 @@ function draw(){
     }else{
       /* Fallback until font loads */
       ctx.fillStyle='#8f8f90';
-      roundRect(paddle.x,paddle.y+55,PAD_W,10,4); ctx.fill();
+      roundRect(paddle.x,paddle.y+55,PAD_W,10,6); ctx.fill();
     }
   }
 }
