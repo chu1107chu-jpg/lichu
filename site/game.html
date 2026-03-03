@@ -77,28 +77,45 @@
 
 
 
-    /* ── GAME OVER MODAL — Figma: bg #e6e9e7, 475x305, radius 8, white glow ── */
+    /* ── GAME OVER MODAL ── */
     #modal-go { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 100; }
     #modal-go.show { display: flex; }
     .go-box {
-      width: 475px; height: 305px; background: #e6e9e7;
-      border-radius: 6px; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+      width: 390px; background: #e6e9e7;
+      border-radius: 8px; overflow: hidden; padding: 36px 40px 40px;
+      display: flex; align-items: flex-start; justify-content: center;
       box-shadow: 0 0 250px 0 #f7f7f7, 0 0 181px 0 #f7f7f7,
                   0 0 106px 0 #f7f7f7, 0 0 53px 0 #f7f7f7,
                   0 0 15px 0 #f7f7f7, 0 0 8px 0 #f7f7f7;
       animation: popIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .go-inner { width: 353px; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
+    .go-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
     .go-title { font-weight: 600; font-size: 64px; color: #3d3d3d; line-height: normal; white-space: nowrap; }
+    .go-tiles { display: flex; gap: 16px; }
+    .go-score-tile {
+      width: 148px; height: 148px; background: #d941e8;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 80px; color: #3a0e4a;
+      line-height: 1;
+    }
     #play-again-btn {
-      width: 353px; background: #292e2a; border-radius: 6px; border: none; padding: 16px;
+      width: 148px; height: 148px; background: #f5f5f5;
+      border-radius: 10px; border: none;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: background 0.18s;
     }
-    #play-again-btn:hover { background: #363d37; }
-    #play-again-btn span { font-weight: 500; font-size: 32px; color: #e6e9e7; white-space: nowrap; font-family: 'Inter', sans-serif; }
+    #play-again-btn:hover { background: #e0e0e0; }
+    #play-again-btn .go-restart-icon {
+      font-size: 68px; color: #252426;
+      font-family: 'Material Symbols Outlined';
+      font-weight: 400; font-style: normal;
+      line-height: 1; letter-spacing: normal; text-transform: none;
+      display: inline-block; white-space: nowrap; word-wrap: normal;
+      direction: ltr; -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
 
     /* ── CONTACT MODAL ── */
     #modal-ct {
@@ -268,7 +285,10 @@
         <div class="go-box">
           <div class="go-inner">
             <p class="go-title" data-en="Game over!" data-ru="Игра окончена!">Game over!</p>
-            <button id="play-again-btn" style="filter:url(#noiseF)"><span data-en="Play again" data-ru="Ещё раз">Play again</span></button>
+            <div class="go-tiles">
+              <div class="go-score-tile" id="go-score">0</div>
+              <button id="play-again-btn"><span class="go-restart-icon">autorenew</span></button>
+            </div>
           </div>
         </div>
       </div>
@@ -337,7 +357,7 @@ const navEl   = document.getElementById('nav');
 const lifeEls = [0,1,2].map(i => document.getElementById('life'+i));
 
 /* ── STATE ── */
-let W=0, H=0, mouseX=-9999, gameOver=false, cardsOn=false, photoHit=false, lastTs=0, lives=MAX_LIVES;
+let W=0, H=0, mouseX=-9999, gameOver=false, cardsOn=false, photoHit=false, lastTs=0, lives=MAX_LIVES, caughtCards=0;
 const paddle = { x:0, y:0, w:PAD_W, h:PAD_H };
 let cards=[], photo=null, parts=[];
 
@@ -485,13 +505,14 @@ function initPhoto(){
 function endGame(){
   if(gameOver) return;
   gameOver=true; photoEl.style.display='none';
+  document.getElementById('go-score').textContent = caughtCards;
   modalGO.classList.add('show');
   setTimeout(()=>navEl.classList.add('show'),120);
 }
 
 /* ── RESET ── */
 function resetGame(){
-  gameOver=false; cardsOn=false; photoHit=false; parts=[]; lives=MAX_LIVES;
+  gameOver=false; cardsOn=false; photoHit=false; parts=[]; lives=MAX_LIVES; caughtCards=0;
   updateLivesUI();
   modalGO.classList.remove('show'); navEl.classList.remove('show');
   paddle.x=W/2-PAD_W/2; paddle.y=H-PAD_H-16;
@@ -525,6 +546,7 @@ function update(dt){
           const rel=(c.x+c.w/2-(paddle.x+PAD_W/2))/(PAD_W/2);
           c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
           c.flash=0.22;
+          caughtCards++;
           burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff']);
           beep(760+Math.random()*120,0.08);
         }
@@ -567,6 +589,7 @@ function update(dt){
           c.vx=rel*CARD_SPD*1.2+(Math.random()-0.5)*50;
           if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
           c.flash=0.22;
+          caughtCards++;
           burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#c4009a','#ffffff','#ff2fda']);
           beep(820+Math.random()*140,0.07);
         }
