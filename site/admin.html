@@ -343,6 +343,12 @@
             <div class="form-hint">Используется если Formspree не настроен</div>
           </div>
 
+          <div class="form-group">
+            <label>Messages Write Token (GitHub fine-grained token)</label>
+            <input type="password" id="set-write-token" placeholder="github_pat_..." autocomplete="off">
+            <div class="form-hint">Токен с правом <code>contents: write</code> для репозитория lichu. Нужен чтобы сообщения из формы сохранялись в Messages. Создай на <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a> (Fine-grained, только этот repo, Contents: Read &amp; Write).</div>
+          </div>
+
           <button class="btn-primary" id="save-settings-btn">
             <span class="spinner"></span><span class="btn-label">Сохранить настройки</span>
           </button>
@@ -887,6 +893,7 @@ async function loadSettings() {
     if (f) {
       const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
+      if (cfg.write_token) $('set-write-token').value = cfg.write_token;
       if (cfg.email) $('set-email').value = cfg.email;
     }
   } catch {}
@@ -899,6 +906,7 @@ $('save-settings-btn').addEventListener('click', async () => {
     await saveConfig({
       formspree_endpoint: $('set-formspree').value.trim(),
       email: $('set-email').value.trim(),
+      write_token: $('set-write-token').value.trim(),
     });
     toast('Настройки сохранены ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
