@@ -1059,14 +1059,25 @@ function setupDropZone(zone, fileInput, onFiles) {
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 
-(function init() {
+(async function init() {
   const storedPat  = sessionStorage.getItem('lichu_admin_pat');
   const storedUser = sessionStorage.getItem('lichu_admin_user');
   if (storedPat) {
-    PAT = storedPat;
-    ghLogin = storedUser || '';
-    $('gh-user').textContent = ghLogin;
-    showApp();
+    try {
+      const r = await fetch('https://api.github.com/user', {
+        headers: { Authorization: `Bearer ${storedPat}` }
+      });
+      if (!r.ok) throw new Error('token_invalid');
+      PAT = storedPat;
+      ghLogin = storedUser || '';
+      $('gh-user').textContent = ghLogin;
+      showApp();
+    } catch {
+      // Token revoked or expired — force re-login
+      sessionStorage.clear();
+      $('auth-err').textContent = 'Сессия истекла — токен недействителен. Войдите заново с новым токеном.';
+      $('auth-err').style.display = 'block';
+    }
   }
 })();
 </script>
