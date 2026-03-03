@@ -736,7 +736,7 @@ function setLang(lang) {
             if (f && f.content) {
               try {
                 var clean = f.content.split('').filter(function(c){ return c !== '\r' && c !== '\n' && c !== ' '; }).join('');
-                msgs = JSON.parse(atob(clean));
+                msgs = JSON.parse(decodeURIComponent(escape(atob(clean))));
               } catch(e){}
             }
             msgs.unshift(entry);
