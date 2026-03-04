@@ -12,7 +12,7 @@
     :root {
       --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
       --pink: #ff2fda;
-      --ink: #1a1a1a;
+      --ink: #242424;
       --muted: #8a8a8a;
       --border: #ededee;
       --bg: #fff;
@@ -23,13 +23,13 @@
 
     /* ── SIDEBAR ── */
     .sidebar {
-      width: 260px; min-width: 260px; background: #dcdcdc;
+      width: 260px; min-width: 260px; background: #ebebeb;
       height: 100vh; position: sticky; top: 0;
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 24px; overflow-y: auto; z-index: 10;
     }
     .sb-profile { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .sb-name { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 44px; color: #292626; line-height: 1; }
+    .sb-name { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 44px; color: #242424; line-height: 1; }
     .sb-job  { font-size: 15px; font-weight: 400; color: #98999c; margin-top: 6px; }
     .sb-nav  {
       display: flex; flex-direction: column; gap: 20px;
@@ -194,6 +194,12 @@
     .send-btn:disabled { opacity: .25; cursor: not-allowed; }
     .send-btn .arr { transition: transform .18s; }
     .send-btn:hover .arr { transform: translateX(4px); }
+
+    /* ── HERO NAME ── */
+    .hero-realname {
+      font-size: 17px; font-weight: 500; color: var(--muted);
+      margin-top: 8px; margin-bottom: 4px; letter-spacing: -.01em;
+    }
   </style>
 </head>
 <body>
@@ -233,6 +239,7 @@
       <!-- HERO -->
       <section class="hero">
         <div class="hero-eyebrow">About</div>
+        <div class="hero-realname">Елизавета Чувилкина</div>
         <h1 class="hero-title" id="hero-title-el">UX UI<br>Designer</h1>
         <div class="hero-meta">
           <div class="hero-meta-item">
@@ -283,14 +290,14 @@
       </section>
 
       <!-- EXPERIENCE -->
-      <section class="sect" id="experience-sect" style="display:none">
+      <section class="sect" id="experience-sect">
         <div class="sect-label">Experience</div>
         <div class="sect-title">Опыт работы</div>
         <div class="exp-list" id="exp-el"></div>
       </section>
 
       <!-- EDUCATION -->
-      <section class="sect" id="education-sect" style="display:none">
+      <section class="sect" id="education-sect">
         <div class="sect-label">Education</div>
         <div class="sect-title">Образование</div>
         <div class="edu-list" id="edu-el"></div>
