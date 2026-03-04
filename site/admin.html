@@ -190,6 +190,7 @@
       <div class="sidebar-item" data-tab="new">➕ Новый проект</div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-item" data-tab="game">🎮 Игра</div>
+      <div class="sidebar-item" data-tab="about">👤 Обо мне</div>
       <div class="sidebar-item" data-tab="nav">🔗 Навигация</div>
       <div class="sidebar-item" data-tab="settings">⚙️ Настройки</div>
       <div class="sidebar-item" data-tab="messages">📨 Сообщения</div>
@@ -361,6 +362,50 @@
         </div>
       </div>
 
+      <!-- ══ ABOUT TAB ══ -->
+      <div id="tab-about" style="display:none">
+        <div class="section-title">Обо мне</div>
+        <p class="section-sub">Отображается на странице about.html</p>
+        <div style="max-width:600px">
+          <div class="form-group">
+            <label>Big Hero Title (\n = новая строка)</label>
+            <input type="text" id="ab-hero-title" placeholder="UX UI\nDesigner">
+          </div>
+          <div class="form-group">
+            <label>Статус (доступность)</label>
+            <input type="text" id="ab-available" placeholder="Freelance &amp; Full-time">
+          </div>
+          <div class="form-group">
+            <label>Направление</label>
+            <input type="text" id="ab-field" placeholder="UX/UI Design">
+          </div>
+          <div class="form-group">
+            <label>Локация</label>
+            <input type="text" id="ab-location" placeholder="Россия">
+          </div>
+          <div class="form-group">
+            <label>Формат работы</label>
+            <input type="text" id="ab-format" placeholder="Remote / Onsite">
+          </div>
+          <div class="form-group">
+            <label>Bio (каждый абзац с новой строки)</label>
+            <textarea id="ab-bio" rows="6" placeholder="Опишите себя..."></textarea>
+            <div class="form-hint">Каждая строка — отдельный абзац</div>
+          </div>
+          <div class="form-group">
+            <label>Skills (через запятую)</label>
+            <input type="text" id="ab-skills" placeholder="UX Research, UI Design, CJM, JTBD...">
+          </div>
+          <div class="form-group">
+            <label>Tools (через запятую)</label>
+            <input type="text" id="ab-tools" placeholder="Figma, FigJam, Miro, Notion...">
+          </div>
+          <button class="btn-primary" id="save-about-btn">
+            <span class="spinner"></span><span class="btn-label">Сохранить</span>
+          </button>
+        </div>
+      </div>
+
       <!-- ══ MESSAGES TAB ══ -->
       <div id="tab-messages" style="display:none">
         <div class="section-title">📨 Сообщения от посетителей</div>
@@ -495,6 +540,7 @@ document.querySelectorAll('.sidebar-item[data-tab]').forEach(item => {
     if (tab === 'nav') loadNav();
     if (tab === 'settings') loadSettings();
     if (tab === 'game') loadGameSettings();
+    if (tab === 'about') loadAboutSettings();
     if (tab === 'messages') loadMessages();
   });
 });
@@ -508,8 +554,9 @@ document.getElementById('deploy-site-btn').addEventListener('click', async () =>
   try {
     const SITE_FILES = [
       { main: 'site/game.html',    ghp: 'game.html',    also: 'index.html' },
-      { main: 'site/contact.html', ghp: 'contact.html' },
+      { main: 'site/about.html',   ghp: 'about.html'   },
       { main: 'site/admin.html',   ghp: 'admin.html'   },
+      { main: 'site/site-config.json', ghp: 'site-config.json' },
     ];
     for (const f of SITE_FILES) {
       const src = await ghGetContents(f.main);
@@ -887,6 +934,48 @@ $('save-game-btn').addEventListener('click', async () => {
       start_sub:   $('set-start-sub').value,
     });
     toast('Настройки игры сохранены ✓', 'ok');
+  } catch (e) { toast(e.message, 'error'); }
+  setLoading(btn, false);
+});
+
+// ─── ABOUT ───────────────────────────────────────────────────────────────────
+
+async function loadAboutSettings() {
+  try {
+    const f = await ghGetContents('site/site-config.json');
+    if (f) {
+      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const ab = cfg.about || {};
+      $('ab-hero-title').value = ab.hero_title  || '';
+      $('ab-available').value  = ab.available   || '';
+      $('ab-field').value      = ab.field       || '';
+      $('ab-location').value   = ab.location    || '';
+      $('ab-format').value     = ab.format      || '';
+      $('ab-bio').value        = ab.bio         || '';
+      $('ab-skills').value     = (ab.skills || []).join(', ');
+      $('ab-tools').value      = (ab.tools  || []).join(', ');
+    }
+  } catch {}
+}
+
+$('save-about-btn').addEventListener('click', async () => {
+  const btn = $('save-about-btn');
+  setLoading(btn, true);
+  try {
+    const splitList = s => s.split(',').map(x => x.trim()).filter(Boolean);
+    await saveConfig({
+      about: {
+        hero_title: $('ab-hero-title').value,
+        available:  $('ab-available').value,
+        field:      $('ab-field').value,
+        location:   $('ab-location').value,
+        format:     $('ab-format').value,
+        bio:        $('ab-bio').value,
+        skills:     splitList($('ab-skills').value),
+        tools:      splitList($('ab-tools').value),
+      }
+    });
+    toast('Страница «Обо мне» сохранена ✓', 'ok');
   } catch (e) { toast(e.message, 'error'); }
   setLoading(btn, false);
 });

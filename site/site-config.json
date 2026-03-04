@@ -1,6 +1,16 @@
 {
   "formspree_endpoint": "https://formspree.io/f/xnjbkpro",
   "email": "lapkazarapka8752@gmail.com",
+  "about": {
+    "hero_title": "UX UI\nDesigner",
+    "available": "Freelance & Full-time",
+    "field": "UX/UI Design",
+    "location": "Россия",
+    "format": "Remote / Onsite",
+    "bio": "UX/UI дизайнер с опытом создания цифровых продуктов: от мобильных приложений до корпоративных дашбордов. Работаю на пересечении пользовательского исследования и визуального дизайна.\nУмею выстраивать логику интерфейса с нуля — от JTBD и CJM до финального прототипа в Figma. Взаимодействую с разработчиками, понимаю ограничения реализации и нахожу элегантные решения внутри них.",
+    "skills": ["UX Research", "User Interviews", "CJM", "JTBD", "Wireframing", "Prototyping", "UI Design", "Design Systems", "Usability Testing", "Information Architecture"],
+    "tools": ["Figma", "FigJam", "Miro", "Notion", "Maze", "Jira"]
+  },
   "card_texts": [
     "Agile",
     "JTBD",
