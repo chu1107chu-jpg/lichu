@@ -125,6 +125,36 @@
       color: var(--ink); background: var(--bg);
     }
 
+    /* ── EXPERIENCE / EDUCATION ── */
+    .exp-list { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+    .exp-item {
+      display: grid; grid-template-columns: 200px 1fr;
+      gap: 0 48px; padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:first-child { padding-top: 0; }
+    .exp-item:last-child { border-bottom: none; }
+    .exp-meta { padding-top: 4px; }
+    .exp-company { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+    .exp-period { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .exp-duration { font-size: 12px; color: var(--muted); }
+    .exp-body {}
+    .exp-role { font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+    .exp-desc { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .exp-desc li { font-size: 15px; line-height: 1.6; color: #3a3a3a; padding-left: 16px; position: relative; }
+    .exp-desc li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+    .edu-list { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+    .edu-item {
+      display: grid; grid-template-columns: 200px 1fr;
+      gap: 0 48px; padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .edu-item:first-child { padding-top: 0; }
+    .edu-item:last-child { border-bottom: none; }
+    .edu-year { font-size: 13px; font-weight: 600; color: var(--muted); padding-top: 4px; }
+    .edu-school { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+    .edu-degree { font-size: 14px; color: var(--muted); }
+
     /* ── CONTACT ── */
     .contact-sect { padding: 80px 120px; }
     .contact-cols { display: flex; gap: 80px; align-items: flex-start; margin-top: 48px; }
@@ -249,6 +279,20 @@
         </div>
       </section>
 
+      <!-- EXPERIENCE -->
+      <section class="sect" id="experience-sect" style="display:none">
+        <div class="sect-label">Experience</div>
+        <div class="sect-title">Опыт работы</div>
+        <div class="exp-list" id="exp-el"></div>
+      </section>
+
+      <!-- EDUCATION -->
+      <section class="sect" id="education-sect" style="display:none">
+        <div class="sect-label">Education</div>
+        <div class="sect-title">Образование</div>
+        <div class="edu-list" id="edu-el"></div>
+      </section>
+
       <!-- TOOLS -->
       <section class="sect">
         <div class="sect-label">Tools</div>
@@ -325,6 +369,32 @@
       }
       if (ab.tools && ab.tools.length) {
         document.getElementById('tools-el').innerHTML = ab.tools.map(t => `<span class="chip">${t}</span>`).join('');
+      }
+      if (ab.experience && ab.experience.length) {
+        document.getElementById('experience-sect').style.display = '';
+        document.getElementById('exp-el').innerHTML = ab.experience.map(e => `
+          <div class="exp-item">
+            <div class="exp-meta">
+              <div class="exp-company">${e.company}</div>
+              <div class="exp-period">${e.period}</div>
+              <div class="exp-duration">${e.duration || ''}</div>
+            </div>
+            <div class="exp-body">
+              <div class="exp-role">${e.role}</div>
+              <ul class="exp-desc">${(e.desc||[]).map(d=>`<li>${d}</li>`).join('')}</ul>
+            </div>
+          </div>`).join('');
+      }
+      if (ab.education && ab.education.length) {
+        document.getElementById('education-sect').style.display = '';
+        document.getElementById('edu-el').innerHTML = ab.education.map(e => `
+          <div class="edu-item">
+            <div class="edu-year">${e.year}</div>
+            <div>
+              <div class="edu-school">${e.school}</div>
+              <div class="edu-degree">${e.degree}${e.field ? ' · ' + e.field : ''}</div>
+            </div>
+          </div>`).join('');
       }
       if (cfg.email) {
         const el = document.getElementById('email-text-el');
