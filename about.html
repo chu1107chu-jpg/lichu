@@ -14,7 +14,7 @@
       --pink: #ff2fda;
       --ink: #1a1a1a;
       --muted: #8a8a8a;
-      --border: #e2e2e2;
+      --border: #ededee;
       --bg: #fff;
     }
     html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--ink); cursor: var(--cursor); }
@@ -81,17 +81,19 @@
     .hero-title {
       font-size: 96px; font-weight: 700; line-height: .95;
       letter-spacing: -.04em; text-transform: uppercase;
-      margin-bottom: 48px;
+      margin-bottom: 48px; text-align: center;
     }
+    .hero-eyebrow { justify-content: center; }
     .hero-meta {
       display: flex; gap: 0;
-      border-top: 1px solid var(--border); padding-top: 32px;
+      border-top: 1px solid var(--border); padding-top: 0;
     }
     .hero-meta-item {
-      padding-right: 48px; border-right: 1px solid var(--border);
-      margin-right: 48px;
+      flex: 1; padding: 24px 20px;
+      border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
     }
-    .hero-meta-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    .hero-meta-item:last-child { border-right: none; }
     .meta-label { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     .meta-value { font-size: 15px; font-weight: 500; line-height: 1.5; }
     .meta-avail { color: var(--pink); }
@@ -258,7 +260,7 @@
         <div class="sect-body" id="bio-el">
           <p>UX/UI дизайнер с опытом 3,5 года. Работаю с полным циклом проектирования: от исследования аудитории и пользовательских сценариев до финального прототипа и передачи в разработку.</p>
           <p>За это время успела поработать лидом дизайн-команды из 22 человек, совмещать роль UX-дизайнера и системного аналитика, выстраивать дизайн-системы с нуля. Хорошо понимаю, как дизайн-решения влияют на продуктовые метрики, и умею объяснять это команде.</p>
-          <p>Основной инструмент — Figma: компоненты, автолейауты, вариативность, библиотеки. До перехода в дизайн 5 лет работала в продажах — это заметно помогает в общении с заказчиком и понимании бизнес-задач.</p>
+          <p>Основной инструмент — Figma: компоненты, автолейауты, вариативность, библиотеки.</p>
         </div>
       </section>
 
