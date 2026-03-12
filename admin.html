@@ -151,6 +151,34 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading .spinner { display: inline-block; }
     .loading .btn-label { display: none; }
+
+    /* ── CONTENT EDITOR ── */
+    .edit-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border)}
+    .edit-tab{padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
+    .edit-tab:hover{color:var(--text)}
+    .edit-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+    .edit-tab-content{display:none}
+    .edit-tab-content.active{display:block}
+    .add-section-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border:2px dashed var(--border);border-radius:var(--radius);background:transparent;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s;margin-top:16px}
+    .add-section-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .picker-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99}
+    .picker-overlay.show{display:block}
+    .section-picker{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;z-index:100;width:520px;box-shadow:0 10px 48px rgba(0,0,0,.18)}
+    .section-picker.show{display:block}
+    .section-picker h3{font-size:18px;font-weight:700;margin-bottom:20px}
+    .section-types{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .section-type-btn{padding:18px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);cursor:pointer;text-align:center;transition:border-color .15s,box-shadow .15s}
+    .section-type-btn:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(255,47,218,.15)}
+    .st-icon{font-size:24px;display:block;margin-bottom:6px}
+    .st-name{font-size:13px;font-weight:600;color:var(--text);display:block}
+    .st-desc{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+    .content-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px}
+    .cs-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .cs-type{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:#fdf0fc;padding:3px 9px;border-radius:4px;white-space:nowrap}
+    .cs-controls{margin-left:auto;display:flex;gap:4px}
+    .cs-field{margin-bottom:10px}
+    .cs-field:last-child{margin-bottom:0}
+    .cs-field label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px}
   </style>
 </head>
 <body>
@@ -207,30 +235,44 @@
           <div class="pc-add" id="add-project-btn">+ Добавить проект</div>
         </div>
 
-        <!-- EDIT PANEL (appears below grid) -->
-        <div id="edit-panel" style="margin-top:32px">
+        <!-- EDIT PANEL -->
+        <div id="edit-panel" style="display:none">
           <div class="edit-header">
-            <button class="btn-ghost btn-sm" id="close-edit">← Назад</button>
+            <button class="btn-ghost btn-sm" id="close-edit">← Назад к проектам</button>
             <h2 id="edit-title">Редактировать проект</h2>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" style="max-width:520px">
             <label>Название страницы</label>
             <input type="text" id="edit-page-title" placeholder="Project 1 — Taxi">
           </div>
 
-          <p style="font-size:14px;font-weight:600;margin-bottom:12px;">Изображения (порядок определяет отображение)</p>
-          <div id="images-list" class="images-list"></div>
-
-          <div class="drop-zone" id="drop-zone">
-            <input type="file" id="file-input" accept="image/*" multiple>
-            <div>Перетащите изображения сюда или <strong>нажмите для выбора</strong></div>
-            <div style="margin-top:4px;font-size:12px;color:#aaa">JPG, PNG, WebP · до 5 МБ каждый</div>
+          <!-- Edit content tabs -->
+          <div class="edit-tabs">
+            <div class="edit-tab active" data-edit-tab="images">🖼 Изображения</div>
+            <div class="edit-tab" data-edit-tab="content">✏️ Контент</div>
           </div>
 
-          <div id="upload-progress" style="display:none;margin-top:12px;font-size:14px;color:var(--muted)"></div>
+          <!-- Images tab -->
+          <div class="edit-tab-content active" data-edit-tab-panel="images">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Загрузите файлы проекта. В разделе «Контент» управляйте разделами и текстом.</p>
+            <div id="images-list" class="images-list"></div>
+            <div class="drop-zone" id="drop-zone">
+              <input type="file" id="file-input" accept="image/*" multiple>
+              <div>Перетащите изображения сюда или <strong>нажмите для выбора</strong></div>
+              <div style="margin-top:4px;font-size:12px;color:#aaa">JPG, PNG, WebP · до 5 МБ каждый</div>
+            </div>
+            <div id="upload-progress" style="display:none;margin-top:12px;font-size:14px;color:var(--muted)"></div>
+          </div>
 
-          <div style="display:flex;gap:12px;margin-top:24px;justify-content:flex-end">
+          <!-- Content tab -->
+          <div class="edit-tab-content" data-edit-tab-panel="content">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Добавляйте разделы: текст, фото, галерея, цитата. Загруженные изображения подставляйте по пути <code>img/project-XX/file.jpg</code>.</p>
+            <div id="content-sections-list"></div>
+            <button class="add-section-btn" id="add-section-btn">＋ Добавить раздел</button>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:28px;justify-content:flex-end">
             <button class="btn-ghost" id="cancel-edit-btn">Отмена</button>
             <button class="btn-primary" id="save-project-btn">
               <span class="spinner"></span><span class="btn-label">Сохранить и задеплоить</span>
@@ -421,6 +463,47 @@
   </div>
 </div>
 
+<!-- Section type picker -->
+<div class="picker-overlay" id="picker-overlay"></div>
+<div class="section-picker" id="section-picker">
+  <h3>Добавить раздел</h3>
+  <div class="section-types">
+    <button class="section-type-btn" data-type="text">
+      <span class="st-icon">📝</span>
+      <span class="st-name">Текст</span>
+      <span class="st-desc">Заголовок + абзац</span>
+    </button>
+    <button class="section-type-btn" data-type="wide-image">
+      <span class="st-icon">🖼</span>
+      <span class="st-name">Длинное фото</span>
+      <span class="st-desc">Полная ширина (Behance)</span>
+    </button>
+    <button class="section-type-btn" data-type="image">
+      <span class="st-icon">📷</span>
+      <span class="st-name">Фото</span>
+      <span class="st-desc">Фото с подписью</span>
+    </button>
+    <button class="section-type-btn" data-type="gallery">
+      <span class="st-icon">🗂</span>
+      <span class="st-name">Галерея</span>
+      <span class="st-desc">Сетка 2–3 колонки</span>
+    </button>
+    <button class="section-type-btn" data-type="quote">
+      <span class="st-icon">💬</span>
+      <span class="st-name">Цитата</span>
+      <span class="st-desc">Инсайт или цитата</span>
+    </button>
+    <button class="section-type-btn" data-type="divider">
+      <span class="st-icon">➖</span>
+      <span class="st-name">Разделитель</span>
+      <span class="st-desc">Горизонтальная линия</span>
+    </button>
+  </div>
+  <div style="margin-top:18px;text-align:right">
+    <button class="btn-ghost btn-sm" id="close-picker-btn">Отмена</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -434,6 +517,16 @@ let PAT = '';
 let ghLogin = '';
 let currentEditProject = null;
 let newProjectFiles = [];
+let contentSections = [];
+
+const SECTION_TEMPLATES = {
+  'text':       { type:'text', heading:'', body:'' },
+  'wide-image': { type:'wide-image', src:'', caption:'' },
+  'image':      { type:'image', src:'', caption:'' },
+  'gallery':    { type:'gallery', images:[], cols:2 },
+  'quote':      { type:'quote', text:'', author:'' },
+  'divider':    { type:'divider' },
+};
 
 // ─── HELPERS ───────────────────────────────────────────────────────────────
 
@@ -491,6 +584,10 @@ function toBase64(file) {
 
 function strToB64(str) {
   return btoa(unescape(encodeURIComponent(str)));
+}
+// Correct UTF-8 decode from base64 (handles Cyrillic & any multibyte chars)
+function b64decode(b64content) {
+  return decodeURIComponent(escape(atob(b64content.replace(/\n/g, ''))));
 }
 
 // ─── AUTH ───────────────────────────────────────────────────────────────────
@@ -614,41 +711,68 @@ async function loadProjects() {
     const card = document.createElement('div');
     card.className = 'project-card';
     const id = f.name.replace('.html', '');
+    const titleId = 'pcard-title-' + id;
     card.innerHTML = `
       <div class="pc-num">${id.toUpperCase()}</div>
-      <div class="pc-title">${id}</div>
-      <div class="pc-imgs">Нажмите для редактирования</div>
+      <div class="pc-title" id="${titleId}" style="color:var(--muted)">загрузка…</div>
+      <div class="pc-imgs">Нажмите для редактирования →</div>
     `;
     card.addEventListener('click', () => openEditProject(id));
     grid.insertBefore(card, $('add-project-btn'));
+    // Async title load
+    ghGetContents('site/' + f.name).then(file => {
+      if (!file) return;
+      try {
+        const html = b64decode(file.content);
+        const m = html.match(/<title>([\s\S]*?)<\/title>/);
+        if (m) {
+          const el = document.getElementById(titleId);
+          if (el) { el.textContent = m[1].replace(/\s*\|\s*Li Chu\s*$/i,'').trim(); el.style.color=''; }
+        }
+      } catch {}
+    }).catch(() => { const el=document.getElementById(titleId); if(el){el.textContent=id;el.style.color='';} });
   }
 }
 
 async function openEditProject(projectId) {
   currentEditProject = projectId;
+  contentSections = [];
   $('edit-title').textContent = 'Редактировать: ' + projectId;
   $('edit-page-title').value = '';
   $('images-list').innerHTML = '<p style="color:var(--muted);font-size:14px">Загрузка…</p>';
-  $('edit-panel').style.display = '';
+  $('content-sections-list').innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:32px 0">Загрузка…</p>';
 
-  // Scroll to edit panel
-  $('edit-panel').scrollIntoView({ behavior: 'smooth' });
+  // Hide grid, show edit panel full width
+  $('projects-grid').style.display = 'none';
+  $('edit-panel').style.display = 'block';
+  switchEditTab('images');
 
-  // Load current HTML to find images
   try {
     const file = await ghGetContents(`site/${projectId}.html`);
     if (file) {
-      const html = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+      const html = b64decode(file.content);
       // Extract page title
-      const titleMatch = html.match(/<title>(.*?)<\/title>/);
-      if (titleMatch) $('edit-page-title').value = titleMatch[1];
-      // Extract section images
-      const imgMatches = [...html.matchAll(/src="(img\/[^"]+)"/g)];
-      const imgs = imgMatches.map(m => m[1]);
-      renderImagesList(imgs);
+      const titleMatch = html.match(/<title>([\s\S]*?)<\/title>/);
+      if (titleMatch) $('edit-page-title').value = titleMatch[1].replace(/\s*\|\s*Li Chu\s*$/i,'').trim();
+
+      // Try to parse LICHU_SECTIONS
+      const secMatch = html.match(/<!--\s*LICHU_SECTIONS:([\s\S]*?)-->/); 
+      if (secMatch) {
+        try { contentSections = JSON.parse(secMatch[1].trim()); } catch { contentSections = []; }
+        const imgSrcs = contentSections.filter(s => s.type==='wide-image'||s.type==='image').map(s=>s.src).filter(Boolean);
+        renderImagesList(imgSrcs);
+      } else {
+        // Old format: extract from <img> tags, convert to sections
+        const imgMatches = [...html.matchAll(/src="(img\/[^"]+)"/g)];
+        const imgs = imgMatches.map(m => m[1]);
+        renderImagesList(imgs);
+        contentSections = imgs.map(src => ({ type:'wide-image', src, caption:'' }));
+      }
+      renderContentSections();
     }
   } catch (e) {
     $('images-list').innerHTML = '<p style="color:var(--muted)">Файл не найден или пуст</p>';
+    $('content-sections-list').innerHTML = '<p style="color:var(--muted)">Ошибка загрузки</p>';
   }
 }
 
@@ -737,15 +861,17 @@ async function handleEditUpload(files) {
       const path = `site/img/${currentEditProject}/${file.name}`;
       const existing = await ghGetContents(path);
       await ghPut(path, b64, `upload: ${file.name}`, existing?.sha);
-      // Add to list
       const src = `img/${currentEditProject}/${file.name}`;
       addImageToList(src);
+      // Also add as a wide-image section in content
+      contentSections.push({ type:'wide-image', src, caption:'' });
+      renderContentSections();
     } catch (e) {
       toast(`Ошибка загрузки ${file.name}: ${e.message}`, 'error');
     }
   }
   progress.textContent = ''; progress.style.display = 'none';
-  toast('Изображения загружены', 'ok');
+  toast('Изображения загружены ✓', 'ok');
 }
 
 function addImageToList(src) {
@@ -780,7 +906,8 @@ $('save-project-btn').addEventListener('click', async () => {
   try {
     const imgs = [...$('images-list').querySelectorAll('.img-row')].map(r => r.dataset.src);
     const pageTitle = $('edit-page-title').value || currentEditProject;
-    const html = generateProjectHTML(currentEditProject, pageTitle, imgs);
+    const sections = contentSections.length > 0 ? contentSections : null;
+    const html = generateProjectHTML(currentEditProject, pageTitle, imgs, sections);
     const b64 = strToB64(html);
     const mainPath = `site/${currentEditProject}.html`;
     const ghpPath  = `${currentEditProject}.html`;
@@ -797,8 +924,115 @@ $('save-project-btn').addEventListener('click', async () => {
   setLoading(btn, false);
 });
 
-$('close-edit').addEventListener('click', () => { $('edit-panel').style.display = 'none'; currentEditProject = null; });
-$('cancel-edit-btn').addEventListener('click', () => { $('edit-panel').style.display = 'none'; });
+function closeEditPanel() {
+  $('edit-panel').style.display = 'none';
+  $('projects-grid').style.display = '';
+  currentEditProject = null;
+  contentSections = [];
+}
+$('close-edit').addEventListener('click', closeEditPanel);
+$('cancel-edit-btn').addEventListener('click', closeEditPanel);
+
+// ─── EDIT TABS ────────────────────────────────────────────────────────────────
+function switchEditTab(tabName) {
+  document.querySelectorAll('.edit-tab').forEach(t => t.classList.toggle('active', t.dataset.editTab === tabName));
+  document.querySelectorAll('.edit-tab-content').forEach(t => t.classList.toggle('active', t.dataset.editTabPanel === tabName));
+}
+document.querySelectorAll('.edit-tab').forEach(tab => {
+  tab.addEventListener('click', () => switchEditTab(tab.dataset.editTab));
+});
+
+// ─── CONTENT SECTIONS ────────────────────────────────────────────────────────
+function renderContentSections() {
+  const container = $('content-sections-list');
+  if (!container) return;
+  container.innerHTML = '';
+  if (!contentSections.length) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:32px 0">Нет разделов. Нажмите «＋ Добавить раздел» чтобы начать.</p>';
+    return;
+  }
+  contentSections.forEach((sec, i) => {
+    const el = document.createElement('div');
+    el.className = 'content-section';
+    el.innerHTML = buildSectionEditor(sec, i);
+    el.querySelectorAll('[data-cs-field]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const field = e.target.dataset.csField;
+        if (field === 'images') {
+          contentSections[i][field] = e.target.value.split('\n').map(s=>s.trim()).filter(Boolean);
+        } else if (field === 'cols') {
+          contentSections[i][field] = parseInt(e.target.value) || 2;
+        } else {
+          contentSections[i][field] = e.target.value;
+        }
+      });
+    });
+    el.querySelector('.cs-move-up')?.addEventListener('click', () => moveContentSection(i, -1));
+    el.querySelector('.cs-move-dn')?.addEventListener('click', () => moveContentSection(i, 1));
+    el.querySelector('.cs-delete').addEventListener('click', () => { contentSections.splice(i,1); renderContentSections(); });
+    container.appendChild(el);
+  });
+}
+
+function buildSectionEditor(sec, i) {
+  const total = contentSections.length;
+  const controls = `
+    <div class="cs-controls">
+      ${i > 0 ? '<button class="btn-ghost btn-sm cs-move-up">↑</button>' : ''}
+      ${i < total-1 ? '<button class="btn-ghost btn-sm cs-move-dn">↓</button>' : ''}
+      <button class="btn-danger cs-delete" style="font-size:13px;padding:6px 12px">✕</button>
+    </div>`;
+  const typeLabels = { text:'Текст', 'wide-image':'Длинное фото (полная ширина)', image:'Фото с подписью', gallery:'Галерея', quote:'Цитата', divider:'Разделитель' };
+  let fields = '';
+  if (sec.type === 'text') {
+    fields = `<div class="cs-field"><label>Заголовок (необязательно)</label><input type="text" value="${escHtml(sec.heading||'')}" data-cs-field="heading" placeholder="Заголовок раздела"></div><div class="cs-field"><label>Текст</label><textarea rows="4" data-cs-field="body" placeholder="Описание проекта...">${escHtml(sec.body||'')}</textarea></div>`;
+  } else if (sec.type === 'wide-image') {
+    fields = `<div class="cs-field"><label>Путь к изображению</label><input type="text" value="${escHtml(sec.src||'')}" data-cs-field="src" placeholder="img/project-01/photo.jpg"></div><div class="cs-field"><label>Подпись (необязательно)</label><input type="text" value="${escHtml(sec.caption||'')}" data-cs-field="caption" placeholder=""></div>`;
+  } else if (sec.type === 'image') {
+    fields = `<div class="cs-field"><label>Путь к изображению</label><input type="text" value="${escHtml(sec.src||'')}" data-cs-field="src" placeholder="img/project-01/photo.jpg"></div><div class="cs-field"><label>Подпись</label><input type="text" value="${escHtml(sec.caption||'')}" data-cs-field="caption" placeholder="Описание фото"></div>`;
+  } else if (sec.type === 'gallery') {
+    const imgsVal = Array.isArray(sec.images) ? sec.images.join('\n') : (sec.images||'');
+    fields = `<div class="cs-field"><label>Изображения (каждое с новой строки)</label><textarea rows="4" data-cs-field="images" placeholder="img/project-01/img1.jpg\nimg/project-01/img2.jpg">${escHtml(imgsVal)}</textarea></div><div class="cs-field"><label>Колонки</label><select data-cs-field="cols"><option value="2" ${sec.cols==2||!sec.cols?'selected':''}>2 колонки</option><option value="3" ${sec.cols==3?'selected':''}>3 колонки</option></select></div>`;
+  } else if (sec.type === 'quote') {
+    fields = `<div class="cs-field"><label>Цитата / инсайт</label><textarea rows="3" data-cs-field="text" placeholder="Текст цитаты...">${escHtml(sec.text||'')}</textarea></div><div class="cs-field"><label>Автор / источник (необязательно)</label><input type="text" value="${escHtml(sec.author||'')}" data-cs-field="author" placeholder="Пользователь, интервью"></div>`;
+  } else if (sec.type === 'divider') {
+    fields = '<p style="color:var(--muted);font-size:13px;margin:0">Горизонтальная разделительная линия</p>';
+  }
+  return `<div class="cs-header"><span class="cs-type">${typeLabels[sec.type]||sec.type}</span>${controls}</div>${fields}`;
+}
+
+function moveContentSection(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= contentSections.length) return;
+  [contentSections[i], contentSections[j]] = [contentSections[j], contentSections[i]];
+  renderContentSections();
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Section picker
+$('add-section-btn').addEventListener('click', () => {
+  $('section-picker').classList.add('show');
+  $('picker-overlay').classList.add('show');
+});
+$('picker-overlay').addEventListener('click', closeSectionPicker);
+$('close-picker-btn').addEventListener('click', closeSectionPicker);
+function closeSectionPicker() {
+  $('section-picker').classList.remove('show');
+  $('picker-overlay').classList.remove('show');
+}
+document.querySelectorAll('.section-type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.type;
+    const tmpl = JSON.parse(JSON.stringify(SECTION_TEMPLATES[type]));
+    contentSections.push(tmpl);
+    renderContentSections();
+    closeSectionPicker();
+    switchEditTab('content');
+  });
+});
 
 // ─── NEW PROJECT ─────────────────────────────────────────────────────────────
 
@@ -866,7 +1100,7 @@ async function loadNav() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(b64decode(f.content));
       if (cfg.nav) navItems = cfg.nav;
     }
   } catch {}
@@ -916,7 +1150,7 @@ async function loadGameSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(b64decode(f.content));
       const ct=cfg.card_texts||[];for(let i=0;i<7;i++){var el=$('set-card-text-'+i);if(el)el.value=ct[i]||'';}
       $('set-start-title').value = cfg.start_title  || '';
       $('set-start-sub').value   = cfg.start_sub    || '';
@@ -944,7 +1178,7 @@ async function loadAboutSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(b64decode(f.content));
       const ab = cfg.about || {};
       $('ab-hero-title').value = ab.hero_title  || '';
       $('ab-available').value  = ab.available   || '';
@@ -986,7 +1220,7 @@ async function loadSettings() {
   try {
     const f = await ghGetContents('site/site-config.json');
     if (f) {
-      const cfg = JSON.parse(atob(f.content.replace(/\n/g, '')));
+      const cfg = JSON.parse(b64decode(f.content));
       if (cfg.formspree_endpoint) $('set-formspree').value = cfg.formspree_endpoint;
       // write_token stored in localStorage only
       const lsToken = localStorage.getItem('lichu_write_token');
@@ -1025,7 +1259,7 @@ async function loadMessages() {
       return;
     }
     let msgs = [];
-    try { msgs = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+    try { msgs = JSON.parse(b64decode(f.content)); } catch {}
     if (!msgs.length) {
       list.innerHTML = '<p style="color:var(--muted);font-size:14px">Сообщений пока нет.</p>';
       return;
@@ -1072,7 +1306,7 @@ async function saveConfig(partial) {
   const f = await ghGetContents('site/site-config.json');
   let existing = {};
   if (f) {
-    try { existing = JSON.parse(atob(f.content.replace(/\n/g, ''))); } catch {}
+    try { existing = JSON.parse(b64decode(f.content)); } catch {}
   }
   const merged = { ...existing, ...partial };
   const b64 = strToB64(JSON.stringify(merged, null, 2));
@@ -1085,7 +1319,36 @@ async function saveConfig(partial) {
 
 // ─── HTML GENERATOR ──────────────────────────────────────────────────────────
 
-function generateProjectHTML(id, title, images) {
+function renderSectionHTML(sec) {
+  if (!sec) return '';
+  if (sec.type === 'wide-image' || !sec.type) {
+    return sec.src ? `      <img class="section-img" src="${sec.src}" alt="${(sec.caption||'').replace(/"/g,'&quot;')}" loading="lazy">` : '';
+  }
+  if (sec.type === 'image') {
+    return `      <div class="section-single-img">\n        <img src="${sec.src||''}" alt="${(sec.caption||'').replace(/"/g,'&quot;')}" loading="lazy">\n        ${sec.caption ? `<p class="section-caption">${sec.caption}</p>` : ''}\n      </div>`;
+  }
+  if (sec.type === 'text') {
+    const paras = (sec.body||'').split('\n').filter(Boolean).map(p => `        <p class="section-body">${p}</p>`).join('\n');
+    return `      <div class="section-text">\n        ${sec.heading ? `<h2 class="section-heading">${sec.heading}</h2>` : ''}\n${paras}\n      </div>`;
+  }
+  if (sec.type === 'gallery') {
+    const imgArr = Array.isArray(sec.images) ? sec.images : (typeof sec.images==='string' ? sec.images.split('\n').map(s=>s.trim()).filter(Boolean) : []);
+    const imgTags = imgArr.map(s => `        <img class="gallery-img" src="${s}" alt="" loading="lazy">`).join('\n');
+    return `      <div class="section-gallery gallery-${sec.cols||2}col">\n${imgTags}\n      </div>`;
+  }
+  if (sec.type === 'quote') {
+    return `      <div class="section-quote">\n        <blockquote>${sec.text||''}</blockquote>\n        ${sec.author ? `<cite>— ${sec.author}</cite>` : ''}\n      </div>`;
+  }
+  if (sec.type === 'divider') {
+    return `      <div class="section-divider"></div>`;
+  }
+  return '';
+}
+
+function generateProjectHTML(id, title, images, sections) {
+  // Use provided sections or fall back to images array as wide-image sections
+  const secs = (sections && sections.length) ? sections : (images||[]).map(src => ({ type:'wide-image', src, caption:'' }));
+
   const navLinks = navItems.map(n => {
     const divider = n.href === 'contact.html'
       ? '\n    <div style="height:1px;background:#c4c4c4;margin:8px 0"></div>'
@@ -1094,9 +1357,8 @@ function generateProjectHTML(id, title, images) {
     return `${divider}\n    <a href="${n.href}" class="nav-link${isActive}">${n.label}</a>`;
   }).join('');
 
-  const imgTags = images.map(src =>
-    `      <img class="section-img" src="${src}" alt="" loading="lazy">`
-  ).join('\n');
+  const sectionsHtml = secs.map(renderSectionHTML).join('\n');
+  const sectionsJson = JSON.stringify(secs);
 
   return `<!DOCTYPE html>
 <html lang="ru">
@@ -1117,6 +1379,20 @@ function generateProjectHTML(id, title, images) {
     .main{flex:1;overflow-x:hidden;overflow-y:auto;background:#fff}
     .sections{width:1280px;display:flex;flex-direction:column}
     .section-img{display:block;width:1280px}
+    .section-text{padding:60px 80px;max-width:900px}
+    .section-heading{font-size:28px;font-weight:700;margin-bottom:16px;color:#1a1a1a}
+    .section-body{font-size:17px;line-height:1.75;color:#3d3d3d;margin-bottom:12px}
+    .section-single-img{width:1280px}
+    .section-single-img img{display:block;width:1280px}
+    .section-caption{font-size:13px;color:#888;padding:8px 80px}
+    .section-gallery{display:grid;width:1280px;gap:4px}
+    .gallery-2col{grid-template-columns:1fr 1fr}
+    .gallery-3col{grid-template-columns:1fr 1fr 1fr}
+    .gallery-img{display:block;width:100%;height:340px;object-fit:cover}
+    .section-quote{padding:60px 80px;border-left:4px solid #ff2fda;margin:20px 0}
+    .section-quote blockquote{font-size:22px;font-weight:500;line-height:1.5;color:#1a1a1a;font-style:italic}
+    .section-quote cite{display:block;margin-top:12px;font-size:14px;color:#888;font-style:normal}
+    .section-divider{height:1px;background:#e5e5e5;margin:0 80px}
   </style>
 </head>
 <body>
@@ -1125,7 +1401,8 @@ ${navLinks}
   </aside>
   <main class="main">
     <div class="sections">
-${imgTags}
+<!-- LICHU_SECTIONS:${sectionsJson} -->
+${sectionsHtml}
     </div>
   </main>
 </body>

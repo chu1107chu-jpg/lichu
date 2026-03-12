@@ -14,7 +14,7 @@
       --pink: #ff2fda;
       --ink: #242424;
       --muted: #8a8a8a;
-      --border: #EFF2F5;
+      --border: #ededee;
       --bg: #fff;
     }
     html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--ink); cursor: var(--cursor); }
@@ -86,15 +86,16 @@
     .hero-eyebrow { justify-content: center; }
     .hero-meta {
       display: flex; gap: 0;
-      border: 1px solid var(--border);
+      border-top: 1px solid var(--border); padding-top: 0;
     }
     .hero-meta-item {
-      flex: 1; padding: 20px 24px;
+      flex: 1; padding: 24px 20px;
       border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
     }
     .hero-meta-item:last-child { border-right: none; }
-    .meta-label { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-    .meta-value { font-size: 15px; font-weight: 600; line-height: 1.4; }
+    .meta-label { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .meta-value { font-size: 15px; font-weight: 500; line-height: 1.5; }
     .meta-avail { color: var(--pink); }
 
     /* ── BODY ── */
@@ -118,12 +119,11 @@
     .sect-body p + p { margin-top: 1.2em; }
 
     /* ── CHIPS ── */
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 32px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
     .chip {
       display: inline-flex; align-items: center;
-      padding: 5px 12px; border: 1px solid var(--border);
-      border-radius: 6px; font-size: 11px; font-weight: 600;
-      letter-spacing: .1em; text-transform: uppercase;
+      padding: 6px 14px; border: 1px solid var(--border);
+      border-radius: 100px; font-size: 13px; font-weight: 500;
       color: var(--ink); background: var(--bg);
     }
 
@@ -140,11 +140,10 @@
     .exp-company { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
     .exp-period { font-size: 12px; color: var(--muted); line-height: 1.5; }
     .exp-duration { font-size: 12px; color: var(--muted); }
-    .exp-body {}
     .exp-role { font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
     .exp-desc { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
     .exp-desc li { font-size: 15px; line-height: 1.6; color: #3a3a3a; padding-left: 16px; position: relative; }
-    .exp-desc li::before { content: '·'; position: absolute; left: 0; color: var(--muted); }
+    .exp-desc li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
     .edu-list { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
     .edu-item {
       display: grid; grid-template-columns: 200px 1fr;
@@ -293,127 +292,14 @@
       <section class="sect" id="experience-sect">
         <div class="sect-label">Experience</div>
         <div class="sect-title">Опыт работы</div>
-        <div class="exp-list" id="exp-el">
-
-          <div class="exp-item">
-            <div class="exp-meta">
-              <div class="exp-company">Softintermob LLC</div>
-              <div class="exp-period">Апрель 2025 — Декабрь 2025</div>
-              <div class="exp-duration">8 месяцев</div>
-            </div>
-            <div class="exp-body">
-              <div class="exp-role">UX/UI-дизайнер</div>
-              <ul class="exp-desc">
-                <li>Создание и поддержание дизайн-системы продукта</li>
-                <li>Проверка соответствия разработанного интерфейса макету</li>
-                <li>Тестирование прототипов на пользователях</li>
-                <li>Разработка вариантов прототипа и концепции дизайна</li>
-                <li>Конкурентный анализ дизайнерских решений</li>
-                <li>Разработка макетов для веб- и мобильных платформ</li>
-                <li>Дизайн маркетинговых материалов и креативов</li>
-                <li>Адаптация дизайна под разные устройства и платформы</li>
-                <li>Организация редизайна и ребрендинга продукции</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="exp-item">
-            <div class="exp-meta">
-              <div class="exp-company">Стартап MYO</div>
-              <div class="exp-period">Май 2024 — Март 2025</div>
-              <div class="exp-duration">11 месяцев</div>
-            </div>
-            <div class="exp-body">
-              <div class="exp-role">UX/UI дизайнер + Бизнес-аналитик</div>
-              <ul class="exp-desc">
-                <li>Разработка UI с учётом UX-методологий и продуктовых требований</li>
-                <li>Создание CJM, User Flow, Wireframes и интерактивных прототипов в Figma</li>
-                <li>Разработка и поддержка UI Kit и дизайн-системы</li>
-                <li>Визуализация данных: дашборды, графики, таблицы</li>
-                <li>Сбор и формализация требований, создание ТЗ и функциональных спецификаций</li>
-                <li>Проектирование диаграмм BPMN, UML, ER</li>
-                <li>Оптимизация бизнес-процессов, поддержка коммуникации между командами</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="exp-item">
-            <div class="exp-meta">
-              <div class="exp-company">Legend</div>
-              <div class="exp-period">Январь 2023 — Апрель 2024</div>
-              <div class="exp-duration">1 год 4 месяца</div>
-            </div>
-            <div class="exp-body">
-              <div class="exp-role">UX/UI-дизайнер</div>
-              <ul class="exp-desc">
-                <li>Проектирование интерфейсов для веб- и мобильных сервисов</li>
-                <li>Разработка CJM, User Flow, Wireframes</li>
-                <li>Создание иконок, визуальных компонентов, UI Kit в Figma</li>
-                <li>Проектирование и создание дашбордов с визуализацией данных</li>
-                <li>Взаимодействие с менеджерами, аналитиками, разработчиками</li>
-                <li>Внедрение A/B тестирования</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="exp-item">
-            <div class="exp-meta">
-              <div class="exp-company">НАДПО</div>
-              <div class="exp-period">Октябрь 2022 — Март 2024</div>
-              <div class="exp-duration">1 год 6 месяцев</div>
-            </div>
-            <div class="exp-body">
-              <div class="exp-role">Дизайнер</div>
-              <ul class="exp-desc">
-                <li>Разработка и оформление презентаций в Keynote для образовательных курсов</li>
-                <li>Взаимодействие с кураторами, маркетологами и методологами</li>
-                <li>Создание анимации</li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
+        <div class="exp-list" id="exp-el"></div>
       </section>
 
       <!-- EDUCATION -->
       <section class="sect" id="education-sect">
         <div class="sect-label">Education</div>
         <div class="sect-title">Образование</div>
-        <div class="edu-list" id="edu-el">
-
-          <div class="edu-item">
-            <div class="edu-year">2025</div>
-            <div>
-              <div class="edu-school">МГТУ им. Н.Э. Баумана</div>
-              <div class="edu-degree">Магистр · Управление проектами</div>
-            </div>
-          </div>
-
-          <div class="edu-item">
-            <div class="edu-year">2024</div>
-            <div>
-              <div class="edu-school">Самарский национальный исследовательский университет им. С.П. Королева</div>
-              <div class="edu-degree">Магистр · Механика и математическое моделирование</div>
-            </div>
-          </div>
-
-          <div class="edu-item">
-            <div class="edu-year">2021</div>
-            <div>
-              <div class="edu-school">Udemy / Обучение с ментором</div>
-              <div class="edu-degree">Курсы · UX/UI Design</div>
-            </div>
-          </div>
-
-          <div class="edu-item">
-            <div class="edu-year">2015</div>
-            <div>
-              <div class="edu-school">Самарский национальный исследовательский университет им. С.П. Королева</div>
-              <div class="edu-degree">Специалист · Экономика и управление на предприятии</div>
-            </div>
-          </div>
-
-        </div>
+        <div class="edu-list" id="edu-el"></div>
       </section>
 
       <!-- TOOLS -->
