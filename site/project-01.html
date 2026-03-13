@@ -55,14 +55,25 @@
       display: flex; flex-direction: column; align-items: stretch;
     }
     #pdf-container {
-      padding: 48px;
-      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      display: flex; flex-direction: column;
     }
-    #pdf-container canvas {
-      display: block;
-      box-shadow: 0 2px 16px rgba(0,0,0,.10);
+    .pdf-card {
+      position: sticky; top: 0;
       background: #fff;
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -6px 48px rgba(0,0,0,.08);
+      overflow: hidden;
+      padding: 48px;
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+    }
+    .pdf-card canvas {
+      display: block;
+      width: 100% !important;
+      height: auto !important;
       max-width: 100%;
+    }
+    .pdf-card canvas + canvas {
+      margin-top: 0;
     }
     #pdf-loading {
       padding: 80px 48px; font-size: 14px; color: #98999c;
@@ -111,34 +122,38 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    const PDF_PATH = 'img/taxi.pdf'; /* ← имя файла */
+    const PDFS = ['taxi.pdf', 'taxi2.pdf'];
 
     (async () => {
       const container = document.getElementById('pdf-container');
       const loading   = document.getElementById('pdf-loading');
+      const availW    = container.parentElement.clientWidth - 96;
 
-      /* ширина области под PDF — вся ширина минус паддинги слева и справа */
-      const availW = container.parentElement.clientWidth - 96; /* 48px × 2 */
+      loading.remove();
 
-      try {
-        const pdf = await pdfjsLib.getDocument(PDF_PATH).promise;
-        loading.remove();
+      for (let fi = 0; fi < PDFS.length; fi++) {
+        const card = document.createElement('div');
+        card.className = 'pdf-card';
+        card.style.zIndex = fi + 1;
+        container.appendChild(card);
 
-        for (let p = 1; p <= pdf.numPages; p++) {
-          const page    = await pdf.getPage(p);
-          const vp0     = page.getViewport({ scale: 1 });
-          const scale   = availW / vp0.width;
-          const vp      = page.getViewport({ scale });
-
-          const canvas  = document.createElement('canvas');
-          canvas.width  = vp.width;
-          canvas.height = vp.height;
-          await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-          container.appendChild(canvas);
+        try {
+          const pdf = await pdfjsLib.getDocument(PDFS[fi]).promise;
+          for (let p = 1; p <= pdf.numPages; p++) {
+            const page   = await pdf.getPage(p);
+            const vp0    = page.getViewport({ scale: 1 });
+            const scale  = availW / vp0.width;
+            const vp     = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            canvas.width  = vp.width;
+            canvas.height = vp.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+            card.appendChild(canvas);
+          }
+        } catch(e) {
+          card.innerHTML = '<p style="padding:40px;color:#aaa;font-size:13px">Файл не найден: ' + PDFS[fi] + '</p>';
+          console.error(e);
         }
-      } catch (e) {
-        loading.textContent = 'Файл не найден. Положите taxi.pdf в папку site/img/.';
-        console.error(e);
       }
     })();
   </script></body>
