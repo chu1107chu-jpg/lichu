@@ -205,7 +205,7 @@
                   <!-- Задачи -->
                   <AdminWorkStatus v-else-if="contractorSection === 'tasks'" :slug="slug" />
                   <!-- Документы -->
-                  <AdminMaterials v-else-if="contractorSection === 'materials'" :slug="slug" />
+                  <AdminMaterials v-else-if="contractorSection === 'materials'" :slug="slug" page="materials" />
                 </template>
               </template>
               <!-- client preview -->
@@ -340,50 +340,56 @@
         </div>
       </div>
     </div>
+
+    <!-- Content editor -->
+    <button class="a-btn-save" @click="showContentEditor = true">Редактировать контент проекта</button>
+    <AdminProjectContentEditor v-if="showContentEditor" :slug="slug" page="main" @close="showContentEditor = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { getAdminPages, getAdminNavGroups, getClientPages } from '~~/shared/constants/pages'
 import { normalizeRoadmapStatus } from '~~/shared/utils/roadmap'
+import type { Contractor } from '~~/shared/types/contractor'
 import type { Component } from 'vue'
-import {
-  AdminWorkStatus,
-  AdminClientProfile,
-  AdminFirstContact,
-  AdminSmartBrief,
-  AdminSiteSurvey,
-  AdminToRContract,
-  AdminSpacePlanning,
-  AdminMoodboard,
-  AdminConceptApproval,
-  AdminWorkingDrawings,
-  AdminSpecifications,
-  AdminMepIntegration,
-  AdminDesignAlbumFinal,
-  AdminProcurementList,
-  AdminSuppliers,
-  AdminProcurementStatus,
-  AdminConstructionPlan,
-  AdminWorkLog,
-  AdminSitePhotos,
-  AdminPunchList,
-  AdminCommissioningAct,
-  AdminClientSignOff,
-  AdminPageContent,
-  AdminMaterials,
-  ClientPageContent,
-  ClientInitiation,
-  ClientContactDetails,
-  ClientTimeline,
-  ClientDesignAlbum,
-  ClientContracts,
-  ClientSelfProfile,
-  ClientBrief,
-  ClientTZ,
-  ClientWorkProgress,
-  ClientPassport,
-} from '#components'
+import AdminWorkStatus from '~/components/AdminWorkStatus.vue'
+import AdminClientProfile from '~/components/AdminClientProfile.vue'
+import AdminFirstContact from '~/components/AdminFirstContact.vue'
+import AdminSmartBrief from '~/components/AdminSmartBrief.vue'
+import AdminSiteSurvey from '~/components/AdminSiteSurvey.vue'
+import AdminToRContract from '~/components/AdminToRContract.vue'
+import AdminSpacePlanning from '~/components/AdminSpacePlanning.vue'
+import AdminMoodboard from '~/components/AdminMoodboard.vue'
+import AdminConceptApproval from '~/components/AdminConceptApproval.vue'
+import AdminWorkingDrawings from '~/components/AdminWorkingDrawings.vue'
+import AdminSpecifications from '~/components/AdminSpecifications.vue'
+import AdminMepIntegration from '~/components/AdminMepIntegration.vue'
+import AdminDesignAlbumFinal from '~/components/AdminDesignAlbumFinal.vue'
+import AdminProcurementList from '~/components/AdminProcurementList.vue'
+import AdminSuppliers from '~/components/AdminSuppliers.vue'
+import AdminProcurementStatus from '~/components/AdminProcurementStatus.vue'
+import AdminConstructionPlan from '~/components/AdminConstructionPlan.vue'
+import AdminWorkLog from '~/components/AdminWorkLog.vue'
+import AdminSitePhotos from '~/components/AdminSitePhotos.vue'
+import AdminPunchList from '~/components/AdminPunchList.vue'
+import AdminCommissioningAct from '~/components/AdminCommissioningAct.vue'
+import AdminClientSignOff from '~/components/AdminClientSignOff.vue'
+import AdminPageContent from '~/components/AdminPageContent.vue'
+import AdminMaterials from '~/components/AdminMaterials.vue'
+
+import ClientPageContent from '~/components/ClientPageContent.vue'
+import ClientInitiation from '~/components/ClientInitiation.vue'
+import ClientContactDetails from '~/components/ClientContactDetails.vue'
+import ClientTimeline from '~/components/ClientTimeline.vue'
+import ClientDesignAlbum from '~/components/ClientDesignAlbum.vue'
+import ClientContracts from '~/components/ClientContracts.vue'
+import ClientSelfProfile from '~/components/ClientSelfProfile.vue'
+import ClientBrief from '~/components/ClientBrief.vue'
+import ClientTZ from '~/components/ClientTZ.vue'
+import ClientWorkProgress from '~/components/ClientWorkProgress.vue'
+import ClientPassport from '~/components/ClientPassport.vue'
+
+import AdminProjectContentEditor from '~/components/AdminProjectContentEditor.vue'
 
 definePageMeta({ layout: 'admin', middleware: ['admin'] })
 
@@ -472,10 +478,10 @@ async function rmSliderClick(pg: { slug: string; title: string }) {
 
   // Compute changed items
   const changes: { slug: string; title: string; status: string }[] = []
-  for (let i = 0; i < pages.length; i++) {
+  for (const [i, page] of pages.entries()) {
     const desired = i <= targetIdx ? 'done' : 'pending'
-    if (rmStatusOf(pages[i].slug) !== desired) {
-      changes.push({ slug: pages[i].slug, title: pages[i].title, status: desired })
+    if (rmStatusOf(page.slug) !== desired) {
+      changes.push({ slug: page.slug, title: page.title, status: desired })
     }
   }
   if (!changes.length) return
@@ -489,7 +495,7 @@ async function rmSliderClick(pg: { slug: string; title: string }) {
   try {
     await Promise.all(changes.map(c =>
       $fetch(`/api/projects/${slug.value}/roadmap-stage`, {
-        method: 'PATCH',
+        method: 'PUT',
         body: { stageKey: c.slug, title: c.title, status: c.status },
       })
     ))
@@ -527,8 +533,8 @@ function updateFillLine() {
     }
 
     // Track: from first dot center to last dot center
-    const firstRect = allDots[0].getBoundingClientRect()
-    const lastRect = allDots[allDots.length - 1].getBoundingClientRect()
+    const firstRect = allDots[0]!.getBoundingClientRect()
+    const lastRect = allDots[allDots.length - 1]!.getBoundingClientRect()
     const firstCenter = firstRect.top + firstRect.height / 2 - colRect.top
     const lastCenter = lastRect.top + lastRect.height / 2 - colRect.top
     rmTrackTop.value = firstCenter
@@ -696,10 +702,21 @@ const CONTRACTOR_SECTIONS = [
   { key: 'materials', label: 'материалы', icon: '📄' },
 ]
 
-const { data: contractorData, pending: contractorPending } = useFetch<any>(
-  () => contractorPreviewId.value ? `/api/contractors/${contractorPreviewId.value}` : null,
-  { watch: [contractorPreviewId] },
+const contractorPreviewUrl = computed(() =>
+  contractorPreviewId.value ? `/api/contractors/${contractorPreviewId.value}` : '/api/contractors/0',
 )
+
+const { data: contractorData, pending: contractorPending, refresh: refreshContractor } = useFetch<Contractor | null>(
+  contractorPreviewUrl,
+  {
+    immediate: false,
+    default: () => null,
+  },
+)
+
+watch(contractorPreviewId, (id) => {
+  if (id) refreshContractor()
+}, { immediate: true })
 
 watch(contractorPreviewMode, (on) => { if (on) contractorSection.value = 'profile' })
 
@@ -753,9 +770,9 @@ const clientNavPages = computed(() => {
 
 watch(clientNavPages, (pages) => {
   if (!clientActivePage.value && pages.length) {
-    clientActivePage.value = pages[0].slug
+    clientActivePage.value = pages[0]!.slug
   } else if (clientActivePage.value && !pages.some(p => p.slug === clientActivePage.value) && pages.length) {
-    clientActivePage.value = pages[0].slug
+    clientActivePage.value = pages[0]!.slug
   }
 }, { immediate: true })
 
@@ -856,7 +873,7 @@ watch(availablePages, (pages) => {
     return
   }
   if (!pages.some(p => p.slug === normalized)) {
-    activePage.value = pages[0].slug
+    activePage.value = pages[0]!.slug
   }
 }, { immediate: true })
 
@@ -927,6 +944,8 @@ async function unlinkClientFromModal(clientId: string) {
     clientLinkError.value = e?.data?.statusMessage || 'Не удалось удалить клиента'
   }
 }
+
+const showContentEditor = ref(false)
 </script>
 
 <style scoped>

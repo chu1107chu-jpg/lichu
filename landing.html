@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daria Kulchikhina Платформа управления дизайн-проектами</title>
+  <title>Daria Kulchikhina — Платформа управления дизайн-проектами</title>
   <meta name="description" content="Профессиональная платформа для дизайнеров интерьера: управление проектами, подрядчиками и клиентами в одном месте.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 
 
   <style>
@@ -190,7 +193,7 @@
       display: inline-flex; align-items: center; gap: 12px;
       padding: 16px 32px;
       background: var(--ink); color: var(--bg);
-      font-size: 14px; font-weight: 500; letter-spacing: .04em;
+      font-size: 15px; font-weight: 500; letter-spacing: .04em;
       transition: background .2s, transform .15s;
     }
     .hero-cta:hover { background: #2c2b28; transform: translateY(-1px); }
@@ -203,8 +206,6 @@
 
     /* ─────────────────── MARQUEE ─────────────────── */
     .marquee-section {
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
       padding: 18px 0; overflow: hidden;
     }
 
@@ -231,7 +232,6 @@
     /* ─────────────────── SOCIAL PROOF STRIP ─────────────────── */
     .proof {
       padding: 72px 0;
-      border-bottom: 1px solid var(--line);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0;
@@ -255,69 +255,120 @@
       font-size: 13px; line-height: 1.5; color: var(--ink-2); font-weight: 400;
     }
 
-    /* ─────────────────── PROBLEM → SOLUTION ─────────────────── */
-    .problem {
-      padding: 100px 0;
-      border-bottom: 1px solid var(--line);
+    /* ═══════════════════════════════════════════════════════════
+       PROBLEM / SOLUTION SECTION
+    ═══════════════════════════════════════════════════════════ */
+    .ps-section {
+      padding: 100px 0 120px;
+    }
+
+    .ps-header {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: start;
+      gap: 0 80px;
+      margin-bottom: 80px;
+      padding-bottom: 56px;
     }
 
-    .problem-left { }
-
-    .problem-h2 {
+    .ps-headline {
       font-family: var(--sans);
       font-weight: 300;
-      font-size: clamp(34px, 4vw, 52px);
-      letter-spacing: -.02em; line-height: 1.05;
-      margin-top: 24px; margin-bottom: 32px;
+      font-size: clamp(30px, 3.6vw, 46px);
+      letter-spacing: -.022em;
+      line-height: 1.06;
+      margin-top: 20px;
     }
 
-    .pain-list {
-      list-style: none; display: flex; flex-direction: column; gap: 0;
-      border: 1px solid var(--line);
+    .ps-solution-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--ink-2);
+      max-width: 440px;
+      margin-top: 20px;
     }
 
-    .pain-item {
-      display: flex; align-items: center; gap: 16px;
-      padding: 18px 22px;
+    .ps-main {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0 64px;
+      align-items: center;
+    }
+
+    /* Pain items */
+    .ps-pain-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 15px 0;
       border-bottom: 1px solid var(--line);
-      font-size: 14px; line-height: 1.6; color: var(--ink-2);
     }
-    .pain-item:last-child { border-bottom: none; }
+    .ps-pain-item:last-child { border-bottom: none; }
 
-    .pain-icon {
-      flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
-      border: 1px solid var(--line-strong);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; color: var(--ink-3); margin-top: 1px;
-    }
-
-    .problem-right { padding-top: 60px; }
-
-    .solution-card {
-      background: var(--ink); color: var(--bg);
-      padding: 48px 44px;
-      margin-bottom: 24px;
+    .ps-pain-x {
+      flex-shrink: 0;
+      margin-top: 1px;
+      width: 16px;
+      font-size: 11px;
+      color: var(--ink-3);
+      line-height: 1.65;
+      user-select: none;
     }
 
-    .solution-card-label {
-      font-size: 11px; font-weight: 500; letter-spacing: .16em;
-      text-transform: uppercase; opacity: .4; margin-bottom: 20px; display: block;
+    .ps-pain-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--ink-2);
     }
 
-    .solution-card-title {
-      font-family: var(--sans);
-      font-weight: 300;
-      font-size: 28px; letter-spacing: -.015em; line-height: 1.2;
-      margin-bottom: 16px;
+    /* Glass sphere */
+    .ps-wave-col {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .solution-card-title em { font-style: italic; opacity: .65; }
+    .ps-wave-svg {
+      width: 340px;
+      height: 400px;
+      overflow: visible;
+    }
 
-    .solution-card-text {
-      font-size: 14px; line-height: 1.75; opacity: .7;
+    @keyframes psWaveFlow {
+      from { stroke-dashoffset: 0; }
+      to   { stroke-dashoffset: -240; }
+    }
+
+    /* Benefits grid */
+    .ps-benefits {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ps-benefit {
+      background: var(--bg-2);
+      padding: 22px 20px 26px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: background .2s;
+      cursor: default;
+    }
+    .ps-benefit:hover { background: #e5e2dc; }
+
+    .ps-benefit-icon {
+      font-size: 20px; color: var(--ink-2);
+      margin-left: -.12em;
+      font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+    }
+
+    .ps-benefit-title {
+      font-size: 15px; font-weight: 500;
+      letter-spacing: -.01em; line-height: 1.25;
+      margin-top: 4px;
+    }
+
+    .ps-benefit-desc {
+      font-size: 12.5px; line-height: 1.6; color: var(--ink-2);
     }
 
     /* ─────────────────── FEATURES ─────────────────── */
@@ -355,10 +406,14 @@
     .feat:hover { background: var(--bg-2); }
 
     .feat-icon {
-      width: 44px; height: 44px;
-      border: 1px solid var(--line-strong);
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center;
+      height: 32px;
       font-size: 22px; flex-shrink: 0; color: var(--ink-2);
+      align-self: flex-start;
+    }
+    .feat-icon .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+      margin-left: -0.12em;
     }
 
     .feat-num {
@@ -373,7 +428,7 @@
     }
 
     .feat-desc {
-      font-size: 14px; line-height: 1.7; color: var(--ink-2);
+      font-size: 15px; line-height: 1.7; color: var(--ink-2);
     }
 
     .feat-tags {
@@ -389,8 +444,6 @@
     /* ─────────────────── HOW IT WORKS ─────────────────── */
     .how {
       padding: 100px 0;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
     }
 
     .how-grid {
@@ -439,21 +492,21 @@
     }
 
     .how-step-desc {
-      font-size: 14px; line-height: 1.7; color: var(--ink-2);
+      font-size: 15px; line-height: 1.7; color: var(--ink-2);
     }
 
     .how-visual {
       position: sticky; top: 100px;
-      aspect-ratio: 4/5;
+      aspect-ratio: 2/3;
       background: var(--bg-2);
       border: 1px solid var(--line);
       overflow: hidden; display: flex; align-items: center; justify-content: center;
+      border-radius: 1200px;
     }
 
     /* ─────────────────── ROLES ─────────────────── */
     .roles {
       padding: 100px 0;
-      border-bottom: 1px solid var(--line);
     }
 
     .roles-grid {
@@ -494,7 +547,7 @@
 
     .role-list li {
       display: flex; align-items: flex-start; gap: 12px;
-      font-size: 14px; line-height: 1.5;
+      font-size: 15px; line-height: 1.55;
     }
 
     .role-list li::before {
@@ -506,7 +559,6 @@
     /* ─────────────────── SCREEN SHOWCASE ─────────────────── */
     .showcase {
       padding: 100px 0;
-      border-bottom: 1px solid var(--line);
       overflow: hidden;
     }
 
@@ -540,7 +592,6 @@
     /* ─────────────────── TESTIMONIAL ─────────────────── */
     .testimonial {
       padding: 100px 0;
-      border-bottom: 1px solid var(--line);
     }
 
     .quote-mark {
@@ -572,7 +623,7 @@
       font-family: var(--sans); font-size: 18px; color: var(--ink-2);
     }
 
-    .quote-name { font-size: 14px; font-weight: 500; }
+    .quote-name { font-size: 15px; font-weight: 500; }
     .quote-role { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
 
     /* ─────────────────── CTA ─────────────────── */
@@ -626,7 +677,7 @@
       display: inline-flex; align-items: center; gap: 10px;
       padding: 16px 36px;
       background: var(--bg); color: var(--ink);
-      font-size: 14px; font-weight: 500; letter-spacing: .04em;
+      font-size: 15px; font-weight: 500; letter-spacing: .04em;
       transition: background .2s, transform .15s;
     }
     .cta-btn-main:hover { background: var(--bg-2); transform: translateY(-1px); }
@@ -635,7 +686,7 @@
       display: inline-flex; align-items: center; gap: 10px;
       padding: 15px 36px;
       border: 1px solid rgba(255,255,255,.2);
-      font-size: 14px; font-weight: 500; letter-spacing: .04em;
+      font-size: 15px; font-weight: 500; letter-spacing: .04em;
       color: rgba(255,255,255,.7);
       transition: border-color .2s, color .2s;
     }
@@ -744,6 +795,158 @@
       position: relative; overflow: hidden;
     }
 
+    /* ─────────────────── HERO SPHERE ─────────────────── */
+    .hero-sphere-wrap {
+      width: 100%; margin-top: 72px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .hero-sphere {
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 37% 30%,
+        #f0ece6 0%,
+        #d4cfc7 16%,
+        #b4afa7 33%,
+        #949089 50%,
+        #747068 66%,
+        #545148 81%,
+        #2c2a26 100%
+      );
+      box-shadow:
+        inset -28px -28px 70px rgba(0,0,0,.44),
+        inset 14px 14px 40px rgba(255,255,255,.54),
+        inset 4px 4px 12px rgba(255,255,255,.28),
+        0 40px 100px rgba(0,0,0,.2),
+        0 6px 18px rgba(0,0,0,.1);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; flex-shrink: 0;
+    }
+
+    /* top-left glare highlight */
+    .hero-sphere::before {
+      content: '';
+      position: absolute; top: 11%; left: 19%;
+      width: 30%; height: 17%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.68) 0%, transparent 80%);
+      transform: rotate(-28deg);
+      pointer-events: none;
+    }
+    /* bottom-right soft glare */
+    .hero-sphere::after {
+      content: '';
+      position: absolute; bottom: 17%; right: 19%;
+      width: 13%; height: 7%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.18) 0%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .hero-sphere-inner {
+      text-align: center; padding: 0 46px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-sphere-label {
+      display: block;
+      font-size: 10px; font-weight: 600; letter-spacing: .2em;
+      text-transform: uppercase; color: rgba(255,255,255,.35);
+      margin-bottom: 20px;
+    }
+
+    .hero-sphere-title {
+      font-size: 25px; font-weight: 300; line-height: 1.25;
+      letter-spacing: -.02em;
+      color: rgba(255,255,255,.9);
+      margin-bottom: 16px;
+    }
+
+    .hero-sphere-sub {
+      font-size: 13px; line-height: 1.7;
+      color: rgba(255,255,255,.42);
+      max-width: 230px; margin: 0 auto;
+    }
+
+    .hero-sphere-stats {
+      display: flex; flex-direction: column; gap: 40px;
+    }
+
+    .hero-sphere-stat {
+      padding-left: 28px;
+      border-left: 1px solid var(--line-strong);
+    }
+
+    .hero-sphere-stat-num {
+      display: block;
+      font-size: 52px; font-weight: 300; letter-spacing: -.03em;
+      color: var(--ink); line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .hero-sphere-stat-label {
+      font-size: 14px; color: var(--ink-2); line-height: 1.5;
+    }
+
+    /* ─────────────────── PHOTO GALLERY ─────────────────── */
+    .gallery-section {
+      padding: 100px 0;
+    }
+
+    .gallery-section-top {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 52px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 5fr 3fr 4fr;
+      grid-template-rows: 480px 300px;
+      gap: 2px;
+      background: var(--line);
+    }
+
+    .gallery-item {
+      overflow: hidden; position: relative;
+      background: var(--bg-2);
+    }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+      transition: transform .8s var(--ease), filter .4s;
+      filter: saturate(.92) brightness(.97);
+    }
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: saturate(1) brightness(1);
+    }
+
+    /* span full width on bottom row */
+    .gallery-item--wide {
+      grid-column: 1 / -1;
+    }
+    .gallery-item--wide img { object-position: center 40%; }
+
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 24px;
+      background: linear-gradient(transparent, rgba(20,18,16,.55));
+      color: #fff;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      opacity: 0; transition: opacity .3s;
+    }
+    .gallery-item:hover .gallery-caption { opacity: 1; }
+    .gallery-caption-title {
+      font-size: 13px; font-weight: 500; letter-spacing: .04em;
+    }
+    .gallery-caption-tag {
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      opacity: .65;
+    }
+
     /* ─────────────────── RESPONSIVE ─────────────────── */
     @media (max-width: 900px) {
       .proof { grid-template-columns: 1fr 1fr; }
@@ -751,8 +954,14 @@
       .proof-item:nth-child(2n) {}
       .features-grid { grid-template-columns: 1fr; }
       .roles-grid { grid-template-columns: 1fr; }
-      .problem { grid-template-columns: 1fr; }
-      .how-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-rows: auto; grid-template-columns: 1fr 1fr; }
+      .gallery-item { height: 220px; }
+      .gallery-item--wide { grid-column: 1 / -1; height: 260px; }
+      .ps-header { grid-template-columns: 1fr; gap: 32px; margin-bottom: 48px; }
+      .ps-main { grid-template-columns: 1fr; gap: 48px; }
+      .ps-wave-svg { width: 240px; height: 280px; }
+      .ps-benefits { grid-template-columns: 1fr 1fr; }
+      .proof { grid-template-columns: 1fr 1fr; }
       .how-visual { display: none; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .hero-sub-row { flex-direction: column; }
@@ -836,7 +1045,7 @@
             <div style="display:flex;gap:16px;">
               <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:2px;padding:16px;">
                 <div style="height:8px;background:rgba(255,255,255,.1);border-radius:2px;width:40%;margin-bottom:8px;"></div>
-                <div style="height:22px;background:rgba(255,255,255,.2);border-radius:2px;width:55%;font-family:var(--sans);"></div>
+                <div style="height:22px;background:rgba(255,255,255,.2);border-radius:2px;width:55%;"></div>
               </div>
               <div style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:2px;padding:16px;">
                 <div style="height:8px;background:rgba(255,255,255,.1);border-radius:2px;width:50%;margin-bottom:8px;"></div>
@@ -945,65 +1154,147 @@
   </div>
 
   <!-- ─── PROBLEM → SOLUTION ─── -->
-  <div class="wrap">
-    <div class="problem">
-      <div class="problem-left fade">
-        <span class="label">Проблема</span>
-        <h2 class="problem-h2">Привычные инструменты<br>не работают для дизайнера</h2>
-        <ul class="pain-list">
-          <li class="pain-item">
-            <span class="pain-icon">✕</span>
-            <span>Переписка в WhatsApp и Telegram теряется непонятно, кто что должен сделать и в какие сроки.</span>
-          </li>
-          <li class="pain-item">
-            <span class="pain-icon">✕</span>
-            <span>Реквизиты подрядчиков хранятся в заметках, юридические данные в почте, а фото работ в галерее телефона.</span>
-          </li>
-          <li class="pain-item">
-            <span class="pain-icon">✕</span>
-            <span>Бюджет проекта разбросан по нескольким таблицам, клиент не понимает что происходит на объекте прямо сейчас.</span>
-          </li>
-          <li class="pain-item">
-            <span class="pain-icon">✕</span>
-            <span>При каждом новом объекте снова собирать документы, снова объяснять процесс новым мастерам с нуля.</span>
-          </li>
-        </ul>
-      </div>
-      <div class="problem-right fade">
-        <div class="solution-card">
-          <span class="solution-card-label">Решение Daria Kulchikhina</span>
-          <div class="solution-card-title">Единое рабочее пространство для <em>каждого проекта</em></div>
-          <p class="solution-card-text">Все участники видят актуальный статус, подрядчики загружают фото прямо в карточку задачи, а дизайнер держит под рукой полную базу реквизитов, мудбордов и документов всё в одном интерфейсе.</p>
+  <section class="ps-section">
+    <div class="wrap">
+
+      <!-- header row -->
+      <div class="ps-header fade">
+        <div>
+          <span class="label">Проблема</span>
+          <h2 class="ps-headline">Привычные инструменты<br>не&nbsp;работают для&nbsp;дизайнера</h2>
         </div>
-        <div style="border:1px solid var(--line);padding:28px 32px;display:flex;flex-direction:column;gap:12px;">
-          <span style="font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);">Результат</span>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;">
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.5;">
-              <span style="color:var(--green);font-size:16px;">✓</span> Прозрачность для клиента
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.5;">
-              <span style="color:var(--green);font-size:16px;">✓</span> Контроль бюджета
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.5;">
-              <span style="color:var(--green);font-size:16px;">✓</span> База подрядчиков
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.5;">
-              <span style="color:var(--green);font-size:16px;">✓</span> Дорожная карта
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.5;">
-              <span style="color:var(--green);font-size:16px;">✓</span> Фото-отчёты
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.5;">
-              <span style="color:var(--green);font-size:16px;">✓</span> Галерея материалов
-            </div>
+        <div>
+          <span class="label">Решение</span>
+          <p class="ps-solution-text">Единое рабочее пространство, где все участники проекта видят актуальный статус, документы и&nbsp;фото — без мессенджеров, почты и&nbsp;таблиц.</p>
+        </div>
+      </div>
+
+      <!-- main 3-col -->
+      <div class="ps-main">
+
+        <!-- left: pain -->
+        <div class="fade">
+          <div class="ps-pain-item">
+            <span class="ps-pain-x">✕</span>
+            <p class="ps-pain-text">Переписка в&nbsp;вайберах теряется — непонятно, кто что должен сделать и&nbsp;в какие сроки.</p>
+          </div>
+          <div class="ps-pain-item">
+            <span class="ps-pain-x">✕</span>
+            <p class="ps-pain-text">Реквизиты подрядчиков в&nbsp;заметках, документы в&nbsp;почте, фото работ в&nbsp;галерее телефона.</p>
+          </div>
+          <div class="ps-pain-item">
+            <span class="ps-pain-x">✕</span>
+            <p class="ps-pain-text">Бюджет разбросан по&nbsp;таблицам — клиент не&nbsp;понимает, что происходит на объекте.</p>
+          </div>
+          <div class="ps-pain-item">
+            <span class="ps-pain-x">✕</span>
+            <p class="ps-pain-text">При каждом новом объекте всё с&nbsp;нуля: снова документы, снова объяснять процесс мастерам.</p>
           </div>
         </div>
+
+        <!-- center: animated wave mesh -->
+        <div class="ps-wave-col fade">
+          <svg class="ps-wave-svg" viewBox="0 0 340 400" xmlns="http://www.w3.org/2000/svg" id="ps-wave-svg"></svg>
+          <script>
+          (function(){
+            var svg = document.getElementById('ps-wave-svg');
+            var ns  = 'http://www.w3.org/2000/svg';
+            var W = 340, H = 400, N = 24;
+
+            function line(d, sw, op, dashDelay, dashDur) {
+              var p = document.createElementNS(ns, 'path');
+              p.setAttribute('d', d);
+              p.setAttribute('fill', 'none');
+              p.setAttribute('stroke', '#2e2c29');
+              p.setAttribute('stroke-width', sw);
+              p.setAttribute('stroke-opacity', op);
+              if (dashDur) {
+                p.setAttribute('stroke-dasharray', '80 160');
+                p.style.cssText = 'animation:psWaveFlow ' + dashDur + 's linear infinite;animation-delay:' + dashDelay + 's';
+              }
+              return p;
+            }
+
+            /* ── Family A: left→right curves, neck pinched vertically ── */
+            var gA = document.createElementNS(ns, 'g');
+            for (var i = 0; i < N; i++) {
+              var t  = i / (N - 1);
+              var y0 = H * t;
+              /* control-point y: pulled toward vertical center at mid-x */
+              var yc = H * (0.26 + 0.48 * t);
+              /* max opacity/weight at t≈0.5 (equator) */
+              var sinT = Math.sin(Math.PI * t);
+              var op   = 0.08 + 0.68 * sinT;
+              var sw   = 0.28 + 1.05 * sinT;
+              var dur  = 3.2 + i * 0.10;
+              var d = 'M0,' + y0.toFixed(1) +
+                      ' C' + (W*0.32).toFixed(1) + ',' + yc.toFixed(1) +
+                      ' '  + (W*0.68).toFixed(1) + ',' + yc.toFixed(1) +
+                      ' '  + W + ',' + y0.toFixed(1);
+              gA.appendChild(line(d, sw, op, -(i * 0.16), dur));
+            }
+            svg.appendChild(gA);
+
+            /* ── Family B: top→bottom curves, neck pinched horizontally ── */
+            var gB = document.createElementNS(ns, 'g');
+            for (var j = 0; j < N; j++) {
+              var t  = j / (N - 1);
+              var x0 = W * t;
+              var xc = W * (0.26 + 0.48 * t);
+              var sinT = Math.sin(Math.PI * t);
+              var op   = 0.06 + 0.44 * sinT;
+              var sw   = 0.22 + 0.70 * sinT;
+              var d = 'M' + x0.toFixed(1) + ',0' +
+                      ' C' + xc.toFixed(1) + ',' + (H*0.32).toFixed(1) +
+                      ' '  + xc.toFixed(1) + ',' + (H*0.68).toFixed(1) +
+                      ' '  + x0.toFixed(1) + ',' + H;
+              gB.appendChild(line(d, sw, op, 0, 0));
+            }
+            svg.appendChild(gB);
+          })();
+          </script>
+        </div>
+
+        <!-- right: benefits -->
+        <div class="ps-benefits fade">
+          <div class="ps-benefit">
+            <span class="material-symbols-outlined ps-benefit-icon">visibility</span>
+            <div class="ps-benefit-title">Прозрачный статус</div>
+            <p class="ps-benefit-desc">Клиент видит прогресс в реальном времени без звонков</p>
+          </div>
+          <div class="ps-benefit">
+            <span class="material-symbols-outlined ps-benefit-icon">engineering</span>
+            <div class="ps-benefit-title">База подрядчиков</div>
+            <p class="ps-benefit-desc">Реквизиты, рейтинг и&nbsp;история работ в одном месте</p>
+          </div>
+          <div class="ps-benefit">
+            <span class="material-symbols-outlined ps-benefit-icon">photo_library</span>
+            <div class="ps-benefit-title">Фото-отчёты</div>
+            <p class="ps-benefit-desc">Подрядчик грузит фото прямо в&nbsp;карточку задачи</p>
+          </div>
+          <div class="ps-benefit">
+            <span class="material-symbols-outlined ps-benefit-icon">route</span>
+            <div class="ps-benefit-title">Дорожная карта</div>
+            <p class="ps-benefit-desc">Этапы, даты и бюджет наглядны для вас и клиента</p>
+          </div>
+          <div class="ps-benefit">
+            <span class="material-symbols-outlined ps-benefit-icon">description</span>
+            <div class="ps-benefit-title">Документы</div>
+            <p class="ps-benefit-desc">Договоры, сметы и акты в одной системе</p>
+          </div>
+          <div class="ps-benefit">
+            <span class="material-symbols-outlined ps-benefit-icon">person</span>
+            <div class="ps-benefit-title">Профиль клиента</div>
+            <p class="ps-benefit-desc">История объектов и предпочтения под рукой</p>
+          </div>
+        </div>
+
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ─── FEATURES ─── -->
-  <section id="features" style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:100px 0;">
+  <section id="features" style="padding:100px 0;">
     <div class="wrap">
       <div class="section-top fade">
         <div>
@@ -1095,49 +1386,14 @@
   <section id="how" class="how">
     <div class="wrap how-grid">
 
-      <div class="how-visual fade" style="background:var(--ink);">
-        <div style="padding:32px;width:100%;height:100%;display:flex;flex-direction:column;gap:16px;">
-          <!-- Fake roadmap timeline -->
-          <div style="height:8px;background:rgba(255,255,255,.1);border-radius:2px;width:55%;margin-bottom:4px;"></div>
-          <div style="display:flex;align-items:center;gap:0;position:relative;">
-            <div style="height:2px;flex:1;background:rgba(255,255,255,.3);"></div>
-            <div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.8);position:absolute;left:0;top:-4px;"></div>
-            <div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.8);position:absolute;left:22%;top:-4px;"></div>
-            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);background:transparent;position:absolute;left:55%;top:-4px;"></div>
-            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);background:transparent;position:absolute;right:0;top:-4px;"></div>
-          </div>
-          <!-- cards -->
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
-            <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:2px;display:flex;align-items:center;gap:12px;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;"></span>
-              <div style="flex:1;">
-                <div style="height:7px;background:rgba(255,255,255,.25);border-radius:2px;width:60%;margin-bottom:5px;"></div>
-                <div style="height:5px;background:rgba(255,255,255,.1);border-radius:2px;width:80%;"></div>
-              </div>
-              <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);flex-shrink:0;"></div>
-            </div>
-            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:12px 14px;border-radius:2px;display:flex;align-items:center;gap:12px;">
-              <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,200,50,.6);flex-shrink:0;"></span>
-              <div style="flex:1;">
-                <div style="height:7px;background:rgba(255,255,255,.18);border-radius:2px;width:70%;margin-bottom:5px;"></div>
-                <div style="height:5px;background:rgba(255,255,255,.08);border-radius:2px;width:55%;"></div>
-              </div>
-              <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);flex-shrink:0;"></div>
-            </div>
-            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:12px 14px;border-radius:2px;display:flex;align-items:center;gap:12px;">
-              <span style="width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;"></span>
-              <div style="flex:1;">
-                <div style="height:7px;background:rgba(255,255,255,.12);border-radius:2px;width:50%;margin-bottom:5px;"></div>
-                <div style="height:5px;background:rgba(255,255,255,.06);border-radius:2px;width:72%;"></div>
-              </div>
-              <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.04);flex-shrink:0;"></div>
-            </div>
-          </div>
-          <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;">
-            <div style="flex:1;height:30px;background:rgba(255,255,255,.06);border-radius:2px;"></div>
-            <div style="flex:2;height:30px;background:rgba(255,255,255,.15);border-radius:2px;"></div>
-          </div>
-        </div>
+      <div class="how-visual fade">
+        <img
+          src="/uploads/table_materials.jpg"
+          alt=""
+          style="width:100%;height:100%;object-fit:cover;object-position:center;"
+          loading="eager"
+          decoding="async"
+        />
       </div>
 
       <div>
@@ -1150,7 +1406,7 @@
             <span class="how-step-n">01</span>
             <div class="how-step-body">
               <div class="how-step-title">Создайте проект</div>
-              <p class="how-step-desc">Заведите объект, укажите этапы дорожной карты, добавьте клиента. Шаблоны типовых этапов созданы за вас достаточно адаптировать под конкретный объект.</p>
+          <p class="how-step-desc">Заведите объект, укажите этапы дорожной карты, добавьте клиента. Шаблоны типовых этапов уже созданы за&nbsp;вас — достаточно адаптировать под&nbsp;конкретный объект.</p>
             </div>
           </div>
           <div class="how-step fade">
@@ -1158,7 +1414,7 @@
             <span class="how-step-n">02</span>
             <div class="how-step-body">
               <div class="how-step-title">Добавьте подрядчиков</div>
-              <p class="how-step-desc">Назначьте мастеров на этапы из готовой базы. Каждый подрядчик получает персональный защищённый портал заходит по ссылке и видит только свои задачи.</p>
+          <p class="how-step-desc">Назначьте мастеров на этапы из готовой базы. Каждый подрядчик получает защищённый портал — заходит по&nbsp;ссылке и&nbsp;видит только свои задачи.</p>
             </div>
           </div>
           <div class="how-step fade">
@@ -1187,11 +1443,10 @@
 
         <!-- Designer side (dark) -->
         <div class="role-card">
-          <span class="role-icon"><span class="material-symbols-outlined" style="font-size:32px;">diamond</span></span>
           <div class="role-title">Дизайнер интерьера</div>
           <p class="role-desc">Ваш центральный штаб для всех объектов одновременно. Больше никакого хаоса только системная работа.</p>
           <ul class="role-list">
-            <li>Ведите 10+ объектов без потери качества контроля</li>
+            <li>Ведите 10+ объектов без&nbsp;потери качества контроля</li>
             <li>Мгновенно находите любые данные по проекту или подрядчику</li>
             <li>Формируйте мудборды и презентации для клиента прямо в системе</li>
             <li>Автоматически собирайте документы и реквизиты для договоров</li>
@@ -1201,16 +1456,82 @@
 
         <!-- Contractor side (light) -->
         <div class="role-card">
-          <span class="role-icon"><span class="material-symbols-outlined" style="font-size:32px;">construction</span></span>
-          <div class="role-title">Подрядчик и мастер</div>
+          <div class="role-title">Подрядчик и&nbsp;мастер</div>
           <p class="role-desc">Один портал вместо бесконечных переписок. Видите только своё, делаете быстро, не ошибаетесь.</p>
           <ul class="role-list" style="color:var(--ink-2);">
-            <li>Заходите по личной ссылке без лишней регистрации</li>
-            <li>Видите точный список задач и сроки именно для своего этапа</li>
-            <li>Загружаете фото прогресса прямо в задачу не в мессенджер</li>
-            <li>Оставляете комментарии и вопросы ничего не теряется</li>
-            <li>Ваши реквизиты хранятся один раз, не переспрашивают</li>
+            <li>Заходите по&nbsp;личной ссылке без&nbsp;лишней регистрации</li>
+            <li>Видите точный список задач и&nbsp;сроки именно для своего этапа</li>
+            <li>Загружаете фото прогресса прямо в&nbsp;задачу, а&nbsp;не в&nbsp;мессенджер</li>
+            <li>Добавляете комментарии и&nbsp;вопросы — ничего не теряется</li>
+            <li>Реквизиты хранятся один раз — больше не&nbsp;переспрашивают</li>
           </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── GALLERY ─── -->
+  <section class="gallery-section">
+    <div class="wrap">
+      <div class="gallery-section-top fade">
+        <div>
+          <span class="label">Портфолио</span>
+          <h2 class="section-h2" style="margin-top:20px;">Проекты, которыми<br><em>управляет платформа</em></h2>
+        </div>
+        <p style="max-width:280px;font-size:15px;line-height:1.7;color:var(--ink-2);">
+          От первого брифа до финальной фотосессии&nbsp;— все данные, фото и&nbsp;статусы в&nbsp;одном месте.
+        </p>
+      </div>
+
+      <div class="gallery-grid fade">
+
+        <div class="gallery-item">
+          <img
+            src="/uploads/storage.jpg"
+            alt="Тёмная кухня с металлом и бетоном"
+            loading="eager"
+          />
+          <div class="gallery-caption">
+            <span class="gallery-caption-title">Кухня-бар, Москва</span>
+            <span class="gallery-caption-tag">Kitchen · Metal & Stone</span>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <img
+            src="/uploads/textiles.jpg"
+            alt="Гостиная с мраморными поверхностями"
+            loading="lazy"
+          />
+          <div class="gallery-caption">
+            <span class="gallery-caption-title">Гостиная, Санкт-Петербург</span>
+            <span class="gallery-caption-tag">Living Room · Marble</span>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <img
+            src="/uploads/geometry.jpg"
+            alt="Спальня с тёмными металлическими деталями"
+            loading="lazy"
+          />
+          <div class="gallery-caption">
+            <span class="gallery-caption-title">Спальня, Москва</span>
+            <span class="gallery-caption-tag">Bedroom · Dark Metal</span>
+          </div>
+        </div>
+
+        <div class="gallery-item gallery-item--wide">
+          <img
+            src="/uploads/bath.jpg"
+            alt="Пентхаус с панорамными видами, металл и камень"
+            loading="lazy"
+          />
+          <div class="gallery-caption">
+            <span class="gallery-caption-title">Пентхаус, Москва</span>
+            <span class="gallery-caption-tag">Full Renovation · 2025</span>
+          </div>
         </div>
 
       </div>
@@ -1222,7 +1543,7 @@
     <div class="wrap">
       <span class="quote-mark">"</span>
       <blockquote class="quote-text fade">
-        Раньше каждый объект это отдельная папка в Dropbox, чат в WhatsApp и куча вкладок. Теперь <em>всё в одном окне</em>, и я наконец могу заниматься дизайном, а не администрированием.
+        Раньше каждый объект — это отдельная папка в&nbsp;Dropbox, чат в&nbsp;WhatsApp и&nbsp;куча вкладок. Теперь <em>всё в&nbsp;одном окне</em>, и&nbsp;я наконец могу заниматься дизайном, а&nbsp;не администрированием.
       </blockquote>
       <div class="quote-author fade">
         <div class="quote-avatar">Д</div>
@@ -1244,10 +1565,10 @@
         <em>прямо сейчас</em>
       </h2>
       <p class="cta-sub fade">
-        30 дней бесплатно. Никаких карт, никаких обязательств. Настройка за 10 минут мы поможем перенести данные из Excel.
+        30 дней бесплатно. Никаких карт, никаких обязательств. Настройка за&nbsp;10 минут — поможем перенести данные из&nbsp;Excel.
       </p>
       <div class="cta-actions fade">
-        <a href="http://localhost:3002/admin/login" class="cta-btn-main">
+        <a href="https://dariakulchikhina.com/admin/login" class="cta-btn-main">
           Войти в платформу
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -1276,9 +1597,9 @@
         <div>
           <span class="footer-col-title">Доступ</span>
           <ul class="footer-links">
-            <li><a href="http://localhost:3002/admin/login">Войти</a></li>
+            <li><a href="https://dariakulchikhina.com/admin/login">Войти</a></li>
             <li><a href="#cta">Начать бесплатно</a></li>
-            <li><a href="http://localhost:3002/contractor/login">Портал мастера</a></li>
+            <li><a href="https://dariakulchikhina.com/contractor/login">Портал мастера</a></li>
           </ul>
         </div>
         <div>
