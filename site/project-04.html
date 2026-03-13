@@ -38,6 +38,15 @@
 
     .main { flex:1; overflow-x:hidden; overflow-y:auto; display:flex; flex-direction:column; align-items:center; }
     .page { width:100%; max-width:1280px; }
+    /* ── STACK SCROLL ── */
+    .page>section,.page>.metrics,.page>.img-placeholder,.page>.img-wrap,.page>.case-footer {
+      position:sticky; top:0;
+      border-radius:16px 16px 0 0;
+      box-shadow:0 -6px 48px rgba(0,0,0,.08);
+      overflow:hidden; background:#fff;
+    }
+    .page>.sect-alt { background:var(--bg2); }
+    .page>.sect-dark { background:var(--ink); }
 
     .sect { padding:80px 96px; border-bottom:1px solid var(--line); }
     .sect-alt { background:var(--bg2); }
@@ -563,6 +572,7 @@ function replaceImg(btn) {
   input.click();
 }
 </script>
+<script>(function(){var e=document.querySelectorAll('.page>section,.page>.metrics,.page>.img-placeholder,.page>.img-wrap,.page>.case-footer');e.forEach(function(el,i){el.style.zIndex=i+1;});})()</script>
 
 </body>
 </html>
