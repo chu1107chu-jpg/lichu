@@ -51,17 +51,22 @@
     /* ── MAIN ── */
     .main {
       flex: 1; overflow-x: hidden; overflow-y: auto;
+      background: #f5f5f5;
+      display: flex; flex-direction: column; align-items: stretch;
+    }
+    #pdf-container {
+      padding: 48px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    #pdf-container canvas {
+      display: block;
+      box-shadow: 0 2px 16px rgba(0,0,0,.10);
       background: #fff;
-      display: flex; flex-direction: column; align-items: center;
+      max-width: 100%;
     }
-    .sections {
-      width: 100%; max-width: 1280px;
-      margin: 0 auto;
-      display: flex; flex-direction: column;
-    }
-    .section-img {
-      display: block; width: 100%; height: auto;
-      image-rendering: auto;
+    #pdf-loading {
+      padding: 80px 48px; font-size: 14px; color: #98999c;
+      font-family: 'Inter', sans-serif; text-align: center;
     }
   </style>
 </head>
@@ -97,19 +102,44 @@
   </aside>
 
   <main class="main">
-    <div class="sections">
-      <img class="section-img" src="img/taxi-sect-hero.jpg"     alt="" loading="eager">
-      <img class="section-img" src="img/taxi-sect-zadacha.jpg"  alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-bench.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-checkers.jpg" alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-userflow.jpg" alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-quotes.jpg"   alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-case1.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-itog1.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-case2.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-itog2.jpg"    alt="" loading="lazy">
-      <img class="section-img" src="img/taxi-sect-finish.jpg"   alt="" loading="lazy">
-    </div>
+    <div id="pdf-loading">Загрузка PDF…</div>
+    <div id="pdf-container"></div>
   </main>
-</body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const PDF_PATH = 'img/taxi.pdf'; /* ← имя файла */
+
+    (async () => {
+      const container = document.getElementById('pdf-container');
+      const loading   = document.getElementById('pdf-loading');
+
+      /* ширина области под PDF — вся ширина минус паддинги слева и справа */
+      const availW = container.parentElement.clientWidth - 96; /* 48px × 2 */
+
+      try {
+        const pdf = await pdfjsLib.getDocument(PDF_PATH).promise;
+        loading.remove();
+
+        for (let p = 1; p <= pdf.numPages; p++) {
+          const page    = await pdf.getPage(p);
+          const vp0     = page.getViewport({ scale: 1 });
+          const scale   = availW / vp0.width;
+          const vp      = page.getViewport({ scale });
+
+          const canvas  = document.createElement('canvas');
+          canvas.width  = vp.width;
+          canvas.height = vp.height;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+          container.appendChild(canvas);
+        }
+      } catch (e) {
+        loading.textContent = 'Файл не найден. Положите taxi.pdf в папку site/img/.';
+        console.error(e);
+      }
+    })();
+  </script></body>
 </html>
