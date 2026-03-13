@@ -10,13 +10,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Crect width='14' height='14' fill='%23242424'/%3E%3C/svg%3E") 7 7, auto;
-      --pink: #ff2fda;
       --ink: #242424;
       --ink2: #5c5c5c;
-      --ink3: #9c9c9c;
+      --ink3: #aaa;
       --bg: #fff;
-      --bg2: #f7f7f7;
-      --line: #e8e8e8;
+      --bg2: #fafafa;
+      --line: #ebebeb;
     }
     html, body { height: 100%; cursor: var(--cursor); font-family: 'Inter', sans-serif; }
     body { display: flex; background: var(--bg); color: var(--ink); }
@@ -24,7 +23,7 @@
     img { display: block; max-width: 100%; }
 
     .sidebar {
-      width: 260px; min-width: 260px; background: #ebebeb;
+      width: 260px; min-width: 260px; background: #f2f2f2;
       height: 100vh; position: sticky; top: 0;
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 24px; overflow-y: auto; z-index: 10;
@@ -36,9 +35,9 @@
     .nav-link {
       font-size: 15px; font-weight: 400;
       color: #242424; text-decoration: none;
-      transition: color .15s; text-align: center; display: block;
+      transition: opacity .15s; text-align: center; display: block;
     }
-    .nav-link:hover, .nav-link.active { color: var(--pink); }
+    .nav-link:hover, .nav-link.active { opacity: .45; }
     .sb-contacts { margin-top: auto; display: flex; flex-direction: column; gap: 14px; align-items: center; }
     .sb-contacts-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
     .sb-icon-btn {
@@ -117,7 +116,7 @@
       font-size: 52px; font-weight: 700; line-height: 1;
       letter-spacing: -.03em; margin-bottom: 12px;
     }
-    .metric-num span { color: var(--pink); }
+    .metric-num span { color: var(--ink); }
     .metric-desc { font-size: 14px; line-height: 1.6; color: var(--ink2); }
 
     /* TWO / THREE COLS */
@@ -127,7 +126,7 @@
     /* PROBLEM GRID */
     .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
     .problem-card { background: var(--bg); padding: 36px 32px; }
-    .problem-card-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--pink); margin-bottom: 12px; }
+    .problem-card-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink3); margin-bottom: 12px; }
     .problem-card-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
     .problem-card p { font-size: 14px; line-height: 1.65; color: var(--ink2); }
 
@@ -138,7 +137,7 @@
     .research-card p { font-size: 14px; line-height: 1.65; color: var(--ink2); }
 
     /* QUOTE */
-    .quote-block { border-left: 3px solid var(--pink); padding: 24px 32px; background: var(--bg2); margin: 40px 0; }
+    .quote-block { border-left: 2px solid #c8c8c8; padding: 24px 32px; background: var(--bg2); margin: 40px 0; }
     .quote-text { font-size: 20px; font-weight: 500; line-height: 1.5; font-style: italic; margin-bottom: 12px; }
     .quote-author { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
 
@@ -198,7 +197,7 @@
     .inf { background: #0d1a2d; color: #60a5fa; }
     .mkchart { height: 55px; display: flex; align-items: flex-end; gap: 3px; }
     .mkbar { flex: 1; background: #333; border-radius: 1px; }
-    .mkbar.pk { background: #ff2fda; }
+    .mkbar.pk { background: #60a5fa; }
     .mkcrow { display: grid; grid-template-columns: 1fr 48px 72px 64px; gap: 6px; font-size: 10px; color: #aaa; margin-bottom: 6px; align-items: center; }
     .mkcrow.hd { color: #555; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
     .mockup-right { background: #111; border-left: 1px solid #2a2a2a; padding: 14px 12px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
@@ -214,7 +213,7 @@
     .case-footer { padding: 60px 120px; background: var(--bg2); display: flex; justify-content: space-between; align-items: center; }
     .case-footer-l { font-size: 14px; color: var(--ink3); }
     .next-link { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; padding: 14px 24px; background: var(--ink); color: #fff; transition: background .15s; }
-    .next-link:hover { background: var(--pink); }
+    .next-link:hover { background: #3c3c3c; }
   </style>
 </head>
 <body>
@@ -504,12 +503,12 @@
       <div class="sect-label">Итоги</div>
       <h2 class="sect-title">Что изменилось<br>через 3 месяца</h2>
       <div class="outcome-grid">
-        <div class="outcome-card" style="border-top-color:#ff2fda"><h4>NPS вырос с 5 до 9</h4><p>Операторы перестали жаловаться на инструмент. Главный комментарий: «наконец-то всё в одном месте».</p></div>
+        <div class="outcome-card" style="border-top-color:#a3a3a3"><h4>NPS вырос с 5 до 9</h4><p>Операторы перестали жаловаться на инструмент. Главный комментарий: «наконец-то всё в одном месте».</p></div>
         <div class="outcome-card" style="border-top-color:#22c55e"><h4>−55% ошибок при выдаче команд</h4><p>Подтверждение перед отправкой и контекстный лист убрали большинство случайных ошибок и путаницы между аппаратами.</p></div>
         <div class="outcome-card" style="border-top-color:#60a5fa"><h4>Сеанс: 25 → 15 минут</h4><p>Убрали потери на переключение контекста. Оператор с первой секунды видит всё нужное — фокус остаётся на КА.</p></div>
         <div class="outcome-card" style="border-top-color:#f59e0b"><h4>Онбординг: 6 недель → 2 недели</h4><p>Система стала обучающим инструментом: лог прошлых сеансов и видимая логика интерфейса помогают новичку войти в работу быстро.</p></div>
         <div class="outcome-card" style="border-top-color:#a78bfa"><h4>Знание вышло из голов в систему</h4><p>Полный аудит-трейл каждого сеанса снял зависимость от «незаменимых» сотрудников и упростил разборы инцидентов.</p></div>
-        <div class="outcome-card" style="border-top-color:#e879f9"><h4>«Думаю про спутник, а не про интерфейс»</h4><p>Финальный комментарий на юзабилити-тесте. Это лучший результат, которого можно добиться в B2B-продукте.</p></div>
+        <div class="outcome-card" style="border-top-color:#818cf8"><h4>«Думаю про спутник, а не про интерфейс»</h4><p>Финальный комментарий на юзабилити-тесте. Это лучший результат, которого можно добиться в B2B-продукте.</p></div>
       </div>
     </section>
 

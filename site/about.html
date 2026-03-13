@@ -11,10 +11,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
-      --pink: #ff2fda;
       --ink: #242424;
       --muted: #8a8a8a;
-      --border: #ededee;
+      --border: #eaeaea;
       --bg: #fff;
     }
     html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--ink); cursor: var(--cursor); }
@@ -23,7 +22,7 @@
 
     /* ── SIDEBAR ── */
     .sidebar {
-      width: 260px; min-width: 260px; background: #ebebeb;
+      width: 260px; min-width: 260px; background: #f2f2f2;
       height: 100vh; position: sticky; top: 0;
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 24px; overflow-y: auto; z-index: 10;
@@ -38,10 +37,10 @@
     .sb-nav a {
       font-size: 15px; font-weight: 400; color: #242424; text-decoration: none;
       display: block; text-align: center;
-      transition: color .15s;
+      transition: opacity .15s;
       cursor: var(--cursor);
     }
-    .sb-nav a:hover, .sb-nav a.active { color: var(--pink); }
+    .sb-nav a:hover, .sb-nav a.active { opacity: .5; }
     .sb-contacts { margin-top: auto; display: flex; flex-direction: column; gap: 14px; align-items: center; }
     .sb-contacts-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
     .sb-icon-btn {
@@ -96,7 +95,7 @@
     .hero-meta-item:last-child { border-right: none; }
     .meta-label { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     .meta-value { font-size: 15px; font-weight: 500; line-height: 1.5; }
-    .meta-avail { color: var(--pink); }
+    .meta-avail { color: var(--ink); }
 
     /* ── BODY ── */
     .sect {
@@ -163,10 +162,10 @@
     .contact-link {
       display: inline-flex; align-items: center; gap: 10px;
       font-size: 15px; font-weight: 500; color: var(--ink);
-      text-decoration: none; transition: color .15s;
+      text-decoration: none; transition: opacity .15s;
     }
     .contact-link svg { flex-shrink: 0; }
-    .contact-link:hover { color: var(--pink); }
+    .contact-link:hover { opacity: .5; }
     .contact-divider { width: 1px; background: var(--border); align-self: stretch; }
 
     /* ── FORM ── */
