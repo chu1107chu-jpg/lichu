@@ -34,7 +34,7 @@
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23242424' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M4 2L4 20L8 16L11 23L14 21L11 15L17 15Z'/%3E%3C/svg%3E") 4 2, default;
       transition: color 0.18s;
     }
-    #nav a:hover { opacity: .45; }
+    #nav a:hover { color: #ff2fda; }
     .sb-contacts { margin-top: auto; display: flex; flex-direction: column; gap: 14px; align-items: center; }
     .sb-contacts-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
     .sb-icon-btn {
@@ -191,7 +191,7 @@
       display: flex; gap: 8px; z-index: 20; pointer-events: none;
     }
     .life-dot {
-      font-size: 24px; line-height: 1; color: #1a1a1a;
+      font-size: 24px; line-height: 1; color: #ff2fda;
       transition: opacity 0.3s, transform 0.3s;
     }
     .life-dot.lost { opacity: 0.15; transform: scale(0.7); }
@@ -444,7 +444,7 @@ function burst(cx,cy,colors,n) {
 }
 
 function missExplosion(cx,cy) {
-  const colors=['#1a1a1a','#3c3c3c','#555555','#242424','#2e2e2e','#444444','#666666','#888888','#ffffff','#f0f0f0'];
+  const colors=['#ff2fda','#ff80ee','#c4009a','#e61fd2','#ff00cc','#ff40e0','#9900aa','#ff66f0','#ffffff','#f5f5f5'];
   for(let i=0;i<70;i++){
     const a=-Math.PI+Math.random()*Math.PI, s=280+Math.random()*560, life=0.55+Math.random()*0.55;
     parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-80,sz:5+Math.random()*15,col:colors[Math.floor(Math.random()*colors.length)],life,max:life});
@@ -548,7 +548,7 @@ function update(dt){
           c.vx=rel*FALL_VX*1.5+(Math.random()-0.5)*20;
           c.flash=0.22;
           caughtCards++;
-          burst(c.x+c.w/2,c.y+c.h/2,['#1a1a1a','#555555','#242424','#ffffff']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#ffffff','#e61fd2']);
           beep(760+Math.random()*120,0.08);
         }
         if(c.y>H+12){
@@ -592,7 +592,7 @@ function update(dt){
           if(Math.abs(c.vx)<50) c.vx=(c.vx>=0?1:-1)*80;
           c.flash=0.22;
           caughtCards++;
-          burst(c.x+c.w/2,c.y+c.h/2,['#1a1a1a','#555555','#242424','#ffffff','#3c3c3c']);
+          burst(c.x+c.w/2,c.y+c.h/2,['#ff2fda','#ff80ee','#ffffff','#e61fd2','#c4009a']);
           beep(820+Math.random()*140,0.07);
         }
       }
@@ -648,14 +648,14 @@ function draw(){
 
   /* Cards — Figma: bg #f5f5f5, text #252426, Inter 15px Regular, radius 4 */
   for(const c of cards){
-    ctx.fillStyle=c.flash>0?'#1a1a1a':'#f5f5f5';
+    ctx.fillStyle=c.flash>0?'#ff2fda':'#f5f5f5';
     roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.fill();
     /* Falling card indicator: gray border */
     if(c.falling&&c.flash<=0){
       ctx.strokeStyle='#8f8f90'; ctx.lineWidth=1.5;
       roundRect(c.x,c.y,CARD_W,CARD_H,6); ctx.stroke();
     }
-    ctx.fillStyle=c.flash>0?'#1a1a1a':'#252426';
+    ctx.fillStyle=c.flash>0?'#ffffff':'#252426';
     ctx.font='400 15px Inter,sans-serif';
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(c.text||'',c.x+CARD_W/2,c.y+CARD_H/2);
